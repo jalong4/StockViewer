@@ -10,6 +10,13 @@ import SwiftUI
 struct ContentView: View {
     @State var portfolio = Portfolio()
     @State var isDataLoading = true
+    
+    private func loadData() {
+        Api().getPortfolio { (portfolio) in
+            self.portfolio = portfolio
+            self.isDataLoading = false;
+        }
+    }
         
     var body: some View {
 
@@ -30,13 +37,19 @@ struct ContentView: View {
         NavigationView{
             
             PortfolioSummary(portfolio: self.portfolio).padding(20)
-                .onAppear {
-                    Api().getPortfolio { (portfolio) in
-                        self.portfolio = portfolio
-                        self.isDataLoading = false;
-                    }
-                }
+                .onAppear { loadData() }
                 .navigationTitle(Text(self.isDataLoading ? "" : "My Portfolio"))
+                .navigationBarItems(trailing:
+                                        Button(action: {
+                                            self.isDataLoading = true
+                                            loadData()
+                                        }) {
+                                            if !isDataLoading {
+                                                Image(systemName: "arrow.clockwise")
+                                                
+                                            }
+                                        }
+                )
 
 
         }
