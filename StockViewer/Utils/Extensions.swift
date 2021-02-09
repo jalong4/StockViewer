@@ -47,3 +47,12 @@ extension View {
     }
 }
 
+extension Color {
+    static let themeAccent = Color("AccentColor")
+    static let themeBackground = Color("BackgroundColor")
+    static let themeForeground = Color("ForegroundColor")
+    static let themeBorder = Color("BorderColor")
+    static let themePositiveCurrency = Color("PositiveCurrencyColor")
+    static let themeNegativeCurrency = Color("NegativeCurrencyColor")
+}
+

@@ -24,17 +24,7 @@ struct PortfolioSummary: View {
                 // ~Equivalent to iPhone portrait
                 if let totals = self.portfolio.summary.totals {
                     if totals.total > 0 {
-                        Group {
-                            
-                            SummaryView(totals: self.portfolio.summary.totals, title: "My Portfolio")
-                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 140, alignment: .topLeading)
-                                .padding()
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color(red: 222/255, green: 222/255, blue: 222/255), lineWidth: 1)
-                                )
-                            
-                        }
+                        SummaryView(totals: self.portfolio.summary.totals, title: "My Portfolio")
                     }
                 }
             }
@@ -45,11 +35,7 @@ struct PortfolioSummary: View {
                         NavigationLink(destination: StockTableView(portfolio: portfolio, name: account.name, type: .account)) {
                             AccountView(account: account)
                                 .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
-                                .padding()
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color(red: 222/255, green: 222/255, blue: 222/255), lineWidth: 1)
-                                )
+                                .cardBorder()
                         }
                         .buttonStyle(PlainButtonStyle())
                     }

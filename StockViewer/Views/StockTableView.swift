@@ -55,17 +55,6 @@ struct StockTableView: View {
         return result
     }
     
-    func getSummaryForAccount () -> some View {
-        
-        return SummaryView(totals: getAccount())
-            .padding(EdgeInsets(top: 2, leading: 10, bottom: 10, trailing: 10))
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 140, alignment: .topLeading)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color(red: 222/255, green: 222/255, blue: 222/255), lineWidth: 1))
-    }
-    
-    
     func getFooter(stocks: [Stock]) -> some View {
         let totals = ((self.type == .account) ? getAccount() : getFooterForStock(stocks: stocks))
         return
@@ -90,7 +79,7 @@ struct StockTableView: View {
     func getHeader() -> some View {
         return
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
                 
                 Text("Stocks")
                     .fontWeight(.bold)
@@ -122,12 +111,12 @@ struct StockTableView: View {
             if horizontalSizeClass == .compact
                 && verticalSizeClass == .regular
                 && self.type == StockTableType.account {
-                getSummaryForAccount().padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                SummaryView(totals: getAccount())
             }
             
             let stocks = getStocks()
             
-            LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
+            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
                 ScrollView(.horizontal) {
                     Section(header: getHeader(), footer: getFooter(stocks: stocks)) {
                         ForEach(stocks) { stock in

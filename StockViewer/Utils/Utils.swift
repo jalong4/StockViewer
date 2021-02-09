@@ -11,9 +11,9 @@ class Utils {
     
     class func getColor(_ value: Double) -> Color {
         
-        if (value > 0) { return Color(red:19/255, green:130/255, blue:63/255) }
-        if (value < 0) { return Color(red:232/255, green:35/255, blue:50/255) }
-        return Color.black
+        if (value > 0) { return Color.themePositiveCurrency }
+        if (value < 0) { return Color.themeNegativeCurrency }
+        return Color.themeForeground
     }
     
     private class func getFormatted(_ doubleValue: Double, _ fractionDigits:Int = 2, style:NumberFormatter.Style = .decimal) -> String {
@@ -45,10 +45,6 @@ class Utils {
     class func getColorCodedTextView(_ doubleValue: Double, fractionDigits:Int = 2, style:NumberFormatter.Style = .decimal) -> Text {
         return Text (Utils.getFormatted(doubleValue, fractionDigits, style: style))
             .foregroundColor(Utils.getColor(doubleValue))
-    }
-    
-    class func getGreenColor() -> Color {
-        return Color(red:19/255, green:130/255, blue:63/255) 
     }
     
 }

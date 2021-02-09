@@ -30,7 +30,7 @@ struct StockTableRow: View {
             Group{
                 
                 price
-                    .frame(width: 70, alignment: .trailing)
+                    .frame(width: 90, alignment: .trailing)
                 
                 quantity
                     .frame(width: 90, alignment: .trailing)
@@ -50,7 +50,7 @@ struct StockTableRow: View {
             Group {
                 
                 unitCost
-                    .frame(width: 70, alignment: .trailing)
+                    .frame(width: 90, alignment: .trailing)
                 
                 totalCost
                     .frame(width: 90, alignment: .trailing)
@@ -68,7 +68,7 @@ struct StockTableRow: View {
             }
             Group {
                 ticker
-                    .frame(width: 60, alignment: .trailing)
+                    .frame(width: 90, alignment: .trailing)
             }
 
         }

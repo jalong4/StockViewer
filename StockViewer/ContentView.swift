@@ -25,10 +25,10 @@ struct ContentView: View {
                 VStack(alignment: .center) {
                     ProgressView("Loading...")
                         .scaleEffect(1.5, anchor: .center)
-                        .progressViewStyle(CircularProgressViewStyle(tint: Utils.getGreenColor()))
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color.themeAccent))
                 }
                 .frame(width: geometry.size.width / 2, height: geometry.size.width / 2)
-                .foregroundColor(Utils.getGreenColor())
+                .foregroundColor(Color.themeAccent)
                 .opacity(self.isDataLoading ? 1 : 0)
                 .insetView()
             }
@@ -45,8 +45,7 @@ struct ContentView: View {
                                             loadData()
                                         }) {
                                             if !isDataLoading {
-                                                Image(systemName: "arrow.clockwise")
-                                                
+                                                Image(systemName: "arrow.clockwise").foregroundColor(Color.themeAccent)
                                             }
                                         }
                 )

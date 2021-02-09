@@ -37,3 +37,51 @@ extension View {
         modifier( InsetViewModifier() )
     }
 }
+
+struct CardBorder: ViewModifier {
+    func body(content: Content) -> some View {
+        return content
+            .padding()
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 140, alignment: .topLeading)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.themeBorder, lineWidth: 1)
+            )
+    }
+}
+
+extension View {
+    func cardBorder() -> some View {
+        modifier( CardBorder() )
+    }
+}
+
+struct TextFieldModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        return content
+            .padding()
+            .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
+    }
+}
+
+extension View {
+    func textFieldModifier() -> some View {
+        modifier( TextFieldModifier() )
+    }
+}
+
+struct ButtondTextModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        return content
+            .padding()
+            .foregroundColor(.white)
+            .background(Capsule().fill(Color.themeAccent))
+    }
+}
+
+extension View {
+    func buttonTextModifier() -> some View {
+        modifier( ButtondTextModifier() )
+    }
+}
+

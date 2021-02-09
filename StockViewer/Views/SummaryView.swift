@@ -14,7 +14,7 @@ struct SummaryView: View {
         
     var body: some View {
         ZStack {
-            Color.white
+            Color.themeBackground
             VStack(alignment: .leading) {
                 
                 HStack{
@@ -34,7 +34,7 @@ struct SummaryView: View {
                 StockGainsView(account: totals)
             }
             .font(.system(size: 14))
-        }
+        }.cardBorder()
     }
 }
 
