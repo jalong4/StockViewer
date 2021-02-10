@@ -17,7 +17,14 @@ struct StockTableView: View {
     var type: StockTableType
     
     func getTitle() -> String {
-        return (self.type == StockTableType.account) ? "\(self.name) Account" : "\(self.name)"
+        var stockName = "";
+        if (type == .stock) {
+            let stocks = getStocks();
+            if (stocks.count > 0) {
+                stockName = stocks[0].name
+            }
+        }
+        return (type == StockTableType.account) ? "\(self.name) Account" : "\(stockName)"
     }
     
     func getAccount() -> Account {
@@ -87,7 +94,7 @@ struct StockTableView: View {
                     .padding(EdgeInsets(top: 2, leading: 0, bottom: 10, trailing: 0))
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
                 
-                StockTableRow(rowName: Text("Name").fontWeight(.bold),
+                StockTableRow(rowName: Text(type == .account ? "Name" : "Account").fontWeight(.bold),
                               price: Text("Price").fontWeight(.bold),
                               quantity: Text("Qty").fontWeight(.bold),
                               percentChange: Text("\u{0394}" + " (%)").fontWeight(.bold),
@@ -122,7 +129,7 @@ struct StockTableView: View {
                         ForEach(stocks) { stock in
                             
                             HStack {
-                                StockTableRow(rowName: Text(stock.name).font(.system(size: 14)),
+                                StockTableRow(rowName: Text(type == .stock ? stock.account : stock.name).font(.system(size: 14)),
                                               price: Text(Utils.getFormattedNumber(stock.price)),
                                               quantity: Text(Utils.getFormattedNumber(stock.quantity)),
                                               percentChange: Utils.getColorCodedTextView(stock.percentChange, style: .percent),

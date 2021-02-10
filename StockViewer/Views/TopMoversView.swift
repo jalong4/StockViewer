@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct TopMoversView: View {
+    var title: String
     var portfolio: Portfolio
-    
+    var stockGains: [StockGains]
+
     func getText(topMover: StockGains) -> String {
         var result = ""
         result = topMover.ticker;
@@ -17,11 +19,15 @@ struct TopMoversView: View {
     }
     
     var body: some View {
-        HStack {
-            LazyHStack(spacing: 20) {
-                ForEach(portfolio.summary.topDayGainers, id: \.ticker) { topMover in
+        VStack {
+            Text(stockGains.count > 0 ? title : "")
+                .font(.system(size: 14))
+                .fontWeight(.bold)
+            HStack {
+                
+                ForEach(stockGains, id: \.ticker) { topMover in
                     NavigationLink(destination: StockTableView(portfolio: portfolio, name: topMover.ticker, type: .stock)) {
-                        VStack (alignment: .leading) {
+                        VStack (alignment: .center) {
                             Text("\(topMover.ticker)").fontWeight(.bold)
                             Text(Utils.getFormattedCurrency(topMover.gain, fractionDigits: 0)).fontWeight(.bold)
                             Text(Utils.getFormattedPercent(topMover.percent))
@@ -32,7 +38,7 @@ struct TopMoversView: View {
                                 .foregroundColor(.white)
                         }
                         .font(.system(size: 12))
-                        .padding(2)
+                        .padding(1)
                         .frame(minWidth: 0, maxWidth: .infinity)
                     }.buttonStyle(PlainButtonStyle())
                 }
@@ -44,6 +50,6 @@ struct TopMoversView: View {
 struct TopMoversView_Previews: PreviewProvider {
     @State static var portfolio = Api.getMockPortfolio()
     static var previews: some View {
-        TopMoversView(portfolio: portfolio)
+        TopMoversView(title: "Top Gainers", portfolio: portfolio, stockGains: portfolio.summary.topDayGainers)
     }
 }

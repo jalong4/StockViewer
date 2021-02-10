@@ -17,8 +17,20 @@ struct PortfolioSummary: View {
 
     var body: some View {
         VStack {
-            TopMoversView(portfolio: self.portfolio)
-                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 100, alignment: .center)
+            TabView {
+                TopMoversView(title: "Top Gainers", portfolio: portfolio, stockGains:portfolio.summary.topDayGainers)
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                TopMoversView(title: "Top Losers", portfolio: portfolio, stockGains:portfolio.summary.topDayLosers)
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                TopMoversView(title: "Most Profitable", portfolio: portfolio, stockGains:portfolio.summary.mostProfitable)
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                TopMoversView(title: "Least Profitable", portfolio: portfolio, stockGains:portfolio.summary.leastProfitable)
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+            }
+            .padding(0)
+            .frame(minWidth: 0, maxWidth: .infinity, maxHeight: 90)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             
             if horizontalSizeClass == .compact && verticalSizeClass == .regular {
                 // ~Equivalent to iPhone portrait

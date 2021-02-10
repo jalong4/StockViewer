@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,15 @@
 		8E003A3425D1120600FB3A96 /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 8E003A3325D1120600FB3A96 /* config.json */; };
 		8E003A3725D1E0AC00FB3A96 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A3625D1E0AC00FB3A96 /* LoginView.swift */; };
 		8E003A3C25D20B8B00FB3A96 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A3B25D20B8B00FB3A96 /* RegisterView.swift */; };
+		8E003A4625D2191400FB3A96 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A4525D2191400FB3A96 /* SettingsManager.swift */; };
+		8E003A4925D219B400FB3A96 /* LocalDiskSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A4825D219B400FB3A96 /* LocalDiskSaver.swift */; };
+		8E003A4C25D21A0600FB3A96 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A4B25D21A0600FB3A96 /* Constants.swift */; };
+		8E003A4F25D21FBC00FB3A96 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A4E25D21FBC00FB3A96 /* User.swift */; };
+		8E003A5425D2205A00FB3A96 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A5325D2205A00FB3A96 /* Auth.swift */; };
+		8E003A5825D2244600FB3A96 /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A5725D2244600FB3A96 /* Api.swift */; };
+		8E003A6325D319D700FB3A96 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A6225D319D700FB3A96 /* HomeView.swift */; };
+		8E003A6625D342B100FB3A96 /* AuthUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A6525D342B100FB3A96 /* AuthUtils.swift */; };
+		8E003A6E25D38A2D00FB3A96 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A6D25D38A2D00FB3A96 /* MenuView.swift */; };
 		8EDA214525CD060500194772 /* StockViewerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDA214425CD060500194772 /* StockViewerApp.swift */; };
 		8EDA214725CD060500194772 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDA214625CD060500194772 /* ContentView.swift */; };
 		8EDA214925CD060600194772 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EDA214825CD060600194772 /* Assets.xcassets */; };
@@ -42,6 +51,15 @@
 		8E003A3325D1120600FB3A96 /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
 		8E003A3625D1E0AC00FB3A96 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		8E003A3B25D20B8B00FB3A96 /* RegisterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
+		8E003A4525D2191400FB3A96 /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		8E003A4825D219B400FB3A96 /* LocalDiskSaver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDiskSaver.swift; sourceTree = "<group>"; };
+		8E003A4B25D21A0600FB3A96 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		8E003A4E25D21FBC00FB3A96 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		8E003A5325D2205A00FB3A96 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
+		8E003A5725D2244600FB3A96 /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
+		8E003A6225D319D700FB3A96 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		8E003A6525D342B100FB3A96 /* AuthUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUtils.swift; sourceTree = "<group>"; };
+		8E003A6D25D38A2D00FB3A96 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		8EDA214125CD060500194772 /* StockViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StockViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDA214425CD060500194772 /* StockViewerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockViewerApp.swift; sourceTree = "<group>"; };
 		8EDA214625CD060500194772 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -86,8 +104,23 @@
 				DACE2673DFD3405F86CF0F16 /* Pods-StockViewer.debug.xcconfig */,
 				4E9C0EDC3D1F530359233825 /* Pods-StockViewer.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		8E003A4425D218C600FB3A96 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				8E003A4525D2191400FB3A96 /* SettingsManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		8E003A5625D2242900FB3A96 /* Api */ = {
+			isa = PBXGroup;
+			children = (
+				8E003A5725D2244600FB3A96 /* Api.swift */,
+			);
+			path = Api;
 			sourceTree = "<group>";
 		};
 		8EDA213825CD060500194772 = {
@@ -111,6 +144,8 @@
 		8EDA214325CD060500194772 /* StockViewer */ = {
 			isa = PBXGroup;
 			children = (
+				8E003A5625D2242900FB3A96 /* Api */,
+				8E003A4425D218C600FB3A96 /* Managers */,
 				8EDA217525CE0BBF00194772 /* Utils */,
 				8EDA216525CD06E500194772 /* Views */,
 				8EDA215425CD061300194772 /* Models */,
@@ -141,6 +176,8 @@
 				8EDA215C25CD067800194772 /* Portfolio.swift */,
 				8EDA215F25CD069B00194772 /* Summary.swift */,
 				8EDA216225CD06C200194772 /* StockGains.swift */,
+				8E003A4E25D21FBC00FB3A96 /* User.swift */,
+				8E003A5325D2205A00FB3A96 /* Auth.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -158,6 +195,8 @@
 				8EDA218D25CF65D300194772 /* StockTableRow.swift */,
 				8E003A3B25D20B8B00FB3A96 /* RegisterView.swift */,
 				8E003A3625D1E0AC00FB3A96 /* LoginView.swift */,
+				8E003A6225D319D700FB3A96 /* HomeView.swift */,
+				8E003A6D25D38A2D00FB3A96 /* MenuView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -165,10 +204,13 @@
 		8EDA217525CE0BBF00194772 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				8E003A4825D219B400FB3A96 /* LocalDiskSaver.swift */,
 				8EDA217625CE0BD200194772 /* Utils.swift */,
+				8E003A4B25D21A0600FB3A96 /* Constants.swift */,
 				8EDA218125CF447F00194772 /* Extensions.swift */,
 				8EDA218425CF483C00194772 /* ViewModifiers.swift */,
 				8EDA218A25CF50BB00194772 /* Enums.swift */,
+				8E003A6525D342B100FB3A96 /* AuthUtils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -297,16 +339,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EDA218525CF483C00194772 /* ViewModifiers.swift in Sources */,
+				8E003A6625D342B100FB3A96 /* AuthUtils.swift in Sources */,
+				8E003A4925D219B400FB3A96 /* LocalDiskSaver.swift in Sources */,
 				8EDA217F25CF362B00194772 /* TopMoversView.swift in Sources */,
+				8E003A4F25D21FBC00FB3A96 /* User.swift in Sources */,
 				8EDA214725CD060500194772 /* ContentView.swift in Sources */,
 				8E003A3C25D20B8B00FB3A96 /* RegisterView.swift in Sources */,
 				8EDA214525CD060500194772 /* StockViewerApp.swift in Sources */,
 				8E0039C025D07F9500FB3A96 /* SizeClassView.swift in Sources */,
 				8EDA215A25CD064F00194772 /* Stock.swift in Sources */,
+				8E003A5825D2244600FB3A96 /* Api.swift in Sources */,
 				8EDA218B25CF50BB00194772 /* Enums.swift in Sources */,
+				8E003A6325D319D700FB3A96 /* HomeView.swift in Sources */,
 				8EDA216325CD06C200194772 /* StockGains.swift in Sources */,
 				8EDA218825CF501A00194772 /* StockTableView.swift in Sources */,
 				8EDA216F25CD1BC000194772 /* AccountView.swift in Sources */,
+				8E003A5425D2205A00FB3A96 /* Auth.swift in Sources */,
 				8EDA215625CD062E00194772 /* Account.swift in Sources */,
 				8EDA216725CD070600194772 /* PortfolioSummary.swift in Sources */,
 				8EDA216025CD069B00194772 /* Summary.swift in Sources */,
@@ -316,7 +364,10 @@
 				8EDA216B25CD1AE000194772 /* SummaryView.swift in Sources */,
 				8EDA217725CE0BD200194772 /* Utils.swift in Sources */,
 				8E003A3725D1E0AC00FB3A96 /* LoginView.swift in Sources */,
+				8E003A4625D2191400FB3A96 /* SettingsManager.swift in Sources */,
 				8EDA218225CF447F00194772 /* Extensions.swift in Sources */,
+				8E003A4C25D21A0600FB3A96 /* Constants.swift in Sources */,
+				8E003A6E25D38A2D00FB3A96 /* MenuView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
