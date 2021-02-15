@@ -12,8 +12,6 @@ struct EnterTradeView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var appState: AppState
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper()
-    @StateObject var vm = ScrollToModel()
-    @State private var firstTextFieldId = 0
     
     @State var portfolio: Portfolio
     @State private var isSaving: Bool = false
@@ -32,6 +30,8 @@ struct EnterTradeView: View {
     @State private var tickerIsValid = false
     @State private var quantityIsValid = false
     @State private var totalCostIsValid = false
+    
+    @State private var selectedRow = 0
     
     private func getAccountList() -> [String] {
         return portfolio.summary.accounts.map { $0.name }
@@ -174,177 +174,155 @@ struct EnterTradeView: View {
     
     var body: some View {
         NavigationView {
-            ZStack {
-                Color.themeBackground
-                    .edgesIgnoringSafeArea(.all)
-                    .dismissKeyboardOnTap()
-                
-                ScrollView {
-                    ScrollViewReader { sp in
-                        VStack(alignment: .center, spacing: 10,  content: {
-                            
-                            VStack(alignment: .leading, spacing: 10,  content: {
+            
+            
+            ScrollView (.vertical, showsIndicators: false) {
+                ZStack {
+                    Color.themeBackground
+                    
+                    VStack(alignment: .center, spacing: 10,  content: {
+                        
+                        VStack(alignment: .leading, spacing: 10,  content: {
+                            ZStack {
+                                Capsule()
+                                    .frame(width: UIScreen.main.bounds.size.width-self.horizontalPadding, height: 40)
+                                    .foregroundColor(Color.themeAccent)
                                 Picker("Account", selection: $account) {
                                     ForEach(getAccountList(), id: \.self) { item in
                                         Text(item)
                                             .padding()
                                     }
                                 }
-                                .frame(maxWidth: maxWidth)
-                                .padding([.leading], horizontalPadding)
-                                .padding([.trailing], horizontalPadding)
-                                
-                                CustomTextField("Stock Ticker", text: $ticker, keyboardType: .default, tag: 1, onCommit: nil)
-                                    .id(firstTextFieldId)
-                                    .textFieldModifier()
-                                    .autocapitalization(.allCharacters)
-                                    .disableAutocorrection(true)
-                                    .textCase(.uppercase)
-                                    .frame(maxWidth: maxWidth)
-                                    .padding([.leading], horizontalPadding)
-                                    .padding([.trailing], horizontalPadding)
-                                    .onReceive(keyboardHeightHelper.$keyboardHeight) { value in
-                                        if value > 0 {
-                                            vm.direction = .top
-                                        }
-                                    }
-                                    
-                                    .onChange(of: ticker) { newValue in
-                                        self.tickerMsg = ""
-                                        Api().getStockQuote(ticker: ticker) { (quote) in
-                                            print("\(self.ticker)")
-                                            guard let quote = quote, quote.symbol == self.ticker else {
-                                                self.tickerMsg = self.ticker.isEmpty ? "" : "Invalid ticker"
-                                                self.tickerIsValid = false
-                                                self.disableSaveButton = !allFieldsValidated
-                                                return
-                                            }
-                                            self.tickerIsValid = true
-                                            self.disableSaveButton = !allFieldsValidated
-                                            self.tickerMsg = quote.displayName
-                                            print("Ticker found for " + quote.displayName)
-                                        }
-                                    }
-                                
-                                Text($tickerMsg.wrappedValue)
-                                    .frame(maxWidth: maxWidth)
-                                    .foregroundColor(tickerIsValid ? Color.themeValid : Color.themeError)
-                                
-                            })
-                            .padding([.leading], horizontalPadding)
-                            .padding([.trailing], horizontalPadding)
+                                .accentColor(Color.themeAccent)
+
+                            }
                             
-                            VStack(alignment: .leading, spacing: 10,  content: {
-                                CustomTextField("Quantity", text: $quantity, keyboardType: .numbersAndPunctuation, tag: 2, onCommit: nil)
-                                    .textFieldModifier()
-                                    .disableAutocorrection(true)
-                                    .keyboardType(.numbersAndPunctuation)
-                                    .frame(maxWidth: maxWidth)
-                                    .padding([.leading], horizontalPadding)
-                                    .padding([.trailing], horizontalPadding)
-                                    .onChange(of: quantity) { newValue in
-                                        self.quantityMsg = ""
-                                        guard let _ = Double(self.quantity) else {
-                                            self.quantityIsValid = false
+                            CustomTextField("Stock Ticker", text: $ticker, keyboardType: .default, tag: 1, onCommit: nil)
+                                .textFieldModifier()
+                                
+                                .onChange(of: ticker) { newValue in
+                                    self.ticker = self.ticker.uppercased()
+                                    self.tickerMsg = ""
+                                    Api().getStockQuote(ticker: ticker) { (quote) in
+                                        print("\(self.ticker)")
+                                        guard let quote = quote, quote.symbol == self.ticker else {
+                                            self.tickerMsg = self.ticker.isEmpty ? "" : "Invalid ticker"
+                                            self.tickerIsValid = false
                                             self.disableSaveButton = !allFieldsValidated
-                                            self.quantityMsg = self.quantity.isEmpty ? "" : "Invalid number"
-                                            print(self.quantityMsg)
                                             return
                                         }
-                                        self.quantityIsValid = true
+                                        self.tickerIsValid = true
                                         self.disableSaveButton = !allFieldsValidated
+                                        self.tickerMsg = quote.displayName
+                                        print("Ticker found for " + quote.displayName)
                                     }
-                                Text($quantityMsg.wrappedValue)
-                                    .frame(maxWidth: maxWidth)
-                                    .foregroundColor(quantityIsValid ? Color.themeValid : Color.themeError)
-                            })
-                            .padding([.leading], horizontalPadding)
-                            .padding([.trailing], horizontalPadding)
-                            VStack(alignment: .leading, spacing: 10,  content: {
-                                CustomTextField("Total Cost", text: $totalCost, keyboardType: .numbersAndPunctuation, tag: 3, onCommit: nil)
-                                    .textFieldModifier()
-                                    .disableAutocorrection(true)
-                                    .keyboardType(.numbersAndPunctuation)
-                                    .frame(maxWidth: maxWidth)
-                                    .padding([.leading], horizontalPadding)
-                                    .padding([.trailing], horizontalPadding)
-                                    .onChange(of: totalCost) { newValue in
-                                        self.totalCostMsg = ""
-                                        guard let _ = Double(self.totalCost) else {
-                                            self.totalCostIsValid = false
-                                            self.disableSaveButton = !allFieldsValidated
-                                            self.totalCostMsg = self.totalCost.isEmpty ? "" : "Invalid number"
-                                            print(self.totalCostMsg)
-                                            return
-                                        }
-                                        self.totalCostIsValid = true
-                                        self.disableSaveButton = !allFieldsValidated
-                                    }
-                                Text($totalCostMsg.wrappedValue)
-                                    .frame(maxWidth: maxWidth)
-                                    .foregroundColor(totalCostIsValid ? Color.themeValid : Color.themeError)
-                            })
-                            .padding([.leading], horizontalPadding)
-                            .padding([.trailing], horizontalPadding)
+                                }
                             
-                            HStack (spacing: 20) {
-                                Button(action: {
-                                    print("Save")
-                                    ticker = ticker.uppercased()
-                                    if allFieldsValidated {
-                                        self.isSaving = true
-                                        print("Entering trade")
-                                        
-                                        print("ticker: \(self.ticker)")
-                                        print("quantity: \(self.quantityValue)")
-                                        print("Total Cost: \(self.totalCostValue)")
-                                        
-                                        enterTrade(quantity: quantityValue, totalCost: totalCostValue)
+                            Text($tickerMsg.wrappedValue)
+                                .frame(maxWidth: maxWidth, alignment: .center)
+                                .foregroundColor(tickerIsValid ? Color.themeValid : Color.themeError)
+                            
+                            CustomTextField("Quantity", text: $quantity, keyboardType: .numbersAndPunctuation, tag: 2, onCommit: nil)
+                                .keyboardType(.numbersAndPunctuation)
+                                .textFieldModifier()
+                                .onChange(of: quantity) { newValue in
+                                    self.quantityMsg = ""
+                                    guard let _ = Double(self.quantity) else {
+                                        self.quantityIsValid = false
+                                        self.disableSaveButton = !allFieldsValidated
+                                        self.quantityMsg = self.quantity.isEmpty ? "" : "Invalid number"
+                                        print(self.quantityMsg)
+                                        return
                                     }
-                                    
-                                }) {
-                                    Text(isSaving ? "Saving" : disableSaveButton ? "Disable" : "Save")
-                                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-                                        .padding()
-                                        .foregroundColor(Color.themeBackground)
-                                        .background(Capsule().fill(Color.themeAccent.opacity(disableSaveButton || isSaving ? 0.3 : 1.0)))
+                                    self.quantityIsValid = true
+                                    self.disableSaveButton = !allFieldsValidated
                                 }
-                                .disabled(disableSaveButton || isSaving)
-                                Button(action: {
-                                    print("Canceling")
-                                    self.appState.navigateToEnterTrade.toggle()
-                                }) {
-                                    Text("Cancel")
-                                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-                                        .cancelButtonTextModifier()
+                            
+                            Text($quantityMsg.wrappedValue)
+                                .frame(maxWidth: maxWidth, alignment: .center)
+                                .foregroundColor(quantityIsValid ? Color.themeValid : Color.themeError)
+                            
+                            CustomTextField("Total Cost", text: $totalCost, keyboardType: .numbersAndPunctuation, tag: 3, onCommit: nil)
+                                .textFieldModifier()
+                                .keyboardType(.numbersAndPunctuation)
+                                
+                                .onChange(of: totalCost) { newValue in
+                                    self.totalCostMsg = ""
+                                    guard let _ = Double(self.totalCost) else {
+                                        self.totalCostIsValid = false
+                                        self.disableSaveButton = !allFieldsValidated
+                                        self.totalCostMsg = self.totalCost.isEmpty ? "" : "Invalid number"
+                                        print(self.totalCostMsg)
+                                        return
+                                    }
+                                    self.totalCostIsValid = true
+                                    self.disableSaveButton = !allFieldsValidated
                                 }
-                            }
-                            .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
-                            Button(action: {
-                                self.showingPreview.toggle()
-                            }) {
-                                Text("Preview")
-                                    .padding([.leading], horizontalPadding)
-                                    .padding([.trailing], horizontalPadding)
-                                    .disabled(!allFieldsValidated)
-                            }
-                            .sheet(isPresented: $showingPreview) {
-                                PreviewTrade()
-                            }
-                            .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+                            Text($totalCostMsg.wrappedValue)
+                                .frame(maxWidth: maxWidth, alignment: .center)
+                                .foregroundColor(totalCostIsValid ? Color.themeValid : Color.themeError)
                         })
-                        .onReceive(vm.$direction) { action in
-                            withAnimation {
-                                if action == .top {
-                                    sp.scrollTo(self.firstTextFieldId, anchor: .top)
+                        
+                        HStack (spacing: 20) {
+                            Button(action: {
+                                print("Save")
+                                
+                                if allFieldsValidated {
+                                    self.isSaving = true
+                                    print("Entering trade")
+                                    
+                                    print("ticker: \(self.ticker)")
+                                    print("quantity: \(self.quantityValue)")
+                                    print("Total Cost: \(self.totalCostValue)")
+                                    
+                                    enterTrade(quantity: quantityValue, totalCost: totalCostValue)
                                 }
+                                
+                            }) {
+                                Text(isSaving ? "Saving" : "Save")
+                                    .frame(minWidth: 100)
+                                    .padding()
+                                    .foregroundColor(Color.themeBackground)
+                                    .background(Capsule().fill(Color.themeAccent.opacity(disableSaveButton || isSaving ? 0.3 : 1.0)))
+                            }
+                            .disabled(disableSaveButton || isSaving)
+                            Button(action: {
+                                print("Canceling")
+                                self.appState.navigateToEnterTrade.toggle()
+                            }) {
+                                Text("Cancel")
+                                    .frame(minWidth: 100)
+                                    .cancelButtonTextModifier()
                             }
                         }
-                    }
+                        .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+                        Button(action: {
+                            self.showingPreview.toggle()
+                        }) {
+                            Text("Preview")
+                                .padding([.leading], horizontalPadding)
+                                .padding([.trailing], horizontalPadding)
+                                .disabled(!allFieldsValidated)
+                        }
+                        .sheet(isPresented: $showingPreview) {
+                            PreviewTrade()
+                        }
+                        .padding(.top,20)
+                        .padding(.bottom)
+                        
+                        Spacer()
+                    })
+                    .frame(maxWidth: maxWidth)
+                    .padding([.leading, .trailing], horizontalPadding)
+                    .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top)
+                    .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
                 }
-                .padding(.top, 1)
             }
-            .navigationTitle("Enter Trade")
+            .dismissKeyboardOnTap()
+            .padding(.top, 0)
+            .padding(.bottom, self.keyboardHeightHelper.keyboardHeight)
+            .edgesIgnoringSafeArea(.all)
+            .navigationBarTitle("Enter Trade", displayMode: .inline)
         }
     }
 }

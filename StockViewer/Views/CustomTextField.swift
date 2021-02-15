@@ -36,6 +36,7 @@ struct CustomTextField: UIViewRepresentable {
         textField.text = text
         textField.tag = tag
         textField.placeholder = placeholder
+        textField.autocorrectionType = .no
         
         // For left inner padding
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 120))
