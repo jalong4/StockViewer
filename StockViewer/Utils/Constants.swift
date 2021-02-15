@@ -12,6 +12,7 @@ struct Constants {
     enum LocalDiskSaverKeyName: String {
         case IsLoggedIn = "StockViewer.IsLoggedIn"
         case CreatingAccount = "StockViewer.CreatingAccount"
+        case EnteringTrade = "StockViewer.EnteringTrade"
         case Email = "StockViewer.Email"
         case Password = "StockViewer.Password"
         case AccessToken = "StockViewer.AccessToken"
@@ -19,8 +20,8 @@ struct Constants {
         case RefreshToken = "StockViewer.RefreshToken"
     }
     
-    static let baseUrl = "https://api.jimlong.ca/"
-//    static let baseUrl = "http://localhost:3000"
+    static let baseUrl = "https://api.jimlong.ca"
+//    static let baseUrl = "http://192.168.7.168:3000"
 
     static let expiresIn5Minutes = TimeInterval(300) // 60 sec * 5
 

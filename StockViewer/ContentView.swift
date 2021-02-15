@@ -8,31 +8,69 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var isLoggedIn = SettingsManager.sharedInstance.isLoggedIn ?? false
+
+    @EnvironmentObject var appState: AppState
+    @State private var createAccount = false
+    @State var portfolio = Portfolio()
+    
+    
+    private func isLoggedIn() -> Bool {
+        AuthUtils().checkAuthToken()
+        appState.isLoggedIn = SettingsManager.sharedInstance.isLoggedIn ?? false
+        return appState.isLoggedIn
+    }
+    
+    private func refreshingData() -> Bool {
+        if appState.refreshingData {
+            loadData()
+            return true
+        }
+        
+        return false
+    }
+    
+    private func loadData() {
+        if isLoggedIn() {
+            appState.isDataLoading = true
+            Api().getPortfolio { (portfolio) in
+                self.portfolio = portfolio
+                self.appState.isDataLoading = false
+                self.appState.refreshingData = false
+            }
+        }
+    }
+    
     
     var body: some View {
         Group {
-            if self.isLoggedIn {
-                HomeView()
-                    .navigationTitle("My Portfolio")
-                    .phoneOnlyStackNavigationView()
+            if appState.isLoggedIn {
+                if appState.isDataLoading || refreshingData() {
+                    GeometryReader { geometry in
+                        VStack(alignment: .center) {
+                            ProgressView("Loading...")
+                                .scaleEffect(1.5, anchor: .center)
+                                .progressViewStyle(CircularProgressViewStyle(tint: Color.themeAccent))
+                        }
+                        .frame(width: geometry.size.width / 2, height: geometry.size.width / 2)
+                        .foregroundColor(Color.themeAccent)
+                        .opacity(appState.isDataLoading ? 1 : 0)
+                        .insetView()
+                    }
+                } else {
+                    HomeView(portfolio: portfolio)
+                        .navigationTitle("My Portfolio")
+                        .phoneOnlyStackNavigationView()
+                }
             } else {
-                LoginView()
+                if createAccount {
+                    RegisterView(createAccount: $createAccount)
+                } else {
+                    LoginView(createAccount: $createAccount)
+                }
             }
         }
-        .onAppear {
-            NotificationCenter.default.addObserver(forName: NSNotification.Name("AuthStatusChange"), object: nil, queue: .main) { (_) in
-                self.isLoggedIn = SettingsManager.sharedInstance.isLoggedIn ?? false
-            }
+        .onAppear() {
+            loadData()
         }
-        .onDisappear() {
-            NotificationCenter.default.removeObserver("AuthStatusChange")
-        }
-    }
-}
-    
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
     }
 }

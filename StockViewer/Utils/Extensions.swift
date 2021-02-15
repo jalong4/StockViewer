@@ -8,6 +8,7 @@
 import SwiftUI
 
 extension Bundle {
+    
     func decode<T: Decodable>(_ type: T.Type, from file: String, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate, keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys) -> T {
         guard let url = self.url(forResource: file, withExtension: nil) else {
             fatalError("Failed to locate \(file) in bundle.")
@@ -17,23 +18,8 @@ extension Bundle {
             fatalError("Failed to load \(file) from bundle.")
         }
         
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = dateDecodingStrategy
-        decoder.keyDecodingStrategy = keyDecodingStrategy
-        
-        do {
-            return try decoder.decode(T.self, from: data)
-        } catch DecodingError.keyNotFound(let key, let context) {
-            fatalError("Failed to decode \(file) from bundle due to missing key '\(key.stringValue)' not found – \(context.debugDescription)")
-        } catch DecodingError.typeMismatch(_, let context) {
-            fatalError("Failed to decode \(file) from bundle due to type mismatch – \(context.debugDescription)")
-        } catch DecodingError.valueNotFound(let type, let context) {
-            fatalError("Failed to decode \(file) from bundle due to missing \(type) value – \(context.debugDescription)")
-        } catch DecodingError.dataCorrupted(_) {
-            fatalError("Failed to decode \(file) from bundle because it appears to be invalid JSON")
-        } catch {
-            fatalError("Failed to decode \(file) from bundle: \(error.localizedDescription)")
-        }
+        print("Decoding data from Bundle \(file)")
+        return Utils.decodeToObj(T.self, from: data, dateDecodingStrategy: dateDecodingStrategy, keyDecodingStrategy: keyDecodingStrategy);
     }
 }
 
@@ -52,7 +38,40 @@ extension Color {
     static let themeBackground = Color("BackgroundColor")
     static let themeForeground = Color("ForegroundColor")
     static let themeBorder = Color("BorderColor")
+    static let themeValid = Color("PositiveCurrencyColor")
+    static let themeError = Color("NegativeCurrencyColor")
     static let themePositiveCurrency = Color("PositiveCurrencyColor")
     static let themeNegativeCurrency = Color("NegativeCurrencyColor")
 }
+
+extension View {
+    func dismissKeyboardOnTap() -> some View {
+        modifier(DismissKeyboardOnTap())
+    }
+}
+
+public struct DismissKeyboardOnTap: ViewModifier {
+    public func body(content: Content) -> some View {
+        #if os(macOS)
+        return content
+        #else
+        return content.gesture(tapGesture)
+        #endif
+    }
+    
+    private var tapGesture: some Gesture {
+        TapGesture().onEnded(endEditing)
+    }
+    
+    private func endEditing() {
+        UIApplication.shared.connectedScenes
+            .filter {$0.activationState == .foregroundActive}
+            .map {$0 as? UIWindowScene}
+            .compactMap({$0})
+            .first?.windows
+            .filter {$0.isKeyWindow}
+            .first?.endEditing(true)
+    }
+}
+
 

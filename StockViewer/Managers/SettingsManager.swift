@@ -15,10 +15,15 @@ class SettingsManager {
         get {    return LocalDiskSaver.get(key: .IsLoggedIn, isSecure: false) as? Bool }
         set (newValue) { LocalDiskSaver.set(key: .IsLoggedIn, isSecure: false, newValue: newValue as AnyObject?) }
     }
-    
+
     var creatingAccount: Bool? {
         get {    return LocalDiskSaver.get(key: .CreatingAccount, isSecure: false) as? Bool }
         set (newValue) { LocalDiskSaver.set(key: .CreatingAccount, isSecure: false, newValue: newValue as AnyObject?) }
+    }
+    
+    var enteringTrade: Bool? {
+        get {    return LocalDiskSaver.get(key: .EnteringTrade, isSecure: false) as? Bool }
+        set (newValue) { LocalDiskSaver.set(key: .EnteringTrade, isSecure: false, newValue: newValue as AnyObject?) }
     }
     
     var email: String? {

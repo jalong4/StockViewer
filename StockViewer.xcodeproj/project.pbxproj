@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		5E6F4A9F69355CA18B58C4A1 /* Pods_StockViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BBA7925F41030169571E32 /* Pods_StockViewer.framework */; };
 		8E0039C025D07F9500FB3A96 /* SizeClassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0039BF25D07F9500FB3A96 /* SizeClassView.swift */; };
-		8E003A3425D1120600FB3A96 /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 8E003A3325D1120600FB3A96 /* config.json */; };
 		8E003A3725D1E0AC00FB3A96 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A3625D1E0AC00FB3A96 /* LoginView.swift */; };
 		8E003A3C25D20B8B00FB3A96 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A3B25D20B8B00FB3A96 /* RegisterView.swift */; };
 		8E003A4625D2191400FB3A96 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A4525D2191400FB3A96 /* SettingsManager.swift */; };
@@ -21,6 +20,16 @@
 		8E003A6325D319D700FB3A96 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A6225D319D700FB3A96 /* HomeView.swift */; };
 		8E003A6625D342B100FB3A96 /* AuthUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A6525D342B100FB3A96 /* AuthUtils.swift */; };
 		8E003A6E25D38A2D00FB3A96 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A6D25D38A2D00FB3A96 /* MenuView.swift */; };
+		8E02D2BA25D8A13A001FE895 /* Holdings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E02D2B925D8A13A001FE895 /* Holdings.swift */; };
+		8E8E8F5225D7272A00588BC1 /* EnterTradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F5125D7272A00588BC1 /* EnterTradeView.swift */; };
+		8E8E8F5525D750E300588BC1 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F5425D750E300588BC1 /* AppState.swift */; };
+		8E8E8F5825D754D100588BC1 /* PreviewTrade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F5725D754D100588BC1 /* PreviewTrade.swift */; };
+		8E8E8F6525D85D6C00588BC1 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F6425D85D6C00588BC1 /* ProfileView.swift */; };
+		8E8E8F6825D8682800588BC1 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F6725D8682800588BC1 /* SettingsView.swift */; };
+		8EBF45F925D9AAEB004269ED /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF45F825D9AAEB004269ED /* CustomTextField.swift */; };
+		8EBF45FC25D9C661004269ED /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF45FB25D9C661004269ED /* Quote.swift */; };
+		8EBF45FF25DA388F004269ED /* KeyboardHeightHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF45FE25DA388F004269ED /* KeyboardHeightHelper.swift */; };
+		8EBF460825DA4BC2004269ED /* ScrollToModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF460725DA4BC2004269ED /* ScrollToModel.swift */; };
 		8EDA214525CD060500194772 /* StockViewerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDA214425CD060500194772 /* StockViewerApp.swift */; };
 		8EDA214725CD060500194772 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDA214625CD060500194772 /* ContentView.swift */; };
 		8EDA214925CD060600194772 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EDA214825CD060600194772 /* Assets.xcassets */; };
@@ -48,7 +57,6 @@
 		4E9C0EDC3D1F530359233825 /* Pods-StockViewer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StockViewer.release.xcconfig"; path = "Target Support Files/Pods-StockViewer/Pods-StockViewer.release.xcconfig"; sourceTree = "<group>"; };
 		84BBA7925F41030169571E32 /* Pods_StockViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StockViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E0039BF25D07F9500FB3A96 /* SizeClassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizeClassView.swift; sourceTree = "<group>"; };
-		8E003A3325D1120600FB3A96 /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
 		8E003A3625D1E0AC00FB3A96 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		8E003A3B25D20B8B00FB3A96 /* RegisterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		8E003A4525D2191400FB3A96 /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
@@ -60,6 +68,16 @@
 		8E003A6225D319D700FB3A96 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		8E003A6525D342B100FB3A96 /* AuthUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUtils.swift; sourceTree = "<group>"; };
 		8E003A6D25D38A2D00FB3A96 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		8E02D2B925D8A13A001FE895 /* Holdings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Holdings.swift; sourceTree = "<group>"; };
+		8E8E8F5125D7272A00588BC1 /* EnterTradeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterTradeView.swift; sourceTree = "<group>"; };
+		8E8E8F5425D750E300588BC1 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		8E8E8F5725D754D100588BC1 /* PreviewTrade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTrade.swift; sourceTree = "<group>"; };
+		8E8E8F6425D85D6C00588BC1 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		8E8E8F6725D8682800588BC1 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8EBF45F825D9AAEB004269ED /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
+		8EBF45FB25D9C661004269ED /* Quote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quote.swift; sourceTree = "<group>"; };
+		8EBF45FE25DA388F004269ED /* KeyboardHeightHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHeightHelper.swift; sourceTree = "<group>"; };
+		8EBF460725DA4BC2004269ED /* ScrollToModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollToModel.swift; sourceTree = "<group>"; };
 		8EDA214125CD060500194772 /* StockViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StockViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDA214425CD060500194772 /* StockViewerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockViewerApp.swift; sourceTree = "<group>"; };
 		8EDA214625CD060500194772 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -152,7 +170,6 @@
 				8EDA214425CD060500194772 /* StockViewerApp.swift */,
 				8EDA214625CD060500194772 /* ContentView.swift */,
 				8EDA214825CD060600194772 /* Assets.xcassets */,
-				8E003A3325D1120600FB3A96 /* config.json */,
 				8EDA217B25CE3DAE00194772 /* data.json */,
 				8EDA214D25CD060600194772 /* Info.plist */,
 				8EDA214A25CD060600194772 /* Preview Content */,
@@ -178,6 +195,10 @@
 				8EDA216225CD06C200194772 /* StockGains.swift */,
 				8E003A4E25D21FBC00FB3A96 /* User.swift */,
 				8E003A5325D2205A00FB3A96 /* Auth.swift */,
+				8E8E8F5425D750E300588BC1 /* AppState.swift */,
+				8E02D2B925D8A13A001FE895 /* Holdings.swift */,
+				8EBF45FB25D9C661004269ED /* Quote.swift */,
+				8EBF460725DA4BC2004269ED /* ScrollToModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -185,6 +206,9 @@
 		8EDA216525CD06E500194772 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8E8E8F6725D8682800588BC1 /* SettingsView.swift */,
+				8E8E8F6425D85D6C00588BC1 /* ProfileView.swift */,
+				8E8E8F5125D7272A00588BC1 /* EnterTradeView.swift */,
 				8E0039BF25D07F9500FB3A96 /* SizeClassView.swift */,
 				8EDA216625CD070600194772 /* PortfolioSummary.swift */,
 				8EDA216A25CD1AE000194772 /* SummaryView.swift */,
@@ -197,6 +221,8 @@
 				8E003A3625D1E0AC00FB3A96 /* LoginView.swift */,
 				8E003A6225D319D700FB3A96 /* HomeView.swift */,
 				8E003A6D25D38A2D00FB3A96 /* MenuView.swift */,
+				8E8E8F5725D754D100588BC1 /* PreviewTrade.swift */,
+				8EBF45F825D9AAEB004269ED /* CustomTextField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -211,6 +237,7 @@
 				8EDA218425CF483C00194772 /* ViewModifiers.swift */,
 				8EDA218A25CF50BB00194772 /* Enums.swift */,
 				8E003A6525D342B100FB3A96 /* AuthUtils.swift */,
+				8EBF45FE25DA388F004269ED /* KeyboardHeightHelper.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -283,7 +310,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EDA214C25CD060600194772 /* Preview Assets.xcassets in Resources */,
-				8E003A3425D1120600FB3A96 /* config.json in Resources */,
 				8EDA217C25CE3DAF00194772 /* data.json in Resources */,
 				8EDA214925CD060600194772 /* Assets.xcassets in Resources */,
 			);
@@ -338,22 +364,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EBF45FF25DA388F004269ED /* KeyboardHeightHelper.swift in Sources */,
+				8E8E8F6825D8682800588BC1 /* SettingsView.swift in Sources */,
 				8EDA218525CF483C00194772 /* ViewModifiers.swift in Sources */,
 				8E003A6625D342B100FB3A96 /* AuthUtils.swift in Sources */,
 				8E003A4925D219B400FB3A96 /* LocalDiskSaver.swift in Sources */,
 				8EDA217F25CF362B00194772 /* TopMoversView.swift in Sources */,
+				8E02D2BA25D8A13A001FE895 /* Holdings.swift in Sources */,
 				8E003A4F25D21FBC00FB3A96 /* User.swift in Sources */,
+				8EBF45F925D9AAEB004269ED /* CustomTextField.swift in Sources */,
 				8EDA214725CD060500194772 /* ContentView.swift in Sources */,
 				8E003A3C25D20B8B00FB3A96 /* RegisterView.swift in Sources */,
+				8EBF460825DA4BC2004269ED /* ScrollToModel.swift in Sources */,
 				8EDA214525CD060500194772 /* StockViewerApp.swift in Sources */,
 				8E0039C025D07F9500FB3A96 /* SizeClassView.swift in Sources */,
 				8EDA215A25CD064F00194772 /* Stock.swift in Sources */,
 				8E003A5825D2244600FB3A96 /* Api.swift in Sources */,
+				8E8E8F5525D750E300588BC1 /* AppState.swift in Sources */,
 				8EDA218B25CF50BB00194772 /* Enums.swift in Sources */,
 				8E003A6325D319D700FB3A96 /* HomeView.swift in Sources */,
 				8EDA216325CD06C200194772 /* StockGains.swift in Sources */,
 				8EDA218825CF501A00194772 /* StockTableView.swift in Sources */,
 				8EDA216F25CD1BC000194772 /* AccountView.swift in Sources */,
+				8E8E8F5225D7272A00588BC1 /* EnterTradeView.swift in Sources */,
 				8E003A5425D2205A00FB3A96 /* Auth.swift in Sources */,
 				8EDA215625CD062E00194772 /* Account.swift in Sources */,
 				8EDA216725CD070600194772 /* PortfolioSummary.swift in Sources */,
@@ -362,11 +395,14 @@
 				8EDA217325CE0B4100194772 /* StockGainsView.swift in Sources */,
 				8EDA215D25CD067800194772 /* Portfolio.swift in Sources */,
 				8EDA216B25CD1AE000194772 /* SummaryView.swift in Sources */,
+				8E8E8F6525D85D6C00588BC1 /* ProfileView.swift in Sources */,
+				8EBF45FC25D9C661004269ED /* Quote.swift in Sources */,
 				8EDA217725CE0BD200194772 /* Utils.swift in Sources */,
 				8E003A3725D1E0AC00FB3A96 /* LoginView.swift in Sources */,
 				8E003A4625D2191400FB3A96 /* SettingsManager.swift in Sources */,
 				8EDA218225CF447F00194772 /* Extensions.swift in Sources */,
 				8E003A4C25D21A0600FB3A96 /* Constants.swift in Sources */,
+				8E8E8F5825D754D100588BC1 /* PreviewTrade.swift in Sources */,
 				8E003A6E25D38A2D00FB3A96 /* MenuView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

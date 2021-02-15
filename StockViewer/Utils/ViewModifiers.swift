@@ -66,22 +66,35 @@ struct TextFieldModifier: ViewModifier {
 
 extension View {
     func textFieldModifier() -> some View {
-        modifier( TextFieldModifier() )
+        modifier(TextFieldModifier())
     }
 }
 
 struct ButtondTextModifier: ViewModifier {
+    var backgroundColor: Color
+    var foregroundColor: Color
     func body(content: Content) -> some View {
         return content
             .padding()
-            .foregroundColor(.white)
-            .background(Capsule().fill(Color.themeAccent))
+            .foregroundColor(foregroundColor)
+            .background(Capsule().fill(backgroundColor))
     }
 }
 
 extension View {
-    func buttonTextModifier() -> some View {
-        modifier( ButtondTextModifier() )
+    func cancelButtonTextModifier() -> some View {
+        modifier(ButtondTextModifier(backgroundColor: Color.themeBackground, foregroundColor:  Color.themeForeground))
+            .overlay(
+                Capsule()
+                    .stroke(Color.themeBorder, lineWidth: 1)
+        )
     }
 }
+
+extension View {
+    func primaryButtonTextModifier() -> some View {
+        modifier(ButtondTextModifier(backgroundColor: Color.themeAccent, foregroundColor: Color.themeBackground))
+    }
+}
+
 
