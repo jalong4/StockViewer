@@ -96,7 +96,7 @@ struct EditCashView: View {
                 Color.themeBackground
                 
                 VStack(alignment: .center, spacing: 0,  content: {
-                        CustomPicker(getAccountList(), selection: $account,
+                    CustomPicker(getAccountList(), selection: $account,
                                      selectedItemBackgroundColor: Color.themeAccent.opacity(0.2),
                                      rowHeight: 40,
                                      horizontalPadding: horizontalPadding)
@@ -107,7 +107,7 @@ struct EditCashView: View {
                         .padding(.bottom, 10)
                         .padding([.leading, .trailing], horizontalPadding)
 
-                    CustomTextField("Amount", text: $amount, keyboardType: .numbersAndPunctuation, textAlignment:  .right, tag: 1, onCommit: nil)
+                    CustomTextField("Amount", text: $amount, keyboardType: .numbersAndPunctuation, textAlignment:  .center, tag: 1, onCommit: nil)
                         .frame(height: 40, alignment: .center)
                         .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
                         .frame(maxWidth: maxWidth)
@@ -162,7 +162,6 @@ struct EditCashView: View {
                                              }),
                                              secondaryButton: .destructive(Text("No")))
                             })
-                            
                             Button(action: {
                                 print("Canceling")
                                 self.appState.navigateTo = .Home
