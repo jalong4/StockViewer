@@ -21,6 +21,8 @@
 		8E003A6625D342B100FB3A96 /* AuthUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A6525D342B100FB3A96 /* AuthUtils.swift */; };
 		8E003A6E25D38A2D00FB3A96 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A6D25D38A2D00FB3A96 /* MenuView.swift */; };
 		8E02D2BA25D8A13A001FE895 /* Holdings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E02D2B925D8A13A001FE895 /* Holdings.swift */; };
+		8E31682625DBA077001B5ABD /* CustomPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E31682525DBA077001B5ABD /* CustomPickerView.swift */; };
+		8E31682A25DCCDA3001B5ABD /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E31682925DCCDA3001B5ABD /* SegmentedPicker.swift */; };
 		8E8E8F5225D7272A00588BC1 /* EnterTradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F5125D7272A00588BC1 /* EnterTradeView.swift */; };
 		8E8E8F5525D750E300588BC1 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F5425D750E300588BC1 /* AppState.swift */; };
 		8E8E8F5825D754D100588BC1 /* PreviewTrade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F5725D754D100588BC1 /* PreviewTrade.swift */; };
@@ -30,6 +32,7 @@
 		8EBF45FC25D9C661004269ED /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF45FB25D9C661004269ED /* Quote.swift */; };
 		8EBF45FF25DA388F004269ED /* KeyboardHeightHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF45FE25DA388F004269ED /* KeyboardHeightHelper.swift */; };
 		8EBF460825DA4BC2004269ED /* ScrollToModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF460725DA4BC2004269ED /* ScrollToModel.swift */; };
+		8EBF461A25DB4418004269ED /* EditCashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF461925DB4418004269ED /* EditCashView.swift */; };
 		8EDA214525CD060500194772 /* StockViewerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDA214425CD060500194772 /* StockViewerApp.swift */; };
 		8EDA214725CD060500194772 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDA214625CD060500194772 /* ContentView.swift */; };
 		8EDA214925CD060600194772 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EDA214825CD060600194772 /* Assets.xcassets */; };
@@ -69,6 +72,8 @@
 		8E003A6525D342B100FB3A96 /* AuthUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUtils.swift; sourceTree = "<group>"; };
 		8E003A6D25D38A2D00FB3A96 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		8E02D2B925D8A13A001FE895 /* Holdings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Holdings.swift; sourceTree = "<group>"; };
+		8E31682525DBA077001B5ABD /* CustomPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPickerView.swift; sourceTree = "<group>"; };
+		8E31682925DCCDA3001B5ABD /* SegmentedPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		8E8E8F5125D7272A00588BC1 /* EnterTradeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterTradeView.swift; sourceTree = "<group>"; };
 		8E8E8F5425D750E300588BC1 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		8E8E8F5725D754D100588BC1 /* PreviewTrade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTrade.swift; sourceTree = "<group>"; };
@@ -78,6 +83,7 @@
 		8EBF45FB25D9C661004269ED /* Quote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quote.swift; sourceTree = "<group>"; };
 		8EBF45FE25DA388F004269ED /* KeyboardHeightHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHeightHelper.swift; sourceTree = "<group>"; };
 		8EBF460725DA4BC2004269ED /* ScrollToModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollToModel.swift; sourceTree = "<group>"; };
+		8EBF461925DB4418004269ED /* EditCashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCashView.swift; sourceTree = "<group>"; };
 		8EDA214125CD060500194772 /* StockViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StockViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EDA214425CD060500194772 /* StockViewerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockViewerApp.swift; sourceTree = "<group>"; };
 		8EDA214625CD060500194772 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -207,7 +213,9 @@
 			isa = PBXGroup;
 			children = (
 				8E8E8F6725D8682800588BC1 /* SettingsView.swift */,
+				8E31682525DBA077001B5ABD /* CustomPickerView.swift */,
 				8E8E8F6425D85D6C00588BC1 /* ProfileView.swift */,
+				8EBF461925DB4418004269ED /* EditCashView.swift */,
 				8E8E8F5125D7272A00588BC1 /* EnterTradeView.swift */,
 				8E0039BF25D07F9500FB3A96 /* SizeClassView.swift */,
 				8EDA216625CD070600194772 /* PortfolioSummary.swift */,
@@ -222,6 +230,7 @@
 				8E003A6225D319D700FB3A96 /* HomeView.swift */,
 				8E003A6D25D38A2D00FB3A96 /* MenuView.swift */,
 				8E8E8F5725D754D100588BC1 /* PreviewTrade.swift */,
+				8E31682925DCCDA3001B5ABD /* SegmentedPicker.swift */,
 				8EBF45F825D9AAEB004269ED /* CustomTextField.swift */,
 			);
 			path = Views;
@@ -364,8 +373,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EBF461A25DB4418004269ED /* EditCashView.swift in Sources */,
 				8EBF45FF25DA388F004269ED /* KeyboardHeightHelper.swift in Sources */,
 				8E8E8F6825D8682800588BC1 /* SettingsView.swift in Sources */,
+				8E31682625DBA077001B5ABD /* CustomPickerView.swift in Sources */,
 				8EDA218525CF483C00194772 /* ViewModifiers.swift in Sources */,
 				8E003A6625D342B100FB3A96 /* AuthUtils.swift in Sources */,
 				8E003A4925D219B400FB3A96 /* LocalDiskSaver.swift in Sources */,
@@ -391,6 +402,7 @@
 				8EDA215625CD062E00194772 /* Account.swift in Sources */,
 				8EDA216725CD070600194772 /* PortfolioSummary.swift in Sources */,
 				8EDA216025CD069B00194772 /* Summary.swift in Sources */,
+				8E31682A25DCCDA3001B5ABD /* SegmentedPicker.swift in Sources */,
 				8EDA218E25CF65D300194772 /* StockTableRow.swift in Sources */,
 				8EDA217325CE0B4100194772 /* StockGainsView.swift in Sources */,
 				8EDA215D25CD067800194772 /* Portfolio.swift in Sources */,

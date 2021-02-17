@@ -57,7 +57,7 @@ struct ProfileView: View {
                         Button(action: {
                             print("Updating profile")
                             // Todo - call service to update profile
-                            self.appState.navigateToProfile.toggle()
+                            self.appState.navigateTo = .Home
                         }) {
                             Text("Update")
                                 .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
@@ -65,7 +65,7 @@ struct ProfileView: View {
                         }
                         Button(action: {
                             print("Canceling")
-                            self.appState.navigateToProfile.toggle()
+                            self.appState.navigateTo = .Home
                         }) {
                             Text("Cancel")
                                 .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))

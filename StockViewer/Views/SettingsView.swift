@@ -16,7 +16,7 @@ struct SettingsView: View {
                 Text("Coming soon...")
                 
                 Button(action: {
-                    self.appState.navigateToSettings.toggle()
+                    self.appState.navigateTo = .Home
                 }) {
                     Text("OK")
                         .padding(EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 40))

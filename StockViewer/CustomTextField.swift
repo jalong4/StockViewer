@@ -12,16 +12,14 @@ struct CustomTextField: UIViewRepresentable {
     let placeholder: String // Placeholder Text
     let keyboardType: UIKeyboardType // Keypad layout type
     let tag: Int // Tag to recognise each specific TextView
-    let textAlignment: NSTextAlignment
     var commitHandler: (()->Void)? // Called when return key is pressed
     
-    init(_ placeholder: String, text: Binding<String>, keyboardType: UIKeyboardType, textAlignment: NSTextAlignment = .left, tag: Int, onCommit: (()->Void)?) {
+    init(_ placeholder: String, text: Binding<String>, keyboardType: UIKeyboardType, tag: Int, onCommit: (()->Void)?) {
         self._text = text
         self.placeholder = placeholder
         self.tag = tag
         self.commitHandler = onCommit
         self.keyboardType = keyboardType
-        self.textAlignment = textAlignment
     }
     
     func makeCoordinator() -> Coordinator {
@@ -32,7 +30,6 @@ struct CustomTextField: UIViewRepresentable {
         // Customise the TextField as you wish
         let textField = UITextField(frame: .zero)
         textField.keyboardType = self.keyboardType
-        textField.textAlignment = self.textAlignment
         textField.delegate = context.coordinator
         textField.font = UIFont.systemFont(ofSize: 16.0, weight: .light)
         textField.isUserInteractionEnabled = true
@@ -42,13 +39,9 @@ struct CustomTextField: UIViewRepresentable {
         textField.autocorrectionType = .no
         
         // For left inner padding
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 40))
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 120))
         textField.leftView = paddingView
         textField.leftViewMode = UITextField.ViewMode.always
-        
-        textField.rightView = paddingView
-        textField.rightViewMode = UITextField.ViewMode.always
-        
         
         return textField
     }

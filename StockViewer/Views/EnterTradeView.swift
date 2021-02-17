@@ -31,7 +31,8 @@ struct EnterTradeView: View {
     @State private var quantityIsValid = false
     @State private var totalCostIsValid = false
     
-    @State private var selectedRow = 0
+    let horizontalPadding: CGFloat = 40
+    let maxWidth: CGFloat = .infinity
     
     private func getAccountList() -> [String] {
         return portfolio.summary.accounts.map { $0.name }
@@ -167,11 +168,7 @@ struct EnterTradeView: View {
         }
     }
     
-    let horizontalPadding: CGFloat = 40
-    let maxWidth: CGFloat = .infinity
-    
-    
-    
+
     var body: some View {
         NavigationView {
             
@@ -182,20 +179,12 @@ struct EnterTradeView: View {
                     
                     VStack(alignment: .center, spacing: 10,  content: {
                         
-                        VStack(alignment: .leading, spacing: 10,  content: {
-                            ZStack {
-                                Capsule()
-                                    .frame(width: UIScreen.main.bounds.size.width-self.horizontalPadding, height: 40)
-                                    .foregroundColor(Color.themeAccent)
-                                Picker("Account", selection: $account) {
-                                    ForEach(getAccountList(), id: \.self) { item in
-                                        Text(item)
-                                            .padding()
-                                    }
-                                }
-                                .accentColor(Color.themeAccent)
-
-                            }
+                        VStack(alignment: .center, spacing: 10,  content: {
+                            CustomPicker(getAccountList(), selection: $account,
+                                         selectedItemBackgroundColor: Color.themeAccent.opacity(0.2),
+                                         rowHeight: 40,
+                                         horizontalPadding: horizontalPadding - 20)
+                                .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top)
                             
                             CustomTextField("Stock Ticker", text: $ticker, keyboardType: .default, tag: 1, onCommit: nil)
                                 .textFieldModifier()
@@ -276,6 +265,7 @@ struct EnterTradeView: View {
                                     print("Total Cost: \(self.totalCostValue)")
                                     
                                     enterTrade(quantity: quantityValue, totalCost: totalCostValue)
+                                    self.appState.navigateTo = .Home
                                 }
                                 
                             }) {
@@ -283,12 +273,12 @@ struct EnterTradeView: View {
                                     .frame(minWidth: 100)
                                     .padding()
                                     .foregroundColor(Color.themeBackground)
-                                    .background(Capsule().fill(Color.themeAccent.opacity(disableSaveButton || isSaving ? 0.3 : 1.0)))
+                                    .background(Capsule().fill(Color.themeAccent.opacity(disableSaveButton || isSaving ? 0.2 : 1.0)))
                             }
                             .disabled(disableSaveButton || isSaving)
                             Button(action: {
                                 print("Canceling")
-                                self.appState.navigateToEnterTrade.toggle()
+                                self.appState.navigateTo = .Home
                             }) {
                                 Text("Cancel")
                                     .frame(minWidth: 100)

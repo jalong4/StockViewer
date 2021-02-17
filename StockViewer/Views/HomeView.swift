@@ -13,6 +13,22 @@ struct HomeView: View {
     
     @EnvironmentObject var appState: AppState
     
+    func NagivateToView() -> AnyView {
+        switch appState.navigateTo {
+        case .Profile:
+            return AnyView(ProfileView())
+        case .EnterTrade:
+            return AnyView(EnterTradeView(portfolio: portfolio))
+        case .EditCash:
+            return AnyView(EditCashView(portfolio: portfolio))
+        case .Settings:
+            return AnyView(SettingsView())
+        default:
+            return AnyView(Text(""))
+        }
+    }
+    
+    
     var body: some View {
         
         
@@ -32,20 +48,9 @@ struct HomeView: View {
                     .edgesIgnoringSafeArea(.all
                     )
                 
-                if appState.navigateToProfile {
-                    ProfileView()
-                }
-                
-                else if appState.navigateToEnterTrade {
-                    EnterTradeView(portfolio: portfolio)
-                }
-                
-                else if appState.navigateToSettings {
-                    SettingsView()
-                }
-                
-                
-                else if !appState.isDataLoading {
+                if appState.navigateTo != .Home {
+                    NagivateToView()
+                } else if !appState.isDataLoading {
                     NavigationView{
                         PortfolioSummary(portfolio: self.portfolio).padding(20)
                             .navigationTitle(Text(appState.isDataLoading ? "" : "My Portfolio"))
@@ -77,8 +82,6 @@ struct HomeView: View {
                                                         }
                             )
                     }
-
-                    
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
@@ -93,8 +96,8 @@ struct HomeView: View {
             }
             
         }
-
     }
+    
 }
 
 struct HomeView_Previews: PreviewProvider {

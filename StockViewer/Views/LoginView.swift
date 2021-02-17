@@ -97,7 +97,7 @@ struct LoginView: View {
                         .frame(width: 90)
                         .padding()
                         .foregroundColor(Color.themeBackground)
-                        .background(Capsule().fill(Color.themeAccent.opacity(email.isEmpty || password.isEmpty || self.loggingIn ? 0.3 : 1.0)))
+                        .background(Capsule().fill(Color.themeAccent.opacity(email.isEmpty || password.isEmpty || self.loggingIn ? 0.2 : 1.0)))
                     
                     
                 }

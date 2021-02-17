@@ -17,7 +17,7 @@ struct MenuView: View {
                     withAnimation {
                         appState.showMenu.toggle()
                     }
-                    appState.navigateToProfile = true
+                    appState.navigateTo = .Profile
                     print("Profile")
                 }) {
                     Image(systemName: "person")
@@ -35,7 +35,7 @@ struct MenuView: View {
                     withAnimation {
                         appState.showMenu.toggle()
                     }
-                    appState.navigateToEnterTrade = true
+                    appState.navigateTo = .EnterTrade
                     print("Enter Trade")
                     
                 }) {
@@ -53,7 +53,25 @@ struct MenuView: View {
                     withAnimation {
                         appState.showMenu.toggle()
                     }
-                    appState.navigateToSettings = true
+                    appState.navigateTo = .EditCash
+                    print("Edit Cash Balance")
+                    
+                }) {
+                    Image(systemName: "dollarsign.circle")
+                        .foregroundColor(Color.themeBackground)
+                        .imageScale(.large)
+                    Text("Edit Cash Balance")
+                        .padding()
+                        .foregroundColor(Color.themeBackground)
+                }
+            }
+            
+            HStack {
+                Button(action: {
+                    withAnimation {
+                        appState.showMenu.toggle()
+                    }
+                    appState.navigateTo = .Settings
                     print("Settings")
                 }) {
                     Image(systemName: "gear")
