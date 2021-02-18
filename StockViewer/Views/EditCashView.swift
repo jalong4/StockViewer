@@ -45,7 +45,11 @@ struct EditCashView: View {
             self.account = getAccountList().first ?? ""
         }
         
-        return (Double(self.amount) != nil) && Double(self.amount)! > 0
+        guard let amount = Double(self.amount) else {
+            return false
+        }
+        
+        return amount > 0
     }
     
     
@@ -116,7 +120,7 @@ struct EditCashView: View {
                         
                         .onChange(of: amount) { newValue in
                             self.amountMsg = ""
-                            guard let _ = Double(self.amount) else {
+                            guard let value = Double(self.amount), value > 0 else {
                                 self.amountIsValid = false
                                 self.disableSaveButton = !allFieldsValidated
                                 self.amountMsg = self.amount.isEmpty ? "" : "Invalid number"

@@ -11,6 +11,7 @@ struct StockTableView: View {
     
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
+    @EnvironmentObject var appState: AppState
     
     var portfolio: Portfolio
     var name: String
@@ -19,7 +20,7 @@ struct StockTableView: View {
     func getTitle() -> String {
         var stockName = "";
         if (type == .stock) {
-            let stocks = getStocks();
+            let stocks = self.portfolio.stocks.filter{ $0.ticker == self.name }
             if (stocks.count > 0) {
                 stockName = stocks[0].name
             }
@@ -31,12 +32,33 @@ struct StockTableView: View {
         return self.portfolio.summary.accounts.filter{ $0.name == self.name }[0]
     }
     
-    func getStocks() -> [Stock] {
+    func getStocks(stockSortType: StockSortType) -> [Stock] {
+        
         switch self.type {
         case .account:
             var stocks = self.portfolio.stocks.filter{ $0.account == self.name }
+            
             stocks.sort(by: {(a, b) -> Bool in
-                return (a.ticker < b.ticker) || (a.name == "Cash")
+                switch appState.stockSortType {
+                case .name:
+                    return (a.name < b.name)
+                case .percentChange:
+                    return (a.percentChange > b.percentChange)
+                case .priceChange:
+                    return (a.priceChange ?? 0 > b.priceChange ?? 0)
+                case .dayGain:
+                    return (a.dayGain > b.dayGain)
+                case .totalCost:
+                    return (a.totalCost > b.totalCost)
+                case .profit:
+                    return (a.profit > b.profit)
+                case .total:
+                    return (a.total > b.total)
+                case .percentProfit:
+                    return (a.percentProfit > b.percentProfit)
+                case .ticker:
+                    return (a.ticker < b.ticker) || (a.name == "Cash")
+                }
             })
             return stocks;
         case .stock:
@@ -44,10 +66,89 @@ struct StockTableView: View {
         }
     }
     
+    func getHeader() -> some View {
+        return
+                HStack {
+                    
+                    StockTableRow( // rowName: AnyView(Text(type == .account ? "Name" : "Account").fontWeight(.bold)),
+                        price: AnyView(Text("Price").fontWeight(.bold)),
+                        quantity: AnyView(Text("Qty").fontWeight(.bold)),
+                        percentChange: AnyView(
+                            Button(action: {
+                                print("Sorting by percentChange")
+                                appState.stockSortType = (appState.stockSortType == .percentChange) ? .ticker : .percentChange
+                            }) {
+                                Text("\u{0394}" + " (%)").underline(appState.stockSortType == .percentChange, color: .black)
+                                    .fontWeight(.bold)
+                            }),
+                        priceChange: AnyView(
+                            Button(action: {
+                                print("Sorting by priceChange")
+                                appState.stockSortType = (appState.stockSortType == .priceChange) ? .ticker : .priceChange
+                            }) {
+                                Text("\u{0394}" + " ($)").underline(appState.stockSortType == .priceChange, color: .black)
+                                    .fontWeight(.bold)
+                            }),
+                        dayGain: AnyView(
+                            Button(action: {
+                                print("Sorting by dayGain")
+                                appState.stockSortType = (appState.stockSortType == .dayGain) ? .ticker : .dayGain
+                            }) {
+                                Text("Day Gain").underline(appState.stockSortType == .dayGain, color: .black)
+                                    .fontWeight(.bold)
+                            }),
+                        unitCost: AnyView(Text("Unit Cost").fontWeight(.bold)),
+                        totalCost: AnyView(
+                            Button(action: {
+                                print("Sorting by totalCost")
+                                appState.stockSortType = (appState.stockSortType == .totalCost) ? .ticker : .totalCost
+                            }) {
+                                Text("Total Cost").underline(appState.stockSortType == .totalCost, color: .black)
+                                    .fontWeight(.bold)
+                            }),
+                        profit: AnyView(
+                            Button(action: {
+                                print("Sorting by profit")
+                                appState.stockSortType = (appState.stockSortType == .profit) ? .ticker : .profit
+                            }) {
+                                Text("Profit ($)").underline(appState.stockSortType == .profit, color: .black)
+                                    .fontWeight(.bold)
+                            }),
+                        total: AnyView(
+                            Button(action: {
+                                print("Sorting by total")
+                                appState.stockSortType = (appState.stockSortType == .total) ? .ticker : .total
+                            }) {
+                                Text("Total")
+                                    .underline(appState.stockSortType == .total, color: .black)
+                                    .fontWeight(.bold)
+                            }),
+                        percentProfit: AnyView(
+                            Button(action: {
+                                print("Sorting by percentProfit")
+                                appState.stockSortType = (appState.stockSortType == .percentProfit) ? .ticker : .percentProfit
+                            }) {
+                                Text("Profit (%)")
+                                    .underline(appState.stockSortType == .percentProfit, color: .black)
+                                    .fontWeight(.bold)
+                            }),
+                        ticker: AnyView(
+                            Button(action: {
+                                print("Sorting by ticker")
+                                appState.stockSortType = .ticker
+                            }) {
+                                Text("Ticker")
+                                    .fontWeight(.bold)
+                            }),
+                        type: type
+                    )
+            }
+    }
+    
     func getFooterForStock (stocks: [Stock]) -> Account {
         
         var result = Account()
-  
+        
         result.quantity = stocks.reduce(0) { (sum, a) -> Double in sum + a.quantity }
         result.total = stocks.reduce(0) { (sum, a) -> Double in sum + a.total }
         result.totalCost = stocks.reduce(0) { (sum, a) -> Double in sum + a.totalCost }
@@ -65,54 +166,26 @@ struct StockTableView: View {
     func getFooter(stocks: [Stock]) -> some View {
         let totals = ((self.type == .account) ? getAccount() : getFooterForStock(stocks: stocks))
         return
-            StockTableRow(rowName: Text("Total").fontWeight(.bold).font(.system(size: 14)),
-                          price: Text(""),
-                          quantity: Text(type == .stock ? Utils.getFormattedNumber(totals.quantity ?? 0) : "").fontWeight(.bold),
-                          percentChange: Utils.getColorCodedTextView(totals.percentChange, style: .percent).fontWeight(.bold),
-                          priceChange: Text(""),
-                          dayGain: Utils.getColorCodedTextView(totals.dayGain, style: .decimal).fontWeight(.bold),
-                          unitCost: Text(""),
-                          totalCost: Text(Utils.getFormattedNumber(totals.totalCost)).fontWeight(.bold),
-                          profit: Utils.getColorCodedTextView(totals.profit, style: .decimal).fontWeight(.bold),
-                          total: Text(Utils.getFormattedNumber(totals.total)).fontWeight(.bold),
-                          percentProfit: Utils.getColorCodedTextView(totals.percentProfit, style: .percent).fontWeight(.bold),
-                          ticker: Text(""),
-                          type: type
+            StockTableRow( //rowName: AnyView(Text("Total").fontWeight(.bold).font(.system(size: 14))),
+                price: AnyView(Text("")),
+                quantity: AnyView(Text(type == .stock ? Utils.getFormattedNumber(totals.quantity ?? 0) : "").fontWeight(.bold)),
+                percentChange: AnyView(Utils.getColorCodedTextView(totals.percentChange, style: .percent).fontWeight(.bold)),
+                priceChange: AnyView(Text("")),
+                dayGain: AnyView(Utils.getColorCodedTextView(totals.dayGain, style: .decimal).fontWeight(.bold)),
+                unitCost: AnyView(Text("")),
+                totalCost: AnyView(Text(Utils.getFormattedNumber(totals.totalCost)).fontWeight(.bold)),
+                profit: AnyView(Utils.getColorCodedTextView(totals.profit, style: .decimal).fontWeight(.bold)),
+                total: AnyView(Text(Utils.getFormattedNumber(totals.total)).fontWeight(.bold)),
+                percentProfit: AnyView(Utils.getColorCodedTextView(totals.percentProfit, style: .percent).fontWeight(.bold)),
+                ticker: AnyView(Text("")),
+                type: type
             )
-            .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
-    }
-    
-    
-    func getHeader() -> some View {
-        return
-            
-            VStack(alignment: .leading, spacing: 0) {
-                
-                Text("Stocks")
-                    .fontWeight(.bold)
-                    .font(.system(size:20))
-                    .padding(EdgeInsets(top: 2, leading: 0, bottom: 10, trailing: 0))
-                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
-                
-                StockTableRow(rowName: Text(type == .account ? "Name" : "Account").fontWeight(.bold),
-                              price: Text("Price").fontWeight(.bold),
-                              quantity: Text("Qty").fontWeight(.bold),
-                              percentChange: Text("\u{0394}" + " (%)").fontWeight(.bold),
-                              priceChange: Text("\u{0394}" + " ($)").fontWeight(.bold),
-                              dayGain: Text("Day Gain").fontWeight(.bold),
-                              unitCost: Text("Unit Cost").fontWeight(.bold),
-                              totalCost: Text("Total Cost").fontWeight(.bold),
-                              profit: Text("Profit ($)").fontWeight(.bold),
-                              total: Text("Total").fontWeight(.bold),
-                              percentProfit: Text("Profit (%)").fontWeight(.bold),
-                              ticker: Text("Ticker").fontWeight(.bold),
-                              type: type
-                )
-            }
-            .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
     }
     
     var body: some View {
+        
+        let rowHeight: CGFloat = 38
+        
         ScrollView(.vertical) {
             
             if horizontalSizeClass == .compact
@@ -121,37 +194,67 @@ struct StockTableView: View {
                 SummaryView(totals: getAccount())
             }
             
-            let stocks = getStocks()
+            let stocks = getStocks(stockSortType: appState.stockSortType)
             
             LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
-                ScrollView(.horizontal) {
-                    Section(header: getHeader(), footer: getFooter(stocks: stocks)) {
+                Text("Stocks")
+                    .fontWeight(.bold)
+                    .font(.system(size:20))
+                    .padding(EdgeInsets(top: 2, leading: 0, bottom: 10, trailing: 0))
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
+                
+                HStack(spacing: 0) {
+                    VStack(spacing: 0) {
+                        Text(type == .account ? "Name" : "Account").fontWeight(.bold)
+                            .frame(width: ((type == .account) ? 120 : 100), alignment: .topLeading)
+                            .frame(height: rowHeight)
+                        
                         ForEach(stocks) { stock in
-                            
-                            HStack {
-                                StockTableRow(rowName: Text(type == .stock ? stock.account : stock.name).font(.system(size: 14)),
-                                              price: Text(Utils.getFormattedNumber(stock.price)),
-                                              quantity: Text(Utils.getFormattedNumber(stock.quantity)),
-                                              percentChange: Utils.getColorCodedTextView(stock.percentChange, style: .percent),
-                                              priceChange: Utils.getColorCodedTextView(stock.priceChange ?? 0, style: .decimal),
-                                              dayGain: Utils.getColorCodedTextView(stock.dayGain, style: .decimal),
-                                              unitCost: Text(Utils.getFormattedNumber(stock.unitCost)),
-                                              totalCost: Text(Utils.getFormattedNumber(stock.totalCost)),
-                                              profit: Utils.getColorCodedTextView(stock.profit, style: .decimal),
-                                              total: Text(Utils.getFormattedNumber(stock.total)),
-                                              percentProfit: Utils.getColorCodedTextView(stock.percentProfit, style: .percent),
-                                              ticker: Text(stock.ticker),
-                                              type: type
-                                              
-                                )
-                            }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 140, alignment: .topLeading)
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text(type == .stock ? stock.account : (stock.name == "Cash") ? "Cash" : stock.ticker)
+                                Text(type == .stock || stock.name == "Cash" ? "Cash Account" : stock.name).fontWeight(.regular).font(.system(size: 12))
+                            }
+                            .frame(width: (type == .account) ? 120 : 120, height: rowHeight, alignment: .topLeading)
+
                         }
+                        
+                        Text("Total").fontWeight(.bold).font(.system(size: 14))
+                            .frame(width: ((type == .account) ? 120 : 120), alignment: .topLeading)
+
+                    }
+                    
+                    VStack(spacing: 0)  {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            
+                            getHeader()
+                                .frame(height: rowHeight)
+                            
+                            ForEach(stocks) { stock in
+                                StockTableRow(price: AnyView(Text(Utils.getFormattedNumber(stock.price))),
+                                              quantity: AnyView(Text(Utils.getFormattedNumber(stock.quantity))),
+                                              percentChange: AnyView(Utils.getColorCodedTextView(stock.percentChange, style: .percent)),
+                                              priceChange: AnyView(Utils.getColorCodedTextView(stock.priceChange ?? 0, style: .decimal)),
+                                              dayGain: AnyView(Utils.getColorCodedTextView(stock.dayGain, style: .decimal)),
+                                              unitCost: AnyView(Text(Utils.getFormattedNumber(stock.unitCost))),
+                                              totalCost: AnyView(Text(Utils.getFormattedNumber(stock.totalCost))),
+                                              profit: AnyView(Utils.getColorCodedTextView(stock.profit, style: .decimal)),
+                                              total: AnyView(Text(Utils.getFormattedNumber(stock.total))),
+                                              percentProfit: AnyView(Utils.getColorCodedTextView(stock.percentProfit, style: .percent)),
+                                              ticker: AnyView(Text(stock.ticker)),
+                                              type: type
+                                )
+                                .frame(height: rowHeight)
+                            }
+                            
+                            getFooter(stocks: stocks)
+                        }
+                        
                     }
                     
                 }
             }
+            .padding([.leading, .trailing], 20)
         }
-        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
         .navigationTitle("\(getTitle())")
         
     }

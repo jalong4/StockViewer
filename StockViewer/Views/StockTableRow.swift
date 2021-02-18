@@ -8,88 +8,74 @@
 import SwiftUI
 
 struct StockTableRow: View {
-    var rowName: Text
-    var price: Text
-    var quantity: Text
-    var percentChange: Text
-    var priceChange: Text
-    var dayGain: Text
-    var unitCost: Text
-    var totalCost: Text
-    var profit: Text
-    var total: Text
-    var percentProfit: Text
-    var ticker: Text
+    var price: AnyView
+    var quantity: AnyView
+    var percentChange: AnyView
+    var priceChange: AnyView
+    var dayGain: AnyView
+    var unitCost: AnyView
+    var totalCost: AnyView
+    var profit: AnyView
+    var total: AnyView
+    var percentProfit: AnyView
+    var ticker: AnyView
     var type = StockTableType.account
     
     var body: some View {
         HStack {
-            rowName
-                .frame(width: ((type == .account) ? 120 : 100), alignment: .leading)
-                .layoutPriority(1)
             Group{
-                
                 price
-                    .frame(width: 90, alignment: .trailing)
-                
+                    .frame(width: 90, alignment: .topTrailing)
                 quantity
-                    .frame(width: 90, alignment: .trailing)
-                
-            }
-            Group {
+                    .frame(width: 90, alignment: .topTrailing)
                 percentChange
-                    .frame(width: 70, alignment: .trailing)
+                    .frame(width: 70, alignment: .topTrailing)
+
                 
                 priceChange
-                    .frame(width: 70, alignment: .trailing)
+                    .frame(width: 70, alignment: .topTrailing)
                 
                 dayGain
-                    .frame(width: 90, alignment: .trailing)
+                    .frame(width: 90, alignment: .topTrailing)
             }
             
             Group {
                 
                 unitCost
-                    .frame(width: 90, alignment: .trailing)
+                    .frame(width: 90, alignment: .topTrailing)
                 
                 totalCost
-                    .frame(width: 90, alignment: .trailing)
-            }
-            Group {
-                
+                    .frame(width: 90, alignment: .topTrailing)
+
                 profit
-                    .frame(width: 100, alignment: .trailing)
+                    .frame(width: 100, alignment: .topTrailing)
                 
                 total
-                    .frame(width: 100, alignment: .trailing)
+                    .frame(width: 100, alignment: .topTrailing)
                 
                 percentProfit
-                    .frame(width: 90, alignment: .trailing)
-            }
-            Group {
+                    .frame(width: 90, alignment: .topTrailing)
+
                 ticker
-                    .frame(width: 90, alignment: .trailing)
+                    .frame(width: 90, alignment: .topTrailing)
             }
 
         }
-        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 90, alignment: .topLeading)
     }
 }
 
 struct StockTableRow_Previews: PreviewProvider {
     static var previews: some View {
-        StockTableRow(rowName: Text("Name").fontWeight(.bold),
-                      price: Text("Price").fontWeight(.bold),
-                      quantity: Text("Qty").fontWeight(.bold),
-                      percentChange: Text("\u{0394}" + " (%)").fontWeight(.bold),
-                      priceChange: Text("\u{0394}" + " ($)").fontWeight(.bold),
-                      dayGain: Text("Day Gain").fontWeight(.bold),
-                      unitCost: Text("Unit Cost").fontWeight(.bold),
-                      totalCost: Text("Unit Cost").fontWeight(.bold),
-                      profit: Text("Profit ($)").fontWeight(.bold),
-                      total: Text("Total").fontWeight(.bold),
-                      percentProfit: Text("Profit (%)").fontWeight(.bold),
-                      ticker: Text("Ticker").fontWeight(.bold))
+        StockTableRow(price: AnyView(Text("Price").fontWeight(.bold)),
+                      quantity: AnyView(Text("Qty").fontWeight(.bold)),
+                      percentChange: AnyView(Text("\u{0394}" + " (%)").fontWeight(.bold)),
+                      priceChange: AnyView(Text("\u{0394}" + " ($)").fontWeight(.bold)),
+                      dayGain: AnyView(Text("Day Gain").fontWeight(.bold)),
+                      unitCost: AnyView(Text("Unit Cost").fontWeight(.bold)),
+                      totalCost: AnyView(Text("Unit Cost").fontWeight(.bold)),
+                      profit: AnyView(Text("Profit ($)").fontWeight(.bold)),
+                      total: AnyView(Text("Total").fontWeight(.bold)),
+                      percentProfit: AnyView(Text("Profit (%)").fontWeight(.bold)),
+                      ticker: AnyView(Text("Ticker").fontWeight(.bold)))
     }
 }

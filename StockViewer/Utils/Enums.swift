@@ -10,3 +10,7 @@ import Foundation
 enum StockTableType {
     case stock, account
 }
+
+enum StockSortType {
+    case name, ticker, percentChange, priceChange, dayGain, totalCost, profit, total, percentProfit
+}

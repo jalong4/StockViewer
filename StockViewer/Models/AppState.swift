@@ -21,4 +21,5 @@ class AppState: ObservableObject {
     @Published var isDataLoading: Bool = true
     @Published var refreshingData: Bool = false
     @Published var showMenu: Bool = false
+    @Published var stockSortType: StockSortType = .ticker
 }
