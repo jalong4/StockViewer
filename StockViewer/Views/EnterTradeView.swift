@@ -54,6 +54,10 @@ struct EnterTradeView: View {
     
     var allFieldsValidated: Bool {
         
+        if self.account.isEmpty {
+            self.account = getAccountList().first ?? ""
+        }
+        
         let quantityIsValid = (Double(self.quantity) != nil)
         let totalCostIsValid = (Double(self.totalCost) != nil)
         let tickerIsValid = self.tickerIsValid && (self.ticker.count != 0)
@@ -203,8 +207,8 @@ struct EnterTradeView: View {
                                 }
                                 self.tickerIsValid = true
                                 self.disableSaveButton = !allFieldsValidated
-                                self.tickerMsg = quote.displayName
-                                print("Ticker found for " + quote.displayName)
+                                self.tickerMsg = quote.displayName ?? quote.shortName
+                                print("Ticker found for " + self.tickerMsg)
                             }
                         }
                     

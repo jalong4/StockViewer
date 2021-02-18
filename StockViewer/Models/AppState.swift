@@ -20,6 +20,7 @@ class AppState: ObservableObject {
     @Published var isLoggedIn: Bool = true
     @Published var isDataLoading: Bool = true
     @Published var refreshingData: Bool = false
+    @Published var postMarketDataIsAvailable: Bool = false
     @Published var showMenu: Bool = false
     @Published var stockSortType: StockSortType = .ticker
 }

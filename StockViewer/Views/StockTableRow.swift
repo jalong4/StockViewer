@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct StockTableRow: View {
+    @EnvironmentObject var appState: AppState
+    
     var price: AnyView
     var quantity: AnyView
     var percentChange: AnyView
@@ -18,7 +20,10 @@ struct StockTableRow: View {
     var profit: AnyView
     var total: AnyView
     var percentProfit: AnyView
-    var ticker: AnyView
+    var postMarketPrice: AnyView
+    var postMarketChangePercent: AnyView
+    var postMarketChange: AnyView
+    var postMarketGain: AnyView
     var type = StockTableType.account
     
     var body: some View {
@@ -55,9 +60,24 @@ struct StockTableRow: View {
                 
                 percentProfit
                     .frame(width: 90, alignment: .topTrailing)
+            }
+            
+            if appState.postMarketDataIsAvailable {
+                Group {
 
-                ticker
-                    .frame(width: 90, alignment: .topTrailing)
+                    postMarketPrice
+                        .frame(width: 100, alignment: .topTrailing)
+                    
+                    postMarketChangePercent
+                        .frame(width: 100, alignment: .topTrailing)
+                    
+                    postMarketChange
+                        .frame(width: 90, alignment: .topTrailing)
+                    
+                    
+                    postMarketGain
+                        .frame(width: 90, alignment: .topTrailing)
+                }
             }
 
         }
@@ -76,6 +96,10 @@ struct StockTableRow_Previews: PreviewProvider {
                       profit: AnyView(Text("Profit ($)").fontWeight(.bold)),
                       total: AnyView(Text("Total").fontWeight(.bold)),
                       percentProfit: AnyView(Text("Profit (%)").fontWeight(.bold)),
-                      ticker: AnyView(Text("Ticker").fontWeight(.bold)))
+                      postMarketPrice: AnyView(Text("Post Price").fontWeight(.bold)),
+                      postMarketChangePercent: AnyView(Text("Post " + "\u{0394}" + " (%)").fontWeight(.bold)),
+                      postMarketChange: AnyView(Text("Post " + "\u{0394}" + " ($)").fontWeight(.bold)),
+                      postMarketGain: AnyView(Text("Post Gain").fontWeight(.bold))
+        )
     }
 }

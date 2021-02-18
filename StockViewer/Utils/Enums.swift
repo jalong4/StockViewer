@@ -12,5 +12,5 @@ enum StockTableType {
 }
 
 enum StockSortType {
-    case name, ticker, percentChange, priceChange, dayGain, totalCost, profit, total, percentProfit
+    case name, ticker, percentChange, priceChange, dayGain, totalCost, profit, total, percentProfit, postMarketChangePercent, postMarketChange, postMarketGain
 }

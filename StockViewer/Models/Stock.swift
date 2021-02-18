@@ -27,8 +27,8 @@ struct Stock: Codable, Identifiable {
     var fiftyTwoWeekLow: Double?
     var fiftyTwoWeekHigh: Double?
     var postMarketPrice: Double = 0
-    var postMarketChange: Double = 0
     var postMarketChangePercent: Double = 0
+    var postMarketChange: Double = 0
     var postMarketGain: Double = 0
     
     private enum CodingKeys : String, CodingKey { case ticker, name, account, quantity, price, priceChange, percentChange, dayGain, unitCost, totalCost, total, profit, percentProfit, previousClose, marketCapInBillions, fiftyTwoWeekLow, fiftyTwoWeekHigh, postMarketPrice, postMarketChange, postMarketChangePercent, postMarketGain }

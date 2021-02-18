@@ -37,6 +37,10 @@ struct StockTableView: View {
         switch self.type {
         case .account:
             var stocks = self.portfolio.stocks.filter{ $0.account == self.name }
+            let postMarketDataIsAvailable = !stocks.allSatisfy{ $0.postMarketGain == 0 }
+            if self.appState.postMarketDataIsAvailable != postMarketDataIsAvailable {
+                self.appState.postMarketDataIsAvailable.toggle()
+            }
             
             stocks.sort(by: {(a, b) -> Bool in
                 switch appState.stockSortType {
@@ -56,13 +60,24 @@ struct StockTableView: View {
                     return (a.total > b.total)
                 case .percentProfit:
                     return (a.percentProfit > b.percentProfit)
+                case .postMarketChangePercent:
+                    return (a.postMarketChangePercent > b.postMarketChangePercent)
+                case .postMarketChange:
+                    return (a.postMarketChange > b.postMarketChange)
+                case .postMarketGain:
+                    return (a.postMarketGain > b.postMarketGain)
                 case .ticker:
                     return (a.ticker < b.ticker) || (a.name == "Cash")
                 }
             })
             return stocks;
         case .stock:
-            return self.portfolio.stocks.filter{ $0.ticker == self.name }
+            let stocks = self.portfolio.stocks.filter{ $0.ticker == self.name }
+            let postMarketDataIsAvailable = !stocks.allSatisfy{ $0.postMarketGain == 0 }
+            if self.appState.postMarketDataIsAvailable != postMarketDataIsAvailable {
+                self.appState.postMarketDataIsAvailable.toggle()
+            }
+            return stocks
         }
     }
     
@@ -70,7 +85,7 @@ struct StockTableView: View {
         return
                 HStack {
                     
-                    StockTableRow( // rowName: AnyView(Text(type == .account ? "Name" : "Account").fontWeight(.bold)),
+                    StockTableRow(
                         price: AnyView(Text("Price").fontWeight(.bold)),
                         quantity: AnyView(Text("Qty").fontWeight(.bold)),
                         percentChange: AnyView(
@@ -132,12 +147,31 @@ struct StockTableView: View {
                                     .underline(appState.stockSortType == .percentProfit, color: .black)
                                     .fontWeight(.bold)
                             }),
-                        ticker: AnyView(
+                        postMarketPrice: AnyView(Text("Post Price").fontWeight(.bold)),
+                        postMarketChangePercent: AnyView(
                             Button(action: {
-                                print("Sorting by ticker")
-                                appState.stockSortType = .ticker
+                                print("Sorting by postMarketChangePercent")
+                                appState.stockSortType = (appState.stockSortType == .postMarketChangePercent) ? .ticker : .postMarketChangePercent
                             }) {
-                                Text("Ticker")
+                                Text("Post " + "\u{0394}" + " (%)")
+                                    .underline(appState.stockSortType == .postMarketChangePercent, color: .black)
+                                    .fontWeight(.bold)
+                            }),
+                        postMarketChange: AnyView(
+                            Button(action: {
+                                print("Sorting by postMarketChange")
+                                appState.stockSortType = (appState.stockSortType == .postMarketChange) ? .ticker : .postMarketChange
+                            }) {
+                                Text("Post " + "\u{0394}" + " ($)")
+                                    .underline(appState.stockSortType == .postMarketChange, color: .black)
+                                    .fontWeight(.bold)
+                            }),
+                        postMarketGain: AnyView(
+                            Button(action: {
+                                print("Sorting by postMarketGain")
+                                appState.stockSortType = (appState.stockSortType == .dayGain) ? .ticker : .postMarketGain
+                            }) {
+                                Text("Post Gain").underline(appState.stockSortType == .postMarketGain, color: .black)
                                     .fontWeight(.bold)
                             }),
                         type: type
@@ -166,7 +200,7 @@ struct StockTableView: View {
     func getFooter(stocks: [Stock]) -> some View {
         let totals = ((self.type == .account) ? getAccount() : getFooterForStock(stocks: stocks))
         return
-            StockTableRow( //rowName: AnyView(Text("Total").fontWeight(.bold).font(.system(size: 14))),
+            StockTableRow(
                 price: AnyView(Text("")),
                 quantity: AnyView(Text(type == .stock ? Utils.getFormattedNumber(totals.quantity ?? 0) : "").fontWeight(.bold)),
                 percentChange: AnyView(Utils.getColorCodedTextView(totals.percentChange, style: .percent).fontWeight(.bold)),
@@ -177,7 +211,10 @@ struct StockTableView: View {
                 profit: AnyView(Utils.getColorCodedTextView(totals.profit, style: .decimal).fontWeight(.bold)),
                 total: AnyView(Text(Utils.getFormattedNumber(totals.total)).fontWeight(.bold)),
                 percentProfit: AnyView(Utils.getColorCodedTextView(totals.percentProfit, style: .percent).fontWeight(.bold)),
-                ticker: AnyView(Text("")),
+                postMarketPrice: AnyView(Text("")),
+                postMarketChangePercent: AnyView(Utils.getColorCodedTextView(totals.postMarketChangePercent, style: .percent).fontWeight(.bold)),
+                postMarketChange: AnyView(Text("")),
+                postMarketGain: AnyView(Utils.getColorCodedTextView(totals.postMarketGain, style: .decimal).fontWeight(.bold)),
                 type: type
             )
     }
@@ -240,7 +277,10 @@ struct StockTableView: View {
                                               profit: AnyView(Utils.getColorCodedTextView(stock.profit, style: .decimal)),
                                               total: AnyView(Text(Utils.getFormattedNumber(stock.total))),
                                               percentProfit: AnyView(Utils.getColorCodedTextView(stock.percentProfit, style: .percent)),
-                                              ticker: AnyView(Text(stock.ticker)),
+                                              postMarketPrice: AnyView(Text(Utils.getFormattedNumber(stock.postMarketPrice))),
+                                              postMarketChangePercent: AnyView(Utils.getColorCodedTextView(stock.postMarketChangePercent, style: .percent)),
+                                              postMarketChange: AnyView(Utils.getColorCodedTextView(stock.postMarketChange, style: .decimal)),
+                                              postMarketGain: AnyView(Utils.getColorCodedTextView(stock.postMarketGain, style: .decimal)),
                                               type: type
                                 )
                                 .frame(height: rowHeight)
