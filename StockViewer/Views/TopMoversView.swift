@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TopMoversView: View {
+    @EnvironmentObject var appState: AppState
     var title: String
     var portfolio: Portfolio
     var stockGains: [StockGains]
@@ -22,7 +23,7 @@ struct TopMoversView: View {
                 ForEach (0 ..< 4) { index in
                     if index < stockGains.count {
                     let topMover = stockGains[index]
-                        NavigationLink(destination: StockTableView(portfolio: portfolio, name: topMover.ticker, type: .stock)) {
+                        NavigationLink(destination: StockTableView(appState: _appState, portfolio: portfolio, name: topMover.ticker, type: .stock)) {
                             VStack (alignment: .center) {
                                 Text("\(topMover.ticker)").fontWeight(.bold)
                                 Text(Utils.getFormattedCurrency(topMover.gain, fractionDigits: 0)).fontWeight(.bold)

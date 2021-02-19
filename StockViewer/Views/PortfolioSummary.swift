@@ -13,11 +13,29 @@ struct PortfolioSummary: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
     @EnvironmentObject var appState: AppState
+    
+    @State private var selectedAccountName: String?
     var portfolio: Portfolio
+    
     
     func getArray(slice: ArraySlice<StockGains>) -> [StockGains] {
         let result = Array(slice)
         return result
+    }
+    
+    // navigation link for programmatic navigation
+    var navigationLink: NavigationLink<EmptyView, StockTableView>? {
+        guard let selectedAccountName = selectedAccountName else {
+            return nil
+        }
+        
+        return NavigationLink(
+            destination: StockTableView(appState: _appState, portfolio: self.portfolio, name: selectedAccountName, type: .account),
+            tag: selectedAccountName,
+            selection: $selectedAccountName
+        ) {
+            EmptyView()
+        }
     }
     
     var body: some View {
@@ -52,10 +70,14 @@ struct PortfolioSummary: View {
                 }
             }
             
+            navigationLink
+            
             ScrollView(showsIndicators: false) {
                 LazyVStack {
                     ForEach(self.portfolio.summary.accounts) { account in
-                        NavigationLink(destination: StockTableView(portfolio: portfolio, name: account.name, type: .account)) {
+                        Button(action: {
+                            self.selectedAccountName = account.name
+                        }) {
                             AccountView(account: account)
                                 .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                                 .cardBorder()
@@ -64,6 +86,19 @@ struct PortfolioSummary: View {
                     }
                 }
             }
+        }
+        .onAppear {
+            // if in split view, programatically navigate to first account
+            
+            let size = UIScreen.main.bounds.size
+            let isLandscape = size.width > size.height
+                
+            print("isLandscape: \(isLandscape)")
+            if (UIDevice.current.userInterfaceIdiom == .pad) { // && isLandscape {
+                appState.stockSortType = .ticker
+                self.selectedAccountName = self.portfolio.summary.accounts.first?.name
+            }
+            
         }
     }
 }

@@ -12,6 +12,7 @@ struct StockTableView: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     @EnvironmentObject var appState: AppState
+
     
     var portfolio: Portfolio
     var name: String
@@ -176,6 +177,7 @@ struct StockTableView: View {
                             }),
                         type: type
                     )
+                    .environmentObject(appState)
             }
     }
     
@@ -217,6 +219,7 @@ struct StockTableView: View {
                 postMarketGain: AnyView(Utils.getColorCodedTextView(totals.postMarketGain, style: .decimal).fontWeight(.bold)),
                 type: type
             )
+            .environmentObject(appState)
     }
     
     var body: some View {
@@ -283,6 +286,7 @@ struct StockTableView: View {
                                               postMarketGain: AnyView(Utils.getColorCodedTextView(stock.postMarketGain, style: .decimal)),
                                               type: type
                                 )
+                                .environmentObject(appState)
                                 .frame(height: rowHeight)
                             }
                             
@@ -300,10 +304,11 @@ struct StockTableView: View {
     }
 }
 
-struct StockTableView_Previews: PreviewProvider {
-    
-    @State static var portfolio = Api.getMockPortfolio()
-    static var previews: some View {
-        StockTableView(portfolio: portfolio, name: "Fidelity", type: .account)
-    }
-}
+//struct StockTableView_Previews: PreviewProvider {
+//    
+//    @State static var portfolio = Api.getMockPortfolio()
+//
+//    static var previews: some View {
+//        StockTableView(portfolio: portfolio, name: "Fidelity", type: .account, appState: )
+//    }
+//}

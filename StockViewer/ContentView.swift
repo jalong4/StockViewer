@@ -58,8 +58,8 @@ struct ContentView: View {
                     }
                 } else {
                     HomeView(portfolio: portfolio)
+                        .environmentObject(appState)
                         .navigationTitle("My Portfolio")
-                        .phoneOnlyStackNavigationView()
                 }
             } else {
                 if createAccount {

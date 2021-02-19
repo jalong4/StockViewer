@@ -52,7 +52,8 @@ struct HomeView: View {
                     NagivateToView()
                 } else if !appState.isDataLoading {
                     NavigationView{
-                        PortfolioSummary(portfolio: self.portfolio).padding(20)
+                        PortfolioSummary(portfolio: self.portfolio)
+                            .padding(20)
                             .navigationTitle(Text(appState.isDataLoading ? "" : "My Portfolio"))
                             .navigationBarItems(leading:
                                                     Button(action: {
