@@ -9,6 +9,10 @@ import SwiftUI
 
 struct EditCashView: View {
     
+    enum CashTransactionType: Int {
+        case deposit, withdrawal
+    }
+    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var appState: AppState
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper()
@@ -60,7 +64,7 @@ struct EditCashView: View {
         // substract totalCost of the new Entry from the quanity of
         // cash unnits
         
-        let transactionAmount: Double = (self.transactionType == 0) ? self.amountValue : -self.amountValue
+        let transactionAmount: Double = (CashTransactionType(rawValue: self.transactionType) == .deposit) ? self.amountValue : -self.amountValue
         print("Transaction Amount: \(transactionAmount)")
         
         
@@ -185,7 +189,9 @@ struct EditCashView: View {
                 .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top)
                 .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
                 .edgesIgnoringSafeArea(.all)
-                .navigationBarTitle("Edit Cash Balance", displayMode: .inline)
+                .navigationTitle("Edit Cash Balance")
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarHidden(true)
             }
         }
     }

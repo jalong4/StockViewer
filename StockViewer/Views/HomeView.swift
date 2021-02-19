@@ -48,13 +48,15 @@ struct HomeView: View {
                     .edgesIgnoringSafeArea(.all
                     )
                 
-                if appState.navigateTo != .Home {
-                    NagivateToView()
-                } else if !appState.isDataLoading {
-                    NavigationView{
+                NavigationView{
+                    
+                    if appState.navigateTo != .Home {
+                        NagivateToView()
+                    } else if !appState.isDataLoading {
+                        
                         PortfolioSummary(portfolio: self.portfolio)
                             .padding(20)
-                            .navigationTitle(Text(appState.isDataLoading ? "" : "My Portfolio"))
+                            .navigationTitle(Text(appState.isDataLoading ? "" : "Portfolio"))
                             .navigationBarItems(leading:
                                                     Button(action: {
                                                         withAnimation {

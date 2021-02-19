@@ -41,6 +41,6 @@ struct SummaryView: View {
 struct SummaryView_Previews: PreviewProvider {
     @State static var totals = Api.getMockPortfolio().summary.totals
     static var previews: some View {
-        SummaryView(totals: totals, title: "My Portfolio")
+        SummaryView(totals: totals, title: "Portfolio")
     }
 }

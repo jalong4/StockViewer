@@ -65,7 +65,7 @@ struct PortfolioSummary: View {
                 // ~Equivalent to iPhone portrait
                 if let totals = self.portfolio.summary.totals {
                     if totals.total > 0 {
-                        SummaryView(totals: self.portfolio.summary.totals, title: "My Portfolio")
+                        SummaryView(totals: self.portfolio.summary.totals, title: "Portfolio")
                     }
                 }
             }

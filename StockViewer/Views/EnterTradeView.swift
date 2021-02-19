@@ -9,12 +9,17 @@ import SwiftUI
 
 struct EnterTradeView: View {
     
+    enum StockTransactionType: Int {
+        case buy, sell
+    }
+    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var appState: AppState
     
     @State var portfolio: Portfolio
     @State private var isSaving: Bool = false
     @State private var disableSaveButton: Bool = true
+    @State private var transactionType = StockTransactionType.buy.rawValue
     
     @State private var ticker = ""
     @State private var account = ""
@@ -58,8 +63,17 @@ struct EnterTradeView: View {
             self.account = getAccountList().first ?? ""
         }
         
-        let quantityIsValid = (Double(self.quantity) != nil)
-        let totalCostIsValid = (Double(self.totalCost) != nil)
+        guard let quantity = Double(self.quantity) else {
+            return false
+        }
+        
+        guard let totalCost = Double(self.totalCost) else {
+            return false
+        }
+        
+        let quantityIsValid = quantity > 0
+        let totalCostIsValid = totalCost > 0
+        
         let tickerIsValid = self.tickerIsValid && (self.ticker.count != 0)
         let result = tickerIsValid && quantityIsValid && totalCostIsValid
         return result
@@ -68,14 +82,16 @@ struct EnterTradeView: View {
     
     private func updateCashHoldings(totalCost: Double,
                                     cashHoldings: Holding) {
-        
+                
         // Cash has a totalCost of zero so we
         // substract totalCost of the new Entry from the quanity of
         // cash unnits
         
+        let deltaCash: Double = (StockTransactionType(rawValue: self.transactionType) == .buy) ? -self.totalCostValue : self.totalCostValue
+        
         let holding = Holding(_id: cashHoldings._id,
                               ticker: cashHoldings.ticker,
-                              quantity: cashHoldings.quantity - totalCost,
+                              quantity: cashHoldings.quantity + deltaCash,
                               totalCost: cashHoldings.totalCost,
                               account: cashHoldings.account)
         
@@ -105,6 +121,7 @@ struct EnterTradeView: View {
                                totalCost: Double,
                                originalHolding: Holding,
                                cashHoldings: Holding) {
+
         
         let holding = Holding(_id: originalHolding._id,
                               ticker: self.ticker,
@@ -147,6 +164,10 @@ struct EnterTradeView: View {
                 return
             }
             
+            let quantity: Double = (StockTransactionType(rawValue: self.transactionType) == .buy) ? self.quantityValue : -self.quantityValue
+            let totalCost: Double = (StockTransactionType(rawValue: self.transactionType) == .buy) ? self.totalCostValue : -self.totalCostValue
+            
+            
             if let originalHolding = holdingsResponse.holdings
                 .filter({ $0.ticker == ticker && $0.account == account })
                 .first {
@@ -166,9 +187,17 @@ struct EnterTradeView: View {
                                   cashHoldings: cashHoldings)
                 }
             } else {
-                createHolding(quantity: quantity,
-                              totalCost: totalCost,
-                              cashHoldings: cashHoldings)
+                if (StockTransactionType(rawValue: self.transactionType)) == .buy {
+                    createHolding(quantity: quantity,
+                                  totalCost: totalCost,
+                                  cashHoldings: cashHoldings)
+                } else {
+                    print("Tried to Sell a stock that wasn't found in this account")
+                    self.tickerIsValid = false
+                    self.disableSaveButton = !allFieldsValidated
+                    self.tickerMsg = "Stock not found in account"
+                    self.isSaving.toggle()
+                }
             }
         }
     }
@@ -186,6 +215,28 @@ struct EnterTradeView: View {
                                  rowHeight: 40,
                                  horizontalPadding: horizontalPadding)
                         .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top)
+                    
+                    SegmentedPicker(items: ["Buy", "Sell"], selection: $transactionType)
+                        .frame(maxWidth: maxWidth)
+                        .padding(.bottom, 10)
+                        .padding([.leading, .trailing], horizontalPadding)
+                        .onChange(of: transactionType) { newValue in
+                            self.ticker = self.ticker.uppercased()
+                            self.tickerMsg = ""
+                            Api().getStockQuote(ticker: self.ticker) { (quote) in
+                                print("\(self.ticker)")
+                                guard let quote = quote, quote.symbol == self.ticker else {
+                                    self.tickerMsg = self.ticker.isEmpty ? "" : "Invalid ticker"
+                                    self.tickerIsValid = false
+                                    self.disableSaveButton = !allFieldsValidated
+                                    return
+                                }
+                                self.tickerIsValid = true
+                                self.disableSaveButton = !allFieldsValidated
+                                self.tickerMsg = quote.displayName ?? quote.shortName
+                                print("Ticker found for " + self.tickerMsg)
+                            }
+                        }
                     
                     CustomTextField("Stock Ticker", text: $ticker, keyboardType: .default, textAlignment: .center, tag: 1, onCommit: nil)
                         .frame(height: 40, alignment: .center)
@@ -317,7 +368,9 @@ struct EnterTradeView: View {
                 .padding(.top, 10)
                 .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
                 .edgesIgnoringSafeArea(.all)
-                .navigationBarTitle("Enter Trade", displayMode: .inline)
+                .navigationTitle("Enter Trade")
+//                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarHidden(true)
             }
         }
     }

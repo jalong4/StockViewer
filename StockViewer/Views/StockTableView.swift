@@ -300,15 +300,16 @@ struct StockTableView: View {
             .padding([.leading, .trailing], 20)
         }
         .navigationTitle("\(getTitle())")
+        .navigationBarTitleDisplayMode(.inline)
         
     }
 }
 
-//struct StockTableView_Previews: PreviewProvider {
-//    
-//    @State static var portfolio = Api.getMockPortfolio()
-//
-//    static var previews: some View {
-//        StockTableView(portfolio: portfolio, name: "Fidelity", type: .account, appState: )
-//    }
-//}
+struct StockTableView_Previews: PreviewProvider {
+    
+    @State static var portfolio = Api.getMockPortfolio()
+
+    static var previews: some View {
+        StockTableView(portfolio: portfolio, name: "Fidelity", type: .account)
+    }
+}
