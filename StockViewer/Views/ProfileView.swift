@@ -40,6 +40,9 @@ struct ProfileView: View {
     @State private var passwordIsValid = false
     @State private var password2IsValid = false
     
+    @State private var isShowPhotoLibrary = false
+    @State private var profileImage: UIImage?
+    
     
     var allFieldsValidated: Bool {
         return firstNameIsValid && lastNameIsValid && passwordIsValid && password2IsValid
@@ -73,6 +76,38 @@ struct ProfileView: View {
         self.disableUpdateButton = !allFieldsValidated
     }
     
+    var profileImageView: AnyView {
+        
+        if let profileImage = self.profileImage {
+            return AnyView(Image(uiImage: profileImage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 100, height: 100)
+                .clipShape(Circle())
+                .shadow(radius: 10, x: 0, y: 5))
+
+        } else {
+            return AnyView(Image(systemName: "person.crop.circle.badge.plus")
+                .font(.system(size: 100, weight: .thin))
+                .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/, x: 0, y: 10))
+        }
+    }
+
+     
+     /*
+ if profileImage.size > 0 {
+ Image(profileImage)
+ .clipShape(Circle())
+ .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/, x: 0, y: 10)
+ .overlay(Circle().stroke(Color.black, lineWidth: 1))
+ } else {
+ Image(systemName: "person.crop.circle.badge.plus")
+ .font(.system(size: 100, weight: .thin))
+ .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/, x: 0, y: 10)
+ }
+ 
+     */
+    
     
     var body: some View {
         
@@ -81,11 +116,22 @@ struct ProfileView: View {
             
             VStack(alignment: .center, spacing: 0,  content: {
                 
-                Image(systemName: "person.crop.circle.badge.plus")
-                    .padding(.top, 100)
-                    .padding(.bottom, 10)
-                    .font(.system(size: 100, weight: .thin))
-                    .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/, x: 0, y: 10)
+                Button(action: {
+                    print("Profile photo tapped")
+                    self.isShowPhotoLibrary.toggle()
+                }) {
+                    profileImageView
+                }
+                .frame(minWidth: 0, maxWidth: maxWidth)
+                .padding(.top, 120)
+                .padding(.bottom, 10)
+                .background(Color.themeBackground)
+                .foregroundColor(Color.themeForeground)
+                .padding(.horizontal, horizontalPadding)
+                .sheet(isPresented: $isShowPhotoLibrary) {
+                    ImagePicker(sourceType: .photoLibrary, allowsEditing: true, selectedImage: self.$profileImage)
+                }
+                    
                 
                 Group {
                     
@@ -94,7 +140,7 @@ struct ProfileView: View {
                         .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
                         .frame(maxWidth: maxWidth)
                         .padding([.top, .bottom], 4)
-                        .padding([.leading, .trailing], horizontalPadding)
+                        .padding(.horizontal, horizontalPadding)
                         .onChange(of: firstName) { newValue in
                             self.firstNameMsg = ""
                             if (firstName.isEmpty) {
@@ -307,7 +353,20 @@ struct ProfileView: View {
         .edgesIgnoringSafeArea(.all)
         .navigationTitle("Profile")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear() {
+            Api().getUser { user in
+                if let user = user {
+                    self.firstName = user.firstName
+                    self.lastName = user.lastName
+                    self.email = user.email
+                    print(user)
+                } else {
+                    print("No user profile found")
+                }
+            }
+        }
     }
+    
 }
 
 struct ProfileView_Previews: PreviewProvider {

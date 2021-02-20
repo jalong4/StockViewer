@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import JWTDecode
 
 class Utils {
     
@@ -25,6 +26,17 @@ class Utils {
         return formatter.string(from: number)!
     }
     
+    class func getUserIdFromToken() -> String? {
+        guard let accessToken = SettingsManager.sharedInstance.accessToken,
+              let jwt = try? decode(jwt: accessToken) else {
+            return nil
+        }
+        let body = jwt.body
+        guard let userId = body["_id"] as? String else {
+            return nil
+        }
+        return userId
+    }
     
     class func getFormattedNumber(_ doubleValue: Double, fractionDigits:Int = 2) -> String {
         return getFormatted(doubleValue, fractionDigits)

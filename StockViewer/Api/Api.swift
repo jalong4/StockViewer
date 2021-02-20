@@ -93,40 +93,40 @@ class Api {
         .resume()
     }
     
-//    func getStockQuote(ticker: String, completion: @escaping ([String: Any]) -> ()) {
-//        guard let url = URL(string: "\(Constants.baseUrl)/stocks/quote/\(ticker)"),
-//              let accessToken = SettingsManager.sharedInstance.accessToken
-//        else { return };
-//
-//
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "GET"
-//        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
-//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//        request.setValue("application/json", forHTTPHeaderField: "Accept")
-//
-//        URLSession.shared.dataTask(with: request) {(data, response, error) in
-//
-//            if let error = error {
-//                fatalError("Failed to get stock quote data: Error: \(error)")
-//            }
-//
-//            guard let data = data else {
-//                fatalError("Failed to get stock quote data")
-//            }
-//
-//            do {
-//                if let jsonResult = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
-//                        DispatchQueue.main.async {
-//                            completion(jsonResult)
-//                        }
-//                }
-//            } catch let parseError {
-//                fatalError("JSON Error \(parseError.localizedDescription)")
-//            }
-//        }
-//        .resume()
-//    }
+    //    func getStockQuote(ticker: String, completion: @escaping ([String: Any]) -> ()) {
+    //        guard let url = URL(string: "\(Constants.baseUrl)/stocks/quote/\(ticker)"),
+    //              let accessToken = SettingsManager.sharedInstance.accessToken
+    //        else { return };
+    //
+    //
+    //        var request = URLRequest(url: url)
+    //        request.httpMethod = "GET"
+    //        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+    //        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    //        request.setValue("application/json", forHTTPHeaderField: "Accept")
+    //
+    //        URLSession.shared.dataTask(with: request) {(data, response, error) in
+    //
+    //            if let error = error {
+    //                fatalError("Failed to get stock quote data: Error: \(error)")
+    //            }
+    //
+    //            guard let data = data else {
+    //                fatalError("Failed to get stock quote data")
+    //            }
+    //
+    //            do {
+    //                if let jsonResult = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+    //                        DispatchQueue.main.async {
+    //                            completion(jsonResult)
+    //                        }
+    //                }
+    //            } catch let parseError {
+    //                fatalError("JSON Error \(parseError.localizedDescription)")
+    //            }
+    //        }
+    //        .resume()
+    //    }
     
     func getStockQuote(ticker: String, completion: @escaping (Quote?) -> ()) {
         guard let url = URL(string: "\(Constants.baseUrl)/stocks/quote/\(ticker)"),
@@ -268,4 +268,81 @@ class Api {
         return Bundle.main.decode(Portfolio.self, from: "data.json")
     }
     
+    func getUser(completion: @escaping (User?) -> ()) {
+        
+        guard
+            let userId = Utils.getUserIdFromToken(),
+            let url = URL(string: "\(Constants.baseUrl)/users/id/\(userId)"),
+            let accessToken = SettingsManager.sharedInstance.accessToken
+        else { return };
+        
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to get user data: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to get user data")
+            }
+            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .deferredToDate
+            decoder.keyDecodingStrategy = .useDefaultKeys
+            
+            var user: User? = nil
+            do {
+                user = try decoder.decode(User.self, from: data)
+            } catch {
+                print("No user found for id: \(userId)")
+            }
+            
+            DispatchQueue.main.async {
+                completion(user)
+            }
+        }
+        .resume()
+    }
+    
+    
+    
+    func updateUser(user: User, completion: @escaping (User) -> ()) {
+        guard let url = URL(string: "\(Constants.baseUrl)/users/\(user._id)"),
+              let accessToken = SettingsManager.sharedInstance.accessToken,
+              let body = try? JSONEncoder().encode(UserBody(user: user))
+        else { return };
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = body
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to update user data: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to update user data")
+            }
+            
+            let user = Utils.decodeToObj(User.self, from: data)
+            
+            DispatchQueue.main.async {
+                completion(user)
+            }
+        }
+        .resume()
+    }
 }
+
