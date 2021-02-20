@@ -18,6 +18,9 @@ struct ProfileView: View {
     @State private var password = ""
     @State private var password2 = ""
     
+    @State private var hidePassword = true
+    @State private var hidePassword2 = true
+    
     let horizontalPadding: CGFloat = 40
     let maxWidth: CGFloat = .infinity
     
@@ -42,6 +45,34 @@ struct ProfileView: View {
         return firstNameIsValid && lastNameIsValid && passwordIsValid && password2IsValid
     }
     
+    private func passwordView(_ label: String, textfield: Binding<String>, isSecure: Bool, tag: Int) -> CustomTextField {
+        return CustomTextField(label, text: textfield, isSecure: isSecure, textAlignment: .left, tag: tag, onCommit: nil)
+    }
+    
+    private func validatePw() {
+        self.passwordMsg = ""
+        if (password.isEmpty || password.count < 6) {
+            self.passwordMsg = password.isEmpty ? "Enter a password" : "Password must be at least 6 characters"
+            self.passwordIsValid = false
+            self.disableUpdateButton = !allFieldsValidated
+            return
+        }
+        self.passwordIsValid = true
+        self.disableUpdateButton = !allFieldsValidated
+    }
+    
+    private func validatePw2() {
+        self.password2Msg = ""
+        if (password2.isEmpty || (password2 != password)) {
+            self.password2Msg = password2.isEmpty ? "Re-enter your password" : "Passwords don't match"
+            self.password2IsValid = false
+            self.disableUpdateButton = !allFieldsValidated
+            return
+        }
+        self.password2IsValid = true
+        self.disableUpdateButton = !allFieldsValidated
+    }
+    
     
     var body: some View {
         
@@ -58,7 +89,7 @@ struct ProfileView: View {
                 
                 Group {
                     
-                    CustomTextField("First Name", text: $firstName, textAlignment:  .left, tag: 1, onCommit: nil)
+                    CustomTextField("First Name", text: $firstName, autocapitalization: .words, textAlignment:  .left, tag: 1, onCommit: nil)
                         .frame(height: 40, alignment: .center)
                         .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
                         .frame(maxWidth: maxWidth)
@@ -82,7 +113,7 @@ struct ProfileView: View {
                         .padding(.bottom, 4)
                         .foregroundColor(firstNameIsValid ? Color.themeValid : Color.themeError)
                     
-                    CustomTextField("Last Name", text: $lastName, textAlignment:  .left, tag: 2, onCommit: nil)
+                    CustomTextField("Last Name", text: $lastName, autocapitalization: .words, textAlignment:  .left, tag: 2, onCommit: nil)
                         .frame(height: 40, alignment: .center)
                         .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
                         .frame(maxWidth: maxWidth)
@@ -105,7 +136,7 @@ struct ProfileView: View {
                         .padding(.bottom, 4)
                         .foregroundColor(lastNameIsValid ? Color.themeValid : Color.themeError)
                 }
-
+                
                 CustomTextField("email", text: $email, textAlignment:  .left, tag: 3, onCommit: nil)
                     .frame(height: 40, alignment: .center)
                     .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
@@ -123,61 +154,111 @@ struct ProfileView: View {
                         self.emailIsValid = true
                         self.disableUpdateButton = !allFieldsValidated
                     }
-
+                
                 Text($emailMsg.wrappedValue)
                     .frame(maxWidth: maxWidth, alignment: .center)
                     .padding(.bottom, 4)
                     .foregroundColor(emailIsValid ? Color.themeValid : Color.themeError)
-
-
+                
+                
                 Group {
-                    CustomTextField("password", text: $password, isSecure: true, textAlignment: .left, tag: 4, onCommit: nil)
-                        .frame(height: 40, alignment: .center)
-                        .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                        .frame(maxWidth: maxWidth)
-                        .padding([.top, .bottom], 4)
-                        .padding([.leading, .trailing], horizontalPadding)
-                        .onChange(of: password) { newValue in
-                            self.passwordMsg = ""
-                            if (password.isEmpty || password.count < 6) {
-                                self.passwordMsg = password.isEmpty ? "Enter a password" : "Password must be at least 6 characters"
-                                self.passwordIsValid = false
-                                self.disableUpdateButton = !allFieldsValidated
-                                return
-                            }
-                            self.passwordIsValid = true
-                            self.disableUpdateButton = !allFieldsValidated
+                    
+                    ZStack {
+                        
+                        if hidePassword {
+                            passwordView("password", textfield: $password, isSecure: true, tag: 4)
+                                .frame(height: 40, alignment: .center)
+                                .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
+                                .frame(maxWidth: maxWidth)
+                                .padding([.top, .bottom], 4)
+                                .padding([.leading, .trailing], horizontalPadding)
+                                .onChange(of: password) { newValue in
+                                    validatePw()
+                                }
+                        } else {
+                            passwordView("password", textfield: $password, isSecure: false, tag: 4)
+                                .frame(height: 40, alignment: .center)
+                                .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
+                                .frame(maxWidth: maxWidth)
+                                .padding([.top, .bottom], 4)
+                                .padding([.leading, .trailing], horizontalPadding)
+                                .onChange(of: password) { newValue in
+                                    validatePw()
+                                }
                         }
+                        HStack(spacing: 0) {
+                            Spacer()
+                            
+                            Button(action: {
+                                print("Toggling hide password flag")
+                                self.hidePassword.toggle()
+                            }) {
+                                Image(systemName: hidePassword ? "eye.fill" : "eye.slash.fill")
+                                    .foregroundColor(Color.black.opacity(0.7))
+                            }
+                            .frame(maxWidth: 40, maxHeight: 40, alignment: .center)
+                            .mask(RoundedRectangle(cornerRadius: 90))
+                            .background(Color.themeAccent.opacity(0.01))
+                            
+                        }
+                        .padding([.leading, .trailing],horizontalPadding)
+                    }
+                    .padding(0)
                     
                     Text($passwordMsg.wrappedValue)
                         .frame(maxWidth: maxWidth, alignment: .center)
                         .padding(.bottom, 4)
                         .foregroundColor(passwordIsValid ? Color.themeValid : Color.themeError)
                     
-                    
-                    CustomTextField("password2", text: $password2, isSecure: true, textAlignment: .left, tag: 5, onCommit: nil)
-                        .frame(height: 40, alignment: .center)
-                        .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                        .frame(maxWidth: maxWidth)
-                        .padding([.top, .bottom], 4)
-                        .padding([.leading, .trailing], horizontalPadding)
-                        .onChange(of: password2) { newValue in
-                            self.password2Msg = ""
-                            if (password2.isEmpty || (password2 != password)) {
-                                self.password2Msg = password2.isEmpty ? "Re-enter your password" : "Passwords don't match"
-                                self.password2IsValid = false
-                                self.disableUpdateButton = !allFieldsValidated
-                                return
-                            }
-                            self.password2IsValid = true
-                            self.disableUpdateButton = !allFieldsValidated
+                    ZStack {
+                        if hidePassword2 {
+                            passwordView("password2", textfield: $password2, isSecure: true, tag: 5)
+                                .frame(height: 40, alignment: .center)
+                                .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
+                                .frame(maxWidth: maxWidth)
+                                .padding([.top, .bottom], 4)
+                                .padding([.leading, .trailing], horizontalPadding)
+                                .onChange(of: password2) { newValue in
+                                    validatePw2()
+                                }
+                        } else {
+                            passwordView("password2", textfield: $password2, isSecure: false, tag: 5)
+                                .frame(height: 40, alignment: .center)
+                                .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
+                                .frame(maxWidth: maxWidth)
+                                .padding([.top, .bottom], 4)
+                                .padding([.leading, .trailing], horizontalPadding)
+                                .onChange(of: password2) { newValue in
+                                    validatePw2()
+                                }
                         }
+                        
+                        HStack(spacing: 0) {
+                            Spacer()
+                            
+                            Button(action: {
+                                print("Toggling hide password2 flag")
+                                self.hidePassword2.toggle()
+                            }) {
+                                Image(systemName: hidePassword2 ? "eye.fill" : "eye.slash.fill")
+                                    .foregroundColor(Color.black.opacity(0.7))
+                            }
+                            .frame(maxWidth: 40, maxHeight: 40, alignment: .center)
+                            .mask(RoundedRectangle(cornerRadius: 90))
+                            .background(Color.themeAccent.opacity(0.01))
+                            
+                        }
+                        .padding([.leading, .trailing],horizontalPadding)
+                    }
+                    .padding(0)
                     
-                    Text($password2Msg.wrappedValue)
-                        .frame(maxWidth: maxWidth, alignment: .center)
-                        .padding(.bottom, 4)
-                        .foregroundColor(password2IsValid ? Color.themeValid : Color.themeError)
                 }
+                
+                Text($password2Msg.wrappedValue)
+                    .frame(maxWidth: maxWidth, alignment: .center)
+                    .padding(.bottom, 4)
+                    .foregroundColor(password2IsValid ? Color.themeValid : Color.themeError)
+                
                 
                 HStack (spacing: 20) {
                     Button(action: {
@@ -203,7 +284,7 @@ struct ProfileView: View {
                                         appState.showingStockTable = true
                                      }))
                     })
-
+                    
                     Button(action: {
                         print("Canceling")
                         appState.showingProfile = false

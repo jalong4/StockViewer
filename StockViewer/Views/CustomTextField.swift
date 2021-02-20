@@ -9,7 +9,8 @@ import SwiftUI
 
 struct CustomTextField: UIViewRepresentable {
     @Binding var text: String // String value of the TextView
-    let isSecure: Bool
+    private var isSecure: Bool
+    private var autocapitalization: UITextAutocapitalizationType
     let placeholder: String // Placeholder Text
     let keyboardType: UIKeyboardType // Keypad layout type
     let tag: Int // Tag to recognise each specific TextView
@@ -19,13 +20,22 @@ struct CustomTextField: UIViewRepresentable {
     let padding = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
     
     
-    init(_ placeholder: String, text: Binding<String>, isSecure: Bool = false, keyboardType: UIKeyboardType = .default, textAlignment: NSTextAlignment = .left, tag: Int, onCommit: (()->Void)?) {
+    init(_ placeholder: String,
+         text: Binding<String>,
+         isSecure: Bool = false,
+         keyboardType: UIKeyboardType = .default,
+         autocapitalization: UITextAutocapitalizationType = .none,
+         textAlignment: NSTextAlignment = .left,
+         tag: Int,
+         onCommit: (()->Void)?) {
+        
         self._text = text
         self.placeholder = placeholder
         self.isSecure = isSecure
         self.tag = tag
         self.commitHandler = onCommit
         self.keyboardType = keyboardType
+        self.autocapitalization = autocapitalization
         self.textAlignment = textAlignment
     }
     
@@ -41,11 +51,13 @@ struct CustomTextField: UIViewRepresentable {
         textField.delegate = context.coordinator
         textField.font = UIFont.systemFont(ofSize: 16.0, weight: .light)
         textField.isUserInteractionEnabled = true
+        textField.autocapitalizationType = .none
         textField.text = text
         textField.isSecureTextEntry = self.isSecure
         textField.tag = tag
         textField.placeholder = placeholder
         textField.autocorrectionType = .no
+        textField.autocapitalizationType = self.autocapitalization
         
         // For left inner padding
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 40))
