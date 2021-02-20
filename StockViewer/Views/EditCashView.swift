@@ -98,102 +98,100 @@ struct EditCashView: View {
     
     
     var body: some View {
-        NavigationView {
+        
+        ZStack {
+            Color.themeBackground
             
-            ZStack {
-                Color.themeBackground
+            VStack(alignment: .center, spacing: 0,  content: {
+                CustomPicker(getAccountList(), selection: $account,
+                             selectedItemBackgroundColor: Color.themeAccent.opacity(0.2),
+                             rowHeight: 40,
+                             horizontalPadding: horizontalPadding)
+                    .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top)
                 
-                VStack(alignment: .center, spacing: 0,  content: {
-                    CustomPicker(getAccountList(), selection: $account,
-                                     selectedItemBackgroundColor: Color.themeAccent.opacity(0.2),
-                                     rowHeight: 40,
-                                     horizontalPadding: horizontalPadding)
-                        .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top)
+                SegmentedPicker(items: ["Deposit", "Withdrawal"], selection: $transactionType)
+                    .frame(maxWidth: maxWidth)
+                    .padding(.bottom, 10)
+                    .padding([.leading, .trailing], horizontalPadding)
+                
+                CustomTextField("Amount", text: $amount, keyboardType: .numbersAndPunctuation, textAlignment:  .center, tag: 1, onCommit: nil)
+                    .frame(height: 40, alignment: .center)
+                    .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
+                    .frame(maxWidth: maxWidth)
+                    .padding([.top, .bottom], 10)
+                    .padding([.leading, .trailing], horizontalPadding)
                     
-                    SegmentedPicker(items: ["Deposit", "Withdrawal"], selection: $transactionType)
-                        .frame(maxWidth: maxWidth)
-                        .padding(.bottom, 10)
-                        .padding([.leading, .trailing], horizontalPadding)
-
-                    CustomTextField("Amount", text: $amount, keyboardType: .numbersAndPunctuation, textAlignment:  .center, tag: 1, onCommit: nil)
-                        .frame(height: 40, alignment: .center)
-                        .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                        .frame(maxWidth: maxWidth)
-                        .padding([.top, .bottom], 10)
-                        .padding([.leading, .trailing], horizontalPadding)
-                        
-                        .onChange(of: amount) { newValue in
-                            self.amountMsg = ""
-                            guard let value = Double(self.amount), value > 0 else {
-                                self.amountIsValid = false
-                                self.disableSaveButton = !allFieldsValidated
-                                self.amountMsg = self.amount.isEmpty ? "" : "Invalid number"
-                                print(self.amountMsg)
-                                return
-                            }
-                            self.amountIsValid = true
+                    .onChange(of: amount) { newValue in
+                        self.amountMsg = ""
+                        guard let value = Double(self.amount), value > 0 else {
+                            self.amountIsValid = false
                             self.disableSaveButton = !allFieldsValidated
+                            self.amountMsg = self.amount.isEmpty ? "" : "Invalid number"
+                            print(self.amountMsg)
+                            return
                         }
-   
-                        
-                        Text($amountMsg.wrappedValue)
-                            .frame(maxWidth: maxWidth, alignment: .center)
-                            .padding(.bottom, 10)
-                            .foregroundColor(amountIsValid ? Color.themeValid : Color.themeError)
-                        
-                        
-                        HStack (spacing: 20) {
-                            Button(action: {
-                                print("Save")
-                                if allFieldsValidated {
-                                    self.isSaving = true
-                                    print("Amount: \(self.amountValue)")
-                                    print("Type: \(["Deposit", "Withdrawal"][self.transactionType])")
-                                    print("Account: \(self.account)")
-                                    
-                                    editCashBalance(amount: amountValue)
-                                }
-                            }) {
-                                Text(isSaving ? "Saving" : "Save")
-                                    .frame(minWidth: 100)
-                                    .padding()
-                                    .foregroundColor(Color.themeBackground)
-                                    .background(Capsule().fill(Color.themeAccent.opacity(disableSaveButton || isSaving ? 0.2 : 1.0)))
-                            }
-                            .disabled(disableSaveButton || isSaving)
-                            .alert(isPresented: $showAlert, content: {
-                                return Alert(title: Text("Balance Updated"),
-                                             message: Text("All Done?"),
-                                             primaryButton: .default(Text("Yes"), action: {
-                                                self.appState.navigateTo = .Home
-                                                
-                                             }),
-                                             secondaryButton: .destructive(Text("No")))
-                            })
-                            Button(action: {
-                                print("Canceling")
-                                self.appState.navigateTo = .Home
-                            }) {
-                                Text("Cancel")
-                                    .frame(minWidth: 100)
-                                    .cancelButtonTextModifier()
-                            }
+                        self.amountIsValid = true
+                        self.disableSaveButton = !allFieldsValidated
+                    }
+                
+                
+                Text($amountMsg.wrappedValue)
+                    .frame(maxWidth: maxWidth, alignment: .center)
+                    .padding(.bottom, 10)
+                    .foregroundColor(amountIsValid ? Color.themeValid : Color.themeError)
+                
+                
+                HStack (spacing: 20) {
+                    Button(action: {
+                        print("Save")
+                        if allFieldsValidated {
+                            self.isSaving = true
+                            print("Amount: \(self.amountValue)")
+                            print("Type: \(["Deposit", "Withdrawal"][self.transactionType])")
+                            print("Account: \(self.account)")
+                            
+                            editCashBalance(amount: amountValue)
                         }
-                        .frame(maxWidth: maxWidth)
-                        .padding([.leading, .trailing], horizontalPadding)
-                        
-                        Spacer()
-
-                })
-                .dismissKeyboardOnTap()
-                .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top)
-                .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
-                .edgesIgnoringSafeArea(.all)
-                .navigationTitle("Edit Cash Balance")
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarHidden(true)
-            }
+                    }) {
+                        Text(isSaving ? "Saving" : "Save")
+                            .frame(minWidth: 100)
+                            .padding()
+                            .foregroundColor(Color.themeBackground)
+                            .background(Capsule().fill(Color.themeAccent.opacity(disableSaveButton || isSaving ? 0.2 : 1.0)))
+                    }
+                    .disabled(disableSaveButton || isSaving)
+                    .alert(isPresented: $showAlert, content: {
+                        return Alert(title: Text("Balance Updated"),
+                                     message: Text("All Done?"),
+                                     primaryButton: .default(Text("Yes"), action: {
+                                        appState.showingEditCash = false
+                                        appState.showingStockTable = true
+                                        
+                                     }),
+                                     secondaryButton: .destructive(Text("No")))
+                    })
+                    Button(action: {
+                        print("Canceling")
+                        appState.showingEditCash = false
+                        appState.showingStockTable = true
+                    }) {
+                        Text("Cancel")
+                            .frame(minWidth: 100)
+                            .cancelButtonTextModifier()
+                    }
+                }
+                .frame(maxWidth: maxWidth)
+                .padding([.leading, .trailing], horizontalPadding)
+                
+                Spacer()
+            })
+            
         }
+        .dismissKeyboardOnTap()
+        .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
+        .edgesIgnoringSafeArea(.all)
+        .navigationTitle("Edit Cash Balance")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

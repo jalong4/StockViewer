@@ -14,10 +14,12 @@ struct MenuView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Button(action: {
-                    withAnimation {
-                        appState.showMenu.toggle()
-                    }
-                    appState.navigateTo = .Profile
+                    appState.showMenu = false
+                    appState.showingProfile = true
+                    appState.showingEnterTrade = false
+                    appState.showingStockTable = false
+                    appState.showingEditCash = false
+                    appState.showingSettings = false
                     print("Profile")
                 }) {
                     Image(systemName: "person")
@@ -32,10 +34,12 @@ struct MenuView: View {
             
             HStack {
                 Button(action: {
-                    withAnimation {
-                        appState.showMenu.toggle()
-                    }
-                    appState.navigateTo = .EnterTrade
+                    appState.showMenu = false
+                    appState.showingProfile = false
+                    appState.showingEnterTrade = true
+                    appState.showingStockTable = false
+                    appState.showingEditCash = false
+                    appState.showingSettings = false
                     print("Enter Trade")
                     
                 }) {
@@ -50,10 +54,12 @@ struct MenuView: View {
             
             HStack {
                 Button(action: {
-                    withAnimation {
-                        appState.showMenu.toggle()
-                    }
-                    appState.navigateTo = .EditCash
+                    appState.showMenu = false
+                    appState.showingProfile = false
+                    appState.showingEnterTrade = false
+                    appState.showingStockTable = false
+                    appState.showingEditCash = true
+                    appState.showingSettings = false
                     print("Edit Cash Balance")
                     
                 }) {
@@ -68,10 +74,12 @@ struct MenuView: View {
             
             HStack {
                 Button(action: {
-                    withAnimation {
-                        appState.showMenu.toggle()
-                    }
-                    appState.navigateTo = .Settings
+                    appState.showMenu = false
+                    appState.showingProfile = false
+                    appState.showingEnterTrade = false
+                    appState.showingStockTable = false
+                    appState.showingEditCash = false
+                    appState.showingSettings = true
                     print("Settings")
                 }) {
                     Image(systemName: "gear")

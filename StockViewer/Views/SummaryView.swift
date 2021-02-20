@@ -35,6 +35,7 @@ struct SummaryView: View {
             }
             .font(.system(size: 14))
         }.cardBorder()
+        .padding([.top, .bottom], 10)
     }
 }
 

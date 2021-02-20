@@ -60,6 +60,7 @@ struct TextFieldModifier: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .disableAutocorrection(true)
+            .padding([.leading, .trailing], 20)
             .frame(height: 40, alignment: .center)
             .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
     }

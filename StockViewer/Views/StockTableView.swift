@@ -240,7 +240,7 @@ struct StockTableView: View {
                 Text("Stocks")
                     .fontWeight(.bold)
                     .font(.system(size:20))
-                    .padding(EdgeInsets(top: 2, leading: 0, bottom: 10, trailing: 0))
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0))
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
                 
                 HStack(spacing: 0) {
@@ -297,8 +297,8 @@ struct StockTableView: View {
                     
                 }
             }
-            .padding([.leading, .trailing], 20)
         }
+        .padding([.leading, .trailing], 20)
         .navigationTitle("\(getTitle())")
         .navigationBarTitleDisplayMode(.inline)
         

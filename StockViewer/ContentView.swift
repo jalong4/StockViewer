@@ -20,22 +20,12 @@ struct ContentView: View {
         return appState.isLoggedIn
     }
     
-    private func refreshingData() -> Bool {
-        if appState.refreshingData {
-            loadData()
-            return true
-        }
-        
-        return false
-    }
-    
     private func loadData() {
         if isLoggedIn() {
             appState.isDataLoading = true
             Api().getPortfolio { (portfolio) in
                 self.portfolio = portfolio
                 self.appState.isDataLoading = false
-                self.appState.refreshingData = false
             }
         }
     }
@@ -44,7 +34,7 @@ struct ContentView: View {
     var body: some View {
         Group {
             if appState.isLoggedIn {
-                if appState.isDataLoading || refreshingData() {
+                if appState.isDataLoading {
                     GeometryReader { geometry in
                         VStack(alignment: .center) {
                             ProgressView("Loading...")
@@ -59,7 +49,6 @@ struct ContentView: View {
                 } else {
                     HomeView(portfolio: portfolio)
                         .environmentObject(appState)
-                        .navigationTitle("My Portfolio")
                 }
             } else {
                 if createAccount {

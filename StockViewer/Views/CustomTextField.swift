@@ -9,15 +9,20 @@ import SwiftUI
 
 struct CustomTextField: UIViewRepresentable {
     @Binding var text: String // String value of the TextView
+    let isSecure: Bool
     let placeholder: String // Placeholder Text
     let keyboardType: UIKeyboardType // Keypad layout type
     let tag: Int // Tag to recognise each specific TextView
     let textAlignment: NSTextAlignment
     var commitHandler: (()->Void)? // Called when return key is pressed
     
-    init(_ placeholder: String, text: Binding<String>, keyboardType: UIKeyboardType, textAlignment: NSTextAlignment = .left, tag: Int, onCommit: (()->Void)?) {
+    let padding = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+    
+    
+    init(_ placeholder: String, text: Binding<String>, isSecure: Bool = false, keyboardType: UIKeyboardType = .default, textAlignment: NSTextAlignment = .left, tag: Int, onCommit: (()->Void)?) {
         self._text = text
         self.placeholder = placeholder
+        self.isSecure = isSecure
         self.tag = tag
         self.commitHandler = onCommit
         self.keyboardType = keyboardType
@@ -29,7 +34,7 @@ struct CustomTextField: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> UITextField {
-        // Customise the TextField as you wish
+
         let textField = UITextField(frame: .zero)
         textField.keyboardType = self.keyboardType
         textField.textAlignment = self.textAlignment
@@ -37,6 +42,7 @@ struct CustomTextField: UIViewRepresentable {
         textField.font = UIFont.systemFont(ofSize: 16.0, weight: .light)
         textField.isUserInteractionEnabled = true
         textField.text = text
+        textField.isSecureTextEntry = self.isSecure
         textField.tag = tag
         textField.placeholder = placeholder
         textField.autocorrectionType = .no

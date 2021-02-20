@@ -7,19 +7,15 @@
 
 import Combine
 
-enum NavitageTo {
-    case EnterTrade
-    case EditCash
-    case Profile
-    case Settings
-    case Home
-}
-
 class AppState: ObservableObject {
-    @Published var navigateTo: NavitageTo = .Home
+
+    @Published var showingStockTable: Bool = false
+    @Published var showingProfile: Bool = false
+    @Published var showingEnterTrade: Bool = false
+    @Published var showingEditCash: Bool = false
+    @Published var showingSettings: Bool = false
     @Published var isLoggedIn: Bool = true
     @Published var isDataLoading: Bool = true
-    @Published var refreshingData: Bool = false
     @Published var postMarketDataIsAvailable: Bool = false
     @Published var showMenu: Bool = false
     @Published var stockSortType: StockSortType = .ticker

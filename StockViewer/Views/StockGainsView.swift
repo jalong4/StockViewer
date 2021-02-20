@@ -34,7 +34,7 @@ struct StockGainsView: View {
                     }
                 }
             }
-        }.font(.system(size: 14)).padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
+        }.font(.system(size: 14)).padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
     }
 }
 
