@@ -11,7 +11,7 @@ struct User: Codable {
     var _id = String()
     var firstName = String()
     var lastName = String()
-    var profileImage: String?
+    var profileImageFilename: String?
     var date: String
     var email = String()
     var password = String()
@@ -20,7 +20,7 @@ struct User: Codable {
 class UserBody: Codable {
     var firstName = String()
     var lastName = String()
-    var profileImage: String?
+    var profileImageFilename: String?
     var date = String()
     var email = String()
     var password = String()
@@ -28,7 +28,7 @@ class UserBody: Codable {
     init (user: User) {
         self.firstName = user.firstName
         self.lastName = user.lastName
-        self.profileImage = user.profileImage
+        self.profileImageFilename = user.profileImageFilename
         self.date = user.date
         self.email = user.email
         self.password = user.password
@@ -36,14 +36,14 @@ class UserBody: Codable {
     
     init(firstName: String = String(),
          lastName: String = String(),
-         profileImage: String? = nil,
+         profileImageFilename: String? = nil,
          date: String = String(),
          email:String = String(),
          password: String = String()) {
         
         self.firstName = firstName
         self.lastName = lastName
-        self.profileImage = profileImage
+        self.profileImageFilename = profileImageFilename
         self.date = date
         self.email = email
         self.password = password
@@ -58,4 +58,9 @@ struct LoginResponse: Codable {
 struct Login: Codable {
     var success: Bool
     var auth: Auth
+}
+
+struct UploadImageResponse: Codable {
+    var message: String?
+    var profileImageFilename: String?
 }

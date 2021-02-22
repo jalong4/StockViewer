@@ -15,8 +15,8 @@ struct ProfileView: View {
     @State private var firstName = ""
     @State private var lastName = ""
     @State private var email = ""
-    @State private var password = ""
-    @State private var password2 = ""
+    @State private var password = "123456"
+    @State private var password2 = "123456"
     
     @State private var hidePassword = true
     @State private var hidePassword2 = true
@@ -25,7 +25,7 @@ struct ProfileView: View {
     let maxWidth: CGFloat = .infinity
     
     @State private var isUpdating: Bool = false
-    @State private var disableUpdateButton: Bool = true
+    @State private var disableUpdateButton: Bool = false
     
     @State private var firstNameMsg = ""
     @State private var lastNameMsg = ""
@@ -42,6 +42,8 @@ struct ProfileView: View {
     
     @State private var isShowPhotoLibrary = false
     @State private var profileImage: UIImage?
+    
+    @State private var user: User?
     
     
     var allFieldsValidated: Bool {
@@ -92,21 +94,6 @@ struct ProfileView: View {
                 .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/, x: 0, y: 10))
         }
     }
-
-     
-     /*
- if profileImage.size > 0 {
- Image(profileImage)
- .clipShape(Circle())
- .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/, x: 0, y: 10)
- .overlay(Circle().stroke(Color.black, lineWidth: 1))
- } else {
- Image(systemName: "person.crop.circle.badge.plus")
- .font(.system(size: 100, weight: .thin))
- .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/, x: 0, y: 10)
- }
- 
-     */
     
     
     var body: some View {
@@ -129,7 +116,7 @@ struct ProfileView: View {
                 .foregroundColor(Color.themeForeground)
                 .padding(.horizontal, horizontalPadding)
                 .sheet(isPresented: $isShowPhotoLibrary) {
-                    ImagePicker(sourceType: .photoLibrary, allowsEditing: true, selectedImage: self.$profileImage)
+                    ImagePicker(sourceType: .photoLibrary, allowsEditing: true, selectedImage: $profileImage)
                 }
                     
                 
@@ -312,6 +299,33 @@ struct ProfileView: View {
                         if allFieldsValidated {
                             self.isUpdating = true
                             // ToDo call service to update profile
+                            
+                            if let image = profileImage, var user = self.user {
+                                Api().uploadImage(image: image) { response in
+                                    if let message = response.message {
+                                        print(message)
+                                    }
+                                    if let profileImageFilename = response.profileImageFilename {
+                                        print(profileImageFilename)
+                                        if let _ = user.profileImageFilename {
+                                            Api().deleteProfileImage { message in
+                                                print(message)
+                                            }
+                                        }
+
+                                        user.profileImageFilename = profileImageFilename
+                                        user.firstName = self.firstName
+                                        user.lastName = self.lastName
+                                        user.email = self.email
+                                        Api().updateUser(user: user) { user in
+                                            print("User Updated")
+                                            print(user)
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            
                             self.showAlert.toggle()
                         }
                     }) {
@@ -359,7 +373,12 @@ struct ProfileView: View {
                     self.firstName = user.firstName
                     self.lastName = user.lastName
                     self.email = user.email
-                    print(user)
+                    self.user = user
+                    if let _ = user.profileImageFilename {
+                        Api().downloadProfileImage() { image in
+                            self.profileImage = image
+                        }
+                    }
                 } else {
                     print("No user profile found")
                 }

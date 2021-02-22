@@ -14,6 +14,7 @@ struct ImagePicker: UIViewControllerRepresentable {
     var allowsEditing: Bool = false
     
     @Binding var selectedImage: UIImage?
+    
     @Environment(\.presentationMode) var presentationMode
     
     func makeCoordinator() -> Coordinator {
@@ -44,7 +45,7 @@ final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigation
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
+
         if let image = info[parent.allowsEditing ? UIImagePickerController.InfoKey.editedImage : UIImagePickerController.InfoKey.originalImage] as? UIImage {
             parent.selectedImage = image
         }

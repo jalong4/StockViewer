@@ -5,7 +5,7 @@
 //  Created by Jim Long on 2/8/21.
 //
 
-import Foundation
+import UIKit
 
 
 class Api {
@@ -22,8 +22,17 @@ class Api {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         
-        URLSession.shared.dataTask(with: request) {(data, _, _) in
-            let response = try! JSONDecoder().decode(LoginResponse.self, from: data!)
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to login: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to get login data")
+            }
+            
+            let response = Utils.decodeToObj(LoginResponse.self, from: data)
             DispatchQueue.main.async {
                 completion(response)
             }
@@ -92,41 +101,6 @@ class Api {
         }
         .resume()
     }
-    
-    //    func getStockQuote(ticker: String, completion: @escaping ([String: Any]) -> ()) {
-    //        guard let url = URL(string: "\(Constants.baseUrl)/stocks/quote/\(ticker)"),
-    //              let accessToken = SettingsManager.sharedInstance.accessToken
-    //        else { return };
-    //
-    //
-    //        var request = URLRequest(url: url)
-    //        request.httpMethod = "GET"
-    //        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
-    //        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    //        request.setValue("application/json", forHTTPHeaderField: "Accept")
-    //
-    //        URLSession.shared.dataTask(with: request) {(data, response, error) in
-    //
-    //            if let error = error {
-    //                fatalError("Failed to get stock quote data: Error: \(error)")
-    //            }
-    //
-    //            guard let data = data else {
-    //                fatalError("Failed to get stock quote data")
-    //            }
-    //
-    //            do {
-    //                if let jsonResult = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
-    //                        DispatchQueue.main.async {
-    //                            completion(jsonResult)
-    //                        }
-    //                }
-    //            } catch let parseError {
-    //                fatalError("JSON Error \(parseError.localizedDescription)")
-    //            }
-    //        }
-    //        .resume()
-    //    }
     
     func getStockQuote(ticker: String, completion: @escaping (Quote?) -> ()) {
         guard let url = URL(string: "\(Constants.baseUrl)/stocks/quote/\(ticker)"),
@@ -312,9 +286,8 @@ class Api {
     }
     
     
-    
     func updateUser(user: User, completion: @escaping (User) -> ()) {
-        guard let url = URL(string: "\(Constants.baseUrl)/users/\(user._id)"),
+        guard let url = URL(string: "\(Constants.baseUrl)/users/id/\(user._id)"),
               let accessToken = SettingsManager.sharedInstance.accessToken,
               let body = try? JSONEncoder().encode(UserBody(user: user))
         else { return };
@@ -340,6 +313,160 @@ class Api {
             
             DispatchQueue.main.async {
                 completion(user)
+            }
+        }
+        .resume()
+    }
+    
+    func createDataBody(withParameters params: [String: String]?, media: [Media]?, boundary: String) -> Data {
+        
+        let lineBreak = "\r\n"
+        var body = Data()
+        
+        if let parameters = params {
+            for (key, value) in parameters {
+                body.append("--\(boundary + lineBreak)")
+                body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)")
+                body.append("\(value + lineBreak)")
+            }
+        }
+        
+        if let media = media {
+            for photo in media {
+                body.append("--\(boundary + lineBreak)")
+                body.append("Content-Disposition: form-data; name=\"\(photo.key)\"; filename=\"\(photo.filename)\"\(lineBreak)")
+                body.append("Content-Type: \(photo.mimeType + lineBreak + lineBreak)")
+                body.append(photo.data)
+                body.append(lineBreak)
+            }
+        }
+        
+        body.append("--\(boundary)--\(lineBreak)")
+        
+        return body
+    }
+
+    
+    func uploadImage(image: UIImage, completion: @escaping (UploadImageResponse) -> ()) {
+        guard let url = URL(string: "\(Constants.baseUrl)/images/upload/"),
+              let accessToken = SettingsManager.sharedInstance.accessToken,
+              let mediaImage = Media(withImage: image, forKey: "image")
+        else { return };
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        
+        let parameters = ["enctype": "multipart/form-data"]
+        let boundary = "Boundary-\(UUID().uuidString)"
+
+        let dataBody = createDataBody(withParameters: parameters, media: [mediaImage], boundary: boundary)
+        
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(String(dataBody.count), forHTTPHeaderField: "Content-Length")
+        request.httpBody = dataBody
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            if let error = error {
+                fatalError("Failed to upload image: Error: \(error)")
+            }
+            guard let data = data else {
+                fatalError("Failed to get response from uploading image")
+            }
+            
+            do {
+                if let jsonResult = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    print(jsonResult)
+                }
+            } catch let parseError {
+                fatalError("JSON Error \(parseError.localizedDescription)")
+            }
+            
+            
+            let response = Utils.decodeToObj(UploadImageResponse.self, from: data)
+            DispatchQueue.main.async {
+                completion(response)
+            }
+        }
+        .resume()
+    }
+    
+    func downloadImage(filename: String, completion: @escaping (UIImage) -> ()) {
+        guard let url = URL(string: "\(Constants.baseUrl)/images/download/"),
+              let accessToken = SettingsManager.sharedInstance.accessToken
+        else { return };
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            if let error = error {
+                fatalError("Failed to download image: Error: \(error)")
+            }
+            guard let data = data,
+                  let image = UIImage(data: data) else {
+                fatalError("Failed to download image image")
+            }
+            DispatchQueue.main.async {
+                completion(image)
+            }
+        }
+        .resume()
+    }
+    
+    func downloadProfileImage(completion: @escaping (UIImage) -> ()) {
+        guard let url = URL(string: "\(Constants.baseUrl)/images/profile/"),
+              let accessToken = SettingsManager.sharedInstance.accessToken
+        else { return };
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            if let error = error {
+                fatalError("Failed to download profile image: Error: \(error)")
+            }
+            guard let data = data,
+                  let image = UIImage(data: data) else {
+                fatalError("Failed to download profile image")
+            }
+            DispatchQueue.main.async {
+                completion(image)
+            }
+        }
+        .resume()
+    }
+    
+    func deleteProfileImage(completion: @escaping (String) -> ()) {
+        guard let url = URL(string: "\(Constants.baseUrl)/images/profile"),
+              let accessToken = SettingsManager.sharedInstance.accessToken
+        else { return };
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to delete profile image: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to delete profile image")
+            }
+            
+            let msg = Utils.decodeToObj([String: String].self, from: data)
+            
+            DispatchQueue.main.async {
+                completion(msg["message"] ?? "")
             }
         }
         .resume()
