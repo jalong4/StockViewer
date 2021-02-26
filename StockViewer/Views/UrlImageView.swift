@@ -11,7 +11,7 @@ struct UrlImageView: View {
     @Binding var urlImageModel: UrlImageModel?
     @Binding var showDefault: Bool
     
-    var defaultImageSystemName = "person.crop.circle.badge.plus"
+    var defaultImageSystemName: String
     
     func setShowDefault(_ showDefault: Bool) {
         self.showDefault = showDefault
@@ -47,6 +47,6 @@ struct UrlImageView: View {
 
 struct UrlImageView_Previews: PreviewProvider {
     static var previews: some View {
-        UrlImageView(urlImageModel: .constant(UrlImageModel(urlString: .constant(nil))), showDefault: .constant(true))
+        UrlImageView(urlImageModel: .constant(UrlImageModel(urlString: .constant(nil))), showDefault: .constant(true), defaultImageSystemName: "person.circle")
     }
 }

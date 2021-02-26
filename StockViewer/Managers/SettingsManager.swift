@@ -36,6 +36,11 @@ class SettingsManager {
         set (newValue) { LocalDiskSaver.set(key: .Password, isSecure: true, newValue: newValue as AnyObject?) }
     }
     
+    var profileImageUrl: String? {
+        get {    return LocalDiskSaver.get(key: .ProfileImageUrl, isSecure: false) as? String }
+        set (newValue) { LocalDiskSaver.set(key: .ProfileImageUrl, isSecure: false, newValue: newValue as AnyObject?) }
+    }
+    
     var accessToken: String? {
         get {    return LocalDiskSaver.get(key: .AccessToken, isSecure: true) as? String }
         set (newValue) { LocalDiskSaver.set(key: .AccessToken, isSecure: true, newValue: newValue as AnyObject?) }

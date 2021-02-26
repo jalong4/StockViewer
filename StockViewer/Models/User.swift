@@ -55,9 +55,20 @@ struct LoginResponse: Codable {
     var response : Login
 }
 
+struct ChangePasswordResponse: Codable {
+    var response : ChangePassword
+}
+
+struct ChangePassword: Codable {
+    var message: String?
+    var success: Bool
+    var user: User
+}
+
 struct Login: Codable {
     var success: Bool
-    var auth: Auth
+    var user: User?
+    var auth: Auth?
 }
 
 struct UploadImageResponse: Codable {

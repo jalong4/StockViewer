@@ -232,6 +232,12 @@ struct HomeView: View {
             let isLandscape = size.width > size.height
             appState.showingStockTable = false
             
+            if appState.needsRefreshData {
+                appState.needsRefreshData.toggle()
+                print("Refreshing data")
+                self.loadData()
+            }
+            
             print("isLandscape: \(isLandscape)")
             if (UIDevice.current.userInterfaceIdiom == .pad) { // && isLandscape {
                 appState.stockSortType = .ticker

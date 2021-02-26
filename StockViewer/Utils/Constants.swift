@@ -15,6 +15,7 @@ struct Constants {
         case EnteringTrade = "StockViewer.EnteringTrade"
         case Email = "StockViewer.Email"
         case Password = "StockViewer.Password"
+        case ProfileImageUrl = "StockViewer.ProfileImageUrl"
         case AccessToken = "StockViewer.AccessToken"
         case AccessTokenProperties = "StockViewer.AccessTokenProperties"
         case RefreshToken = "StockViewer.RefreshToken"

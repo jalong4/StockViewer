@@ -43,7 +43,7 @@ class Api {
         .resume()
     }
     
-    func changePassword(oldPassword: String, newPassword: String, completion: @escaping (LoginResponse) -> ()) {
+    func changePassword(oldPassword: String, newPassword: String, completion: @escaping (ChangePasswordResponse) -> ()) {
         guard
             let url = URL(string: "\(Constants.baseUrl)/users/password"),
             let accessToken = SettingsManager.sharedInstance.accessToken
@@ -71,7 +71,7 @@ class Api {
                 fatalError("Failed to get change password data")
             }
             
-            let response = Utils.decodeToObj(LoginResponse.self, from: data)
+            let response = Utils.decodeToObj(ChangePasswordResponse.self, from: data)
             DispatchQueue.main.async {
                 completion(response)
             }
@@ -82,7 +82,10 @@ class Api {
     func getPortfolio(completion: @escaping (Portfolio) -> ()) {
         guard let url = URL(string: "\(Constants.baseUrl)/stocks"),
               let accessToken = SettingsManager.sharedInstance.accessToken
-        else { return };
+        else {
+            print(SettingsManager.sharedInstance.accessToken ?? "Nil access Token")
+            return
+        };
         
         
         var request = URLRequest(url: url)

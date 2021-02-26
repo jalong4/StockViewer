@@ -18,11 +18,6 @@ struct ProfileView: View {
     @State private var firstName = ""
     @State private var lastName = ""
     @State private var email = ""
-    @State private var password = "123456"
-    @State private var password2 = "123456"
-    
-    @State private var hidePassword = true
-    @State private var hidePassword2 = true
     
     let horizontalPadding: CGFloat = 40
     let maxWidth: CGFloat = .infinity
@@ -33,15 +28,11 @@ struct ProfileView: View {
     @State private var firstNameMsg = ""
     @State private var lastNameMsg = ""
     @State private var emailMsg = ""
-    @State private var passwordMsg = ""
-    @State private var password2Msg = ""
     
     @State private var showAlert = false
     @State private var firstNameIsValid = false
     @State private var lastNameIsValid = false
     @State private var emailIsValid = false
-    @State private var passwordIsValid = false
-    @State private var password2IsValid = false
     
     @State private var isShowPhotoLibrary = false
     @State private var profileImage: UIImage?
@@ -51,35 +42,7 @@ struct ProfileView: View {
     
     
     var allFieldsValidated: Bool {
-        return firstNameIsValid && lastNameIsValid && passwordIsValid && password2IsValid
-    }
-    
-    private func passwordView(_ label: String, textfield: Binding<String>, isSecure: Bool, tag: Int) -> CustomTextField {
-        return CustomTextField(label, text: textfield, isSecure: isSecure, textAlignment: .left, tag: tag, onCommit: nil)
-    }
-    
-    private func validatePw() {
-        self.passwordMsg = ""
-        if (password.isEmpty || password.count < 6) {
-            self.passwordMsg = password.isEmpty ? "Enter a password" : "Password must be at least 6 characters"
-            self.passwordIsValid = false
-            self.disableUpdateButton = !allFieldsValidated
-            return
-        }
-        self.passwordIsValid = true
-        self.disableUpdateButton = !allFieldsValidated
-    }
-    
-    private func validatePw2() {
-        self.password2Msg = ""
-        if (password2.isEmpty || (password2 != password)) {
-            self.password2Msg = password2.isEmpty ? "Re-enter your password" : "Passwords don't match"
-            self.password2IsValid = false
-            self.disableUpdateButton = !allFieldsValidated
-            return
-        }
-        self.password2IsValid = true
-        self.disableUpdateButton = !allFieldsValidated
+        return firstNameIsValid && lastNameIsValid && emailIsValid
     }
     
     var profileImageIconView: AnyView {
@@ -92,7 +55,7 @@ struct ProfileView: View {
                             .clipShape(Circle())
                             .shadow(radius: 10, x: 0, y: 5))
         } else {
-            return AnyView(UrlImageView(urlImageModel: $profileImageModel, showDefault: $showDefaultProfileImage))
+            return AnyView(UrlImageView(urlImageModel: $profileImageModel, showDefault: $showDefaultProfileImage, defaultImageSystemName: "person.crop.circle.badge.plus"))
         }
         
     }
@@ -228,105 +191,6 @@ struct ProfileView: View {
                     .frame(maxWidth: maxWidth, alignment: .center)
                     .padding(.bottom, 4)
                     .foregroundColor(emailIsValid ? Color.themeValid : Color.themeError)
-                
-                
-                Group {
-                    
-                    ZStack {
-                        
-                        if hidePassword {
-                            passwordView("password", textfield: $password, isSecure: true, tag: 4)
-                                .frame(height: 40, alignment: .center)
-                                .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                                .frame(maxWidth: maxWidth)
-                                .padding([.top, .bottom], 4)
-                                .padding([.leading, .trailing], horizontalPadding)
-                                .onChange(of: password) { newValue in
-                                    validatePw()
-                                }
-                        } else {
-                            passwordView("password", textfield: $password, isSecure: false, tag: 4)
-                                .frame(height: 40, alignment: .center)
-                                .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                                .frame(maxWidth: maxWidth)
-                                .padding([.top, .bottom], 4)
-                                .padding([.leading, .trailing], horizontalPadding)
-                                .onChange(of: password) { newValue in
-                                    validatePw()
-                                }
-                        }
-                        HStack(spacing: 0) {
-                            Spacer()
-                            
-                            Button(action: {
-                                print("Toggling hide password flag")
-                                self.hidePassword.toggle()
-                            }) {
-                                Image(systemName: hidePassword ? "eye.fill" : "eye.slash.fill")
-                                    .foregroundColor(Color.black.opacity(0.7))
-                            }
-                            .frame(maxWidth: 40, maxHeight: 40, alignment: .center)
-                            .mask(RoundedRectangle(cornerRadius: 90))
-                            .background(Color.themeAccent.opacity(0.01))
-                            
-                        }
-                        .padding([.leading, .trailing],horizontalPadding)
-                    }
-                    .padding(0)
-                    
-                    Text($passwordMsg.wrappedValue)
-                        .frame(maxWidth: maxWidth, alignment: .center)
-                        .padding(.bottom, 4)
-                        .foregroundColor(passwordIsValid ? Color.themeValid : Color.themeError)
-                    
-                    ZStack {
-                        if hidePassword2 {
-                            passwordView("password2", textfield: $password2, isSecure: true, tag: 5)
-                                .frame(height: 40, alignment: .center)
-                                .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                                .frame(maxWidth: maxWidth)
-                                .padding([.top, .bottom], 4)
-                                .padding([.leading, .trailing], horizontalPadding)
-                                .onChange(of: password2) { newValue in
-                                    validatePw2()
-                                }
-                        } else {
-                            passwordView("password2", textfield: $password2, isSecure: false, tag: 5)
-                                .frame(height: 40, alignment: .center)
-                                .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                                .frame(maxWidth: maxWidth)
-                                .padding([.top, .bottom], 4)
-                                .padding([.leading, .trailing], horizontalPadding)
-                                .onChange(of: password2) { newValue in
-                                    validatePw2()
-                                }
-                        }
-                        
-                        HStack(spacing: 0) {
-                            Spacer()
-                            
-                            Button(action: {
-                                print("Toggling hide password2 flag")
-                                self.hidePassword2.toggle()
-                            }) {
-                                Image(systemName: hidePassword2 ? "eye.fill" : "eye.slash.fill")
-                                    .foregroundColor(Color.black.opacity(0.7))
-                            }
-                            .frame(maxWidth: 40, maxHeight: 40, alignment: .center)
-                            .mask(RoundedRectangle(cornerRadius: 90))
-                            .background(Color.themeAccent.opacity(0.01))
-                            
-                        }
-                        .padding([.leading, .trailing],horizontalPadding)
-                    }
-                    .padding(0)
-                    
-                }
-                
-                Text($password2Msg.wrappedValue)
-                    .frame(maxWidth: maxWidth, alignment: .center)
-                    .padding(.bottom, 4)
-                    .foregroundColor(password2IsValid ? Color.themeValid : Color.themeError)
                 
                 
                 HStack (spacing: 20) {

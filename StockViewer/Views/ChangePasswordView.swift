@@ -92,7 +92,7 @@ struct ChangePasswordView: View {
                 
                 ZStack {
                     
-                    if hidePassword {
+                    if hideOldPassword {
                         passwordView("Old Password", textfield: $oldPassword, isSecure: true, tag: 1)
                             .frame(height: 40, alignment: .center)
                             .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
@@ -284,6 +284,9 @@ struct ChangePasswordView: View {
         .edgesIgnoringSafeArea(.all)
         .navigationTitle("Change Password")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear() {
+            validateOldPw()
+        }
     }
     
 }
