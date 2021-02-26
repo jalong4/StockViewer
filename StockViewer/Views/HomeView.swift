@@ -49,6 +49,17 @@ struct HomeView: View {
     }
     
     // navigation link for programmatic navigation
+    var navigationLinkChangePassword: NavigationLink<EmptyView, ChangePasswordView>? {
+        
+        return NavigationLink(
+            destination: ChangePasswordView(),
+            isActive: $appState.showingChangePassword
+        ) {
+            EmptyView()
+        }
+    }
+    
+    // navigation link for programmatic navigation
     var navigationLinkEnterTrade: NavigationLink<EmptyView, EnterTradeView>? {
         
         return NavigationLink(
@@ -81,6 +92,14 @@ struct HomeView: View {
         }
     }
     
+    private func loadData() {
+        appState.isDataLoading = true
+        Api().getPortfolio { (portfolio) in
+            self.portfolio = portfolio
+            self.appState.isDataLoading = false
+        }
+    }
+    
     
     
     
@@ -105,9 +124,8 @@ struct HomeView: View {
                 
                 NavigationView {
                     
-                    if !appState.isDataLoading {
-                        
-                        VStack {
+                    VStack {
+                        if !appState.isDataLoading {
                             TabView {
                                 TopMoversView(title: "Top Gainers", portfolio: portfolio, stockGains:Array(portfolio.summary.topDayGainers))
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
@@ -132,11 +150,13 @@ struct HomeView: View {
                                 if let totals = self.portfolio.summary.totals {
                                     if totals.total > 0 {
                                         SummaryView(totals: self.portfolio.summary.totals, title: "Portfolio")
+                                            .padding([.leading, .trailing], 20)
                                     }
                                 }
                             }
                             
                             navigationLinkProfile
+                            navigationLinkChangePassword
                             navigationLinkStockTable
                             navigationLinkEnterTrade
                             navigationLinkEditCash
@@ -150,48 +170,49 @@ struct HomeView: View {
                                             appState.showingStockTable = true
                                         }) {
                                             AccountView(account: account)
-                                                .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 4, trailing: 0))
                                                 .cardBorder()
                                         }
                                         .buttonStyle(PlainButtonStyle())
                                     }
                                 }
+                                
                             }
-                        }
-                        .padding(20)
-                        .navigationTitle(Text(appState.isDataLoading ? "" : "Portfolio"))
-                        .navigationBarItems(leading:
-                                                Button(action: {
-                                                    withAnimation {
-                                                        appState.showMenu.toggle()
-                                                    }
-                                                    
-                                                }) {
-                                                    if !appState.isDataLoading {
-                                                        Image(systemName: "line.horizontal.3")
-                                                            .imageScale(.large)
-                                                            .padding()
-                                                            .foregroundColor(Color.themeAccent)
-                                                    }
-                                                }, trailing:
+                            .padding([.leading, .trailing], 20)
+                            .padding(.top, 8)
+                            .navigationTitle(Text(appState.isDataLoading ? "" : "Portfolio"))
+                            .navigationBarItems(leading:
                                                     Button(action: {
-                                                        self.portfolio = Portfolio()
-                                                        appState.isDataLoading = true
-                                                        print("Refreshing data")
+                                                        withAnimation {
+                                                            appState.showMenu.toggle()
+                                                        }
+                                                        
                                                     }) {
                                                         if !appState.isDataLoading {
-                                                            Image(systemName: "arrow.clockwise"
-                                                            )
-                                                            .imageScale(.large)
-                                                            .padding()
-                                                            .foregroundColor(Color.themeAccent)
+                                                            Image(systemName: "line.horizontal.3")
+                                                                .imageScale(.large)
+                                                                .padding()
+                                                                .foregroundColor(Color.themeAccent)
                                                         }
-                                                    }
-                        )
-                        
+                                                    }, trailing:
+                                                        Button(action: {
+                                                            print("Refreshing data")
+                                                            self.loadData()
+                                                            
+                                                        }) {
+                                                            if !appState.isDataLoading {
+                                                                Image(systemName: "arrow.clockwise"
+                                                                )
+                                                                .imageScale(.large)
+                                                                .padding()
+                                                                .foregroundColor(Color.themeAccent)
+                                                            }
+                                                        }
+                            )
+                        }
                     }
-                    
                 }
+                .navigationViewStyle(StackNavigationViewStyle())
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
             .offset(x: appState.showMenu ? geometry.size.width/2 : 0)

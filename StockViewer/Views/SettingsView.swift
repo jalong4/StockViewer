@@ -11,22 +11,24 @@ struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
-        NavigationView {
-            VStack() {
-                Text("Coming soon...")
-                
-                Button(action: {
-                    appState.showingSettings = false
-                    appState.showingStockTable = true
-                }) {
-                    Text("OK")
-                        .padding(EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 40))
-                        .primaryButtonTextModifier()
-                }
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+        VStack() {
+            Text("Coming soon...")
+            
+            Button(action: {
+                appState.showingSettings = false
+                appState.showingStockTable = true
+            }) {
+                Text("OK")
+                    .padding(EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 40))
+                    .primaryButtonTextModifier()
             }
-            .navigationTitle("Settings")
+            .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
         }
+        .dismissKeyboardOnTap()
+        .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
+        .edgesIgnoringSafeArea(.all)
+        .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  ProfileView.swift
+//  ChangePasswordView.swift
 //  StockViewer
 //
 //  Created by Jim Long on 2/8/21.
@@ -7,20 +7,16 @@
 
 import SwiftUI
 
-struct ProfileView: View {
+struct ChangePasswordView: View {
     
     @EnvironmentObject var appState: AppState
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    
-    @State private var showDefaultProfileImage = false
-    @State var profileImageModel: UrlImageModel?
-    
-    @State private var firstName = ""
-    @State private var lastName = ""
-    @State private var email = ""
+
+    @State private var oldPassword = "123456"
     @State private var password = "123456"
     @State private var password2 = "123456"
     
+    @State private var hideOldPassword = true
     @State private var hidePassword = true
     @State private var hidePassword2 = true
     
@@ -29,33 +25,38 @@ struct ProfileView: View {
     
     @State private var isUpdating: Bool = false
     @State private var disableUpdateButton: Bool = false
-    
-    @State private var firstNameMsg = ""
-    @State private var lastNameMsg = ""
-    @State private var emailMsg = ""
+
+    @State private var oldPasswordMsg = ""
     @State private var passwordMsg = ""
     @State private var password2Msg = ""
     
     @State private var showAlert = false
-    @State private var firstNameIsValid = false
-    @State private var lastNameIsValid = false
-    @State private var emailIsValid = false
+
+    @State private var oldPasswordIsValid = false
     @State private var passwordIsValid = false
     @State private var password2IsValid = false
-    
-    @State private var isShowPhotoLibrary = false
-    @State private var profileImage: UIImage?
-    @State private var profileImageUrl: String?
     
     @State private var user: User?
     
     
     var allFieldsValidated: Bool {
-        return firstNameIsValid && lastNameIsValid && passwordIsValid && password2IsValid
+        return oldPasswordIsValid && passwordIsValid && password2IsValid
     }
     
     private func passwordView(_ label: String, textfield: Binding<String>, isSecure: Bool, tag: Int) -> CustomTextField {
         return CustomTextField(label, text: textfield, isSecure: isSecure, textAlignment: .left, tag: tag, onCommit: nil)
+    }
+    
+    private func validateOldPw() {
+        self.oldPasswordMsg = ""
+        if (oldPassword.isEmpty || oldPassword.count < 6) {
+            self.oldPasswordMsg = oldPassword.isEmpty ? "Enter your current password" : "Password must be at least 6 characters"
+            self.oldPasswordIsValid = false
+            self.disableUpdateButton = !allFieldsValidated
+            return
+        }
+        self.oldPasswordIsValid = true
+        self.disableUpdateButton = !allFieldsValidated
     }
     
     private func validatePw() {
@@ -82,47 +83,6 @@ struct ProfileView: View {
         self.disableUpdateButton = !allFieldsValidated
     }
     
-    var profileImageIconView: AnyView {
-        
-        if let profileImage = profileImage {
-            return AnyView(Image(uiImage: profileImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .clipShape(Circle())
-                            .shadow(radius: 10, x: 0, y: 5))
-        } else {
-            return AnyView(UrlImageView(urlImageModel: $profileImageModel, showDefault: $showDefaultProfileImage))
-        }
-        
-    }
-    
-    func updateUser() {
-        guard var user = user else { return }
-        
-        user.profileImageUrl = profileImageUrl
-        user.firstName = self.firstName
-        user.lastName = self.lastName
-        user.email = self.email
-        Api().updateUser(user: user) { user in
-            print("User Updated")
-            print(user)
-        }
-    }
-    
-    func updateProfileImage() {
-        guard
-            let image = profileImage
-        else {
-            return
-        }
-        
-        Api().updateProfile(image: image) { response in
-            print(response.message ?? "")
-        }
-    }
-    
-    
     var body: some View {
         
         ZStack {
@@ -130,112 +90,58 @@ struct ProfileView: View {
             
             VStack(alignment: .center, spacing: 0,  content: {
                 
-                Button(action: {
-                    print("Profile photo tapped")
-                    self.isShowPhotoLibrary.toggle()
-                }) {
-                    profileImageIconView
-                }
-                .frame(minWidth: 0, maxWidth: maxWidth)
-                .padding(.top, 120)
-                .padding(.bottom, 10)
-                .background(Color.themeBackground)
-                .foregroundColor(Color.themeForeground)
-                .padding(.horizontal, horizontalPadding)
-                .sheet(isPresented: $isShowPhotoLibrary) {
+                ZStack {
                     
-                }
-                .sheet(isPresented: $isShowPhotoLibrary, onDismiss: {
-                    if let _ = profileImage {
-                        self.showDefaultProfileImage = false
-                        updateProfileImage()
-                    }
-                    
-                }, content: {
-                    ImagePicker(sourceType: .photoLibrary, allowsEditing: true, selectedImage: $profileImage)
-                })
-                
-                
-                Group {
-                    
-                    CustomTextField("First Name", text: $firstName, autocapitalization: .words, textAlignment:  .left, tag: 1, onCommit: nil)
-                        .frame(height: 40, alignment: .center)
-                        .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                        .frame(maxWidth: maxWidth)
-                        .padding([.top, .bottom], 4)
-                        .padding(.horizontal, horizontalPadding)
-                        .onChange(of: firstName) { newValue in
-                            self.firstNameMsg = ""
-                            if (firstName.isEmpty) {
-                                self.firstNameMsg = "Enter a first name"
-                                self.firstNameIsValid = false
-                                self.disableUpdateButton = !allFieldsValidated
-                                return
+                    if hidePassword {
+                        passwordView("Old Password", textfield: $oldPassword, isSecure: true, tag: 1)
+                            .frame(height: 40, alignment: .center)
+                            .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
+                            .frame(maxWidth: maxWidth)
+                            .padding([.top, .bottom], 4)
+                            .padding([.leading, .trailing], horizontalPadding)
+                            .onChange(of: oldPassword) { newValue in
+                                validateOldPw()
                             }
-                            self.firstNameIsValid = true
-                            self.disableUpdateButton = !allFieldsValidated
-                        }
-                    
-                    
-                    Text($firstNameMsg.wrappedValue)
-                        .frame(maxWidth: maxWidth, alignment: .center)
-                        .padding(.bottom, 4)
-                        .foregroundColor(firstNameIsValid ? Color.themeValid : Color.themeError)
-                    
-                    CustomTextField("Last Name", text: $lastName, autocapitalization: .words, textAlignment:  .left, tag: 2, onCommit: nil)
-                        .frame(height: 40, alignment: .center)
-                        .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                        .frame(maxWidth: maxWidth)
-                        .padding([.top, .bottom], 4)
-                        .padding([.leading, .trailing], horizontalPadding)
-                        .onChange(of: lastName) { newValue in
-                            self.lastNameMsg = ""
-                            if (lastName.isEmpty) {
-                                self.lastNameMsg = "Enter a last name"
-                                self.lastNameIsValid = false
-                                self.disableUpdateButton = !allFieldsValidated
-                                return
+                    } else {
+                        passwordView("Old Password", textfield: $oldPassword, isSecure: false, tag: 1)
+                            .frame(height: 40, alignment: .center)
+                            .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
+                            .frame(maxWidth: maxWidth)
+                            .padding([.top, .bottom], 4)
+                            .padding([.leading, .trailing], horizontalPadding)
+                            .onChange(of: oldPassword) { newValue in
+                                validateOldPw()
                             }
-                            self.lastNameIsValid = true
-                            self.disableUpdateButton = !allFieldsValidated
-                        }
-                    
-                    Text($lastNameMsg.wrappedValue)
-                        .frame(maxWidth: maxWidth, alignment: .center)
-                        .padding(.bottom, 4)
-                        .foregroundColor(lastNameIsValid ? Color.themeValid : Color.themeError)
-                }
-                
-                CustomTextField("email", text: $email, textAlignment:  .left, tag: 3, onCommit: nil)
-                    .frame(height: 40, alignment: .center)
-                    .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                    .frame(maxWidth: maxWidth)
-                    .padding([.top, .bottom], 4)
-                    .padding([.leading, .trailing], horizontalPadding)
-                    .onChange(of: email) { newValue in
-                        self.emailMsg = ""
-                        if (email.isEmpty || !email.isValidEmail()) {
-                            self.emailMsg = email.isEmpty ? "Enter an email address" : "Invalid email address"
-                            self.emailIsValid = false
-                            self.disableUpdateButton = !allFieldsValidated
-                            return
-                        }
-                        self.emailIsValid = true
-                        self.disableUpdateButton = !allFieldsValidated
                     }
+                    HStack(spacing: 0) {
+                        Spacer()
+                        
+                        Button(action: {
+                            print("Toggling hide Oldpassword flag")
+                            self.hideOldPassword.toggle()
+                        }) {
+                            Image(systemName: hideOldPassword ? "eye.fill" : "eye.slash.fill")
+                                .foregroundColor(Color.black.opacity(0.7))
+                        }
+                        .frame(maxWidth: 40, maxHeight: 40, alignment: .center)
+                        .mask(RoundedRectangle(cornerRadius: 90))
+                        .background(Color.themeAccent.opacity(0.01))
+                        
+                    }
+                    .padding([.leading, .trailing],horizontalPadding)
+                }
+                .padding(0)
+                .padding(.top, 180)
                 
-                Text($emailMsg.wrappedValue)
+                Text($oldPasswordMsg.wrappedValue)
                     .frame(maxWidth: maxWidth, alignment: .center)
                     .padding(.bottom, 4)
-                    .foregroundColor(emailIsValid ? Color.themeValid : Color.themeError)
-                
-                
-                Group {
+                    .foregroundColor(oldPasswordIsValid ? Color.themeValid : Color.themeError)
                     
                     ZStack {
                         
                         if hidePassword {
-                            passwordView("password", textfield: $password, isSecure: true, tag: 4)
+                            passwordView("New Password", textfield: $password, isSecure: true, tag: 2)
                                 .frame(height: 40, alignment: .center)
                                 .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
                                 .frame(maxWidth: maxWidth)
@@ -245,7 +151,7 @@ struct ProfileView: View {
                                     validatePw()
                                 }
                         } else {
-                            passwordView("password", textfield: $password, isSecure: false, tag: 4)
+                            passwordView("New Password", textfield: $password, isSecure: false, tag: 2)
                                 .frame(height: 40, alignment: .center)
                                 .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
                                 .frame(maxWidth: maxWidth)
@@ -281,7 +187,7 @@ struct ProfileView: View {
                     
                     ZStack {
                         if hidePassword2 {
-                            passwordView("password2", textfield: $password2, isSecure: true, tag: 5)
+                            passwordView("Confirm New Password", textfield: $password2, isSecure: true, tag: 3)
                                 .frame(height: 40, alignment: .center)
                                 .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
                                 .frame(maxWidth: maxWidth)
@@ -291,7 +197,7 @@ struct ProfileView: View {
                                     validatePw2()
                                 }
                         } else {
-                            passwordView("password2", textfield: $password2, isSecure: false, tag: 5)
+                            passwordView("Confirm New Password", textfield: $password2, isSecure: false, tag: 3)
                                 .frame(height: 40, alignment: .center)
                                 .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
                                 .frame(maxWidth: maxWidth)
@@ -321,7 +227,6 @@ struct ProfileView: View {
                     }
                     .padding(0)
                     
-                }
                 
                 Text($password2Msg.wrappedValue)
                     .frame(maxWidth: maxWidth, alignment: .center)
@@ -334,11 +239,11 @@ struct ProfileView: View {
                         print("Updating")
                         if allFieldsValidated {
                             self.isUpdating = true
-                            
-                            if let _ = user {
-                                updateUser()
+                            Api().changePassword(oldPassword: oldPassword, newPassword: password) { response in
+                                print("Password Changed")
                                 self.showAlert.toggle()
                             }
+
                         }
                     }) {
                         Text(isUpdating ? "Updating" : "Update")
@@ -349,17 +254,17 @@ struct ProfileView: View {
                     }
                     .disabled(disableUpdateButton || isUpdating)
                     .alert(isPresented: $showAlert, content: {
-                        return Alert(title: Text("Profile Updated"),
+                        return Alert(title: Text("Password Updated"),
                                      message: nil,
                                      dismissButton: .default(Text("Ok"), action: {
-                                        appState.showingProfile = false
+                                        appState.showingChangePassword = false
                                         appState.showingStockTable = true
                                      }))
                     })
                     
                     Button(action: {
                         print("Canceling")
-                        appState.showingProfile = false
+                        appState.showingChangePassword = false
                         appState.showingStockTable = true
                     }) {
                         Text("Cancel")
@@ -377,35 +282,14 @@ struct ProfileView: View {
         .dismissKeyboardOnTap()
         .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
         .edgesIgnoringSafeArea(.all)
-        .navigationTitle("Profile")
+        .navigationTitle("Change Password")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear() {
-            Api().getUser { user in
-                if let user = user {
-                    self.firstName = user.firstName
-                    self.lastName = user.lastName
-                    self.email = user.email
-                    self.user = user
-                    if let url = user.profileImageUrl {
-                        profileImageUrl = url
-                        profileImageModel = UrlImageModel(urlString: $profileImageUrl)
-                        profileImageModel?.loadImage()
-                    } else {
-                        showDefaultProfileImage = true
-                    }
-                    
-                } else {
-                    print("No user profile found")
-                    showDefaultProfileImage = true
-                }
-            }
-        }
     }
     
 }
 
-struct ProfileView_Previews: PreviewProvider {
+struct ChangePasswordView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        ChangePasswordView()
     }
 }

@@ -50,5 +50,10 @@ class SettingsManager {
         get {    return LocalDiskSaver.get(key: .AccessTokenProperties, isSecure: true) as? String }
         set (newValue) { LocalDiskSaver.set(key: .AccessTokenProperties, isSecure: true, newValue: newValue as AnyObject?) }
     }
+    
+    var imageCache: [String : UIImage]? {
+        get {    return LocalDiskSaver.get(key: .ImageCache, isSecure: false) as? [String : UIImage] }
+        set (newValue) { LocalDiskSaver.set(key: .ImageCache, isSecure: false, newValue: newValue as AnyObject?) }
+    }
 
 }

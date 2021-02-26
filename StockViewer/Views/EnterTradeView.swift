@@ -323,6 +323,7 @@ struct EnterTradeView: View {
                             self.isSaving = true
                             print("Entering trade")
                             
+                            print("account: \(self.account)")
                             print("ticker: \(self.ticker)")
                             print("quantity: \(self.quantityValue)")
                             print("Total Cost: \(self.totalCostValue)")

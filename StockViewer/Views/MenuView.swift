@@ -36,6 +36,27 @@ struct MenuView: View {
                 Button(action: {
                     appState.showMenu = false
                     appState.showingProfile = false
+                    appState.showingEnterTrade = false
+                    appState.showingStockTable = false
+                    appState.showingEditCash = false
+                    appState.showingSettings = false
+                    appState.showingChangePassword = true
+                    print("Change Password")
+                    
+                }) {
+                    Image(systemName: "key")
+                        .foregroundColor(Color.themeBackground)
+                        .imageScale(.large)
+                    Text("Change Password")
+                        .padding()
+                        .foregroundColor(Color.themeBackground)
+                }
+            }
+            
+            HStack {
+                Button(action: {
+                    appState.showMenu = false
+                    appState.showingProfile = false
                     appState.showingEnterTrade = true
                     appState.showingStockTable = false
                     appState.showingEditCash = false

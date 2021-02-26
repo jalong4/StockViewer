@@ -18,6 +18,7 @@ struct Constants {
         case AccessToken = "StockViewer.AccessToken"
         case AccessTokenProperties = "StockViewer.AccessTokenProperties"
         case RefreshToken = "StockViewer.RefreshToken"
+        case ImageCache = "StockViewer.ImageCache"
     }
     
     static let baseUrl = "https://api.jimlong.ca"

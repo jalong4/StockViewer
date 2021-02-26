@@ -14,6 +14,7 @@ struct Auth: Codable {
 }
 
 struct AccessTokenProperties: Codable {
+    var _id = String()
     var email = String()
     var iat: Double = 0.0
     var exp: Double = 0.0
