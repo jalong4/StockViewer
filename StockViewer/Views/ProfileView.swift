@@ -118,79 +118,35 @@ struct ProfileView: View {
                     ImagePicker(sourceType: .photoLibrary, allowsEditing: true, selectedImage: $profileImage)
                 })
                 
-                
-                Group {
-                    
-                    CustomTextField("First Name", text: $firstName, autocapitalization: .words, textAlignment:  .left, tag: 1, onCommit: nil)
-                        .frame(height: 40, alignment: .center)
-                        .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                        .frame(maxWidth: maxWidth)
-                        .padding([.top, .bottom], 4)
-                        .padding(.horizontal, horizontalPadding)
-                        .onChange(of: firstName) { newValue in
-                            self.firstNameMsg = ""
-                            if (firstName.isEmpty) {
-                                self.firstNameMsg = "Enter a first name"
-                                self.firstNameIsValid = false
+                SvTextField(placeholder: "First Name", text: $firstName, isValid: $firstNameIsValid, autocapitalization: .words, textMsg: $firstNameMsg,
+                            validationCallback: {
+                                return ValidationResult(isValid: !firstName.isEmpty,
+                                                        errorMessage: "Enter a First Name")
+                            },
+                            onChangeHandler: {
                                 self.disableUpdateButton = !allFieldsValidated
-                                return
                             }
-                            self.firstNameIsValid = true
-                            self.disableUpdateButton = !allFieldsValidated
-                        }
-                    
-                    
-                    Text($firstNameMsg.wrappedValue)
-                        .frame(maxWidth: maxWidth, alignment: .center)
-                        .padding(.bottom, 4)
-                        .foregroundColor(firstNameIsValid ? Color.themeValid : Color.themeError)
-                    
-                    CustomTextField("Last Name", text: $lastName, autocapitalization: .words, textAlignment:  .left, tag: 2, onCommit: nil)
-                        .frame(height: 40, alignment: .center)
-                        .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                        .frame(maxWidth: maxWidth)
-                        .padding([.top, .bottom], 4)
-                        .padding([.leading, .trailing], horizontalPadding)
-                        .onChange(of: lastName) { newValue in
-                            self.lastNameMsg = ""
-                            if (lastName.isEmpty) {
-                                self.lastNameMsg = "Enter a last name"
-                                self.lastNameIsValid = false
+                )
+                
+                SvTextField(placeholder: "Last Name", text: $lastName, isValid: $lastNameIsValid, autocapitalization: .words, tag: 2, textMsg: $lastNameMsg,
+                            validationCallback: {
+                                return ValidationResult(isValid: !lastName.isEmpty,
+                                                        errorMessage: "Enter a Last Name")
+                            },
+                            onChangeHandler: {
                                 self.disableUpdateButton = !allFieldsValidated
-                                return
                             }
-                            self.lastNameIsValid = true
-                            self.disableUpdateButton = !allFieldsValidated
-                        }
-                    
-                    Text($lastNameMsg.wrappedValue)
-                        .frame(maxWidth: maxWidth, alignment: .center)
-                        .padding(.bottom, 4)
-                        .foregroundColor(lastNameIsValid ? Color.themeValid : Color.themeError)
-                }
+                )
                 
-                CustomTextField("email", text: $email, textAlignment:  .left, tag: 3, onCommit: nil)
-                    .frame(height: 40, alignment: .center)
-                    .background(Capsule().fill(Color.themeAccent.opacity(0.2)))
-                    .frame(maxWidth: maxWidth)
-                    .padding([.top, .bottom], 4)
-                    .padding([.leading, .trailing], horizontalPadding)
-                    .onChange(of: email) { newValue in
-                        self.emailMsg = ""
-                        if (email.isEmpty || !email.isValidEmail()) {
-                            self.emailMsg = email.isEmpty ? "Enter an email address" : "Invalid email address"
-                            self.emailIsValid = false
-                            self.disableUpdateButton = !allFieldsValidated
-                            return
-                        }
-                        self.emailIsValid = true
-                        self.disableUpdateButton = !allFieldsValidated
-                    }
-                
-                Text($emailMsg.wrappedValue)
-                    .frame(maxWidth: maxWidth, alignment: .center)
-                    .padding(.bottom, 4)
-                    .foregroundColor(emailIsValid ? Color.themeValid : Color.themeError)
+                SvTextField(placeholder: "email", text: $email, isValid: $emailIsValid, tag: 3, textMsg: $emailMsg,
+                            validationCallback: {
+                                return ValidationResult(isValid: email.isValidEmail(),
+                                                        errorMessage: email.inValidEmailMessage())
+                            },
+                            onChangeHandler: {
+                                self.disableUpdateButton = !allFieldsValidated
+                            }
+                )
                 
                 
                 HStack (spacing: 20) {

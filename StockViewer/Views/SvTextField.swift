@@ -56,13 +56,16 @@ struct SvTextField: View {
                              text: $text,
                              isValid: $isValid,
                              isSecure: isSecure,
+                             keyboardType: keyboardType,
+                             autocapitalization: autocapitalization,
+                             textAlignment: textAlignment,
                              tag: tag,
                              textMsg: $textMsg,
                              validationCallback: validationCallback,
                              onChangeHandler: onChangeHandler)
 
         
-        Text($textMsg.wrappedValue.isEmpty ? " " : $textMsg.wrappedValue)
+        Text(($textMsg.wrappedValue.isEmpty || isValid) ? " " : $textMsg.wrappedValue)
             .frame(maxWidth: Constants.textFieldMaxWidth, alignment: .center)
             .padding(.top, 0)
             .padding(.bottom, 10)

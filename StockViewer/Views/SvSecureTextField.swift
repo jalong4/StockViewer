@@ -31,7 +31,7 @@ struct SvSecureTextField: View {
          keyboardType: UIKeyboardType = .default,
          autocapitalization: UITextAutocapitalizationType = .none,
          textAlignment: NSTextAlignment = .left,
-         tag: Int,
+         tag: Int = 1,
          validationCallback: @escaping (()->ValidationResult),
          onChangeHandler: (()->Void)?) {
         
@@ -90,7 +90,7 @@ struct SvSecureTextField: View {
         }
         .padding(0)
         
-        Text($textMsg.wrappedValue.isEmpty ? " " : $textMsg.wrappedValue)
+        Text(($textMsg.wrappedValue.isEmpty || isValid) ? " " : $textMsg.wrappedValue)
             .frame(maxWidth: Constants.textFieldMaxWidth, alignment: .center)
             .padding(.top, 0)
             .padding(.bottom, 10)
