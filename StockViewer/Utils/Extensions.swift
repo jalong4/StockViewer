@@ -55,6 +55,7 @@ extension View {
 
 extension Color {
     static let themeAccent = Color("AccentColor")
+    static let themeAccentFaded = themeAccent.opacity(0.2)
     static let themeBackground = Color("BackgroundColor")
     static let themeForeground = Color("ForegroundColor")
     static let themeBorder = Color("BorderColor")
@@ -96,9 +97,27 @@ public struct DismissKeyboardOnTap: ViewModifier {
 
 extension String {
     func isValidEmail() -> Bool {
-        // here, `try!` will always succeed because the pattern is valid
-        let regex = try! NSRegularExpression(pattern: "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", options: .caseInsensitive)
-        return regex.firstMatch(in: self, options: [], range: NSRange(location: 0, length: count)) != nil
+
+        
+        if self.isEmpty {
+            return false
+        }
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        let result = emailTest.evaluate(with: self)
+        return result
+    }
+    
+    func inValidEmailMessage() -> String {
+        return self.isEmpty ? "Please enter an email address" : "Invalid Email address"
+    }
+    
+    func isValidPassword() -> Bool {
+        return !(self.isEmpty || self.count < 6)
+    }
+    
+    func invalidPasswordMessage(fieldName: String = "password") -> String {
+        return self.isEmpty ? "Please enter a " + fieldName : fieldName.capitalized + " must be at least 6 characters"
     }
 }
 

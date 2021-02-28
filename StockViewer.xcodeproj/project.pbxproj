@@ -29,6 +29,10 @@
 		8E31682A25DCCDA3001B5ABD /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E31682925DCCDA3001B5ABD /* SegmentedPicker.swift */; };
 		8E3D05E225E1A4AF00305FEA /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3D05E125E1A4AF00305FEA /* ImagePicker.swift */; };
 		8E3D6FE925E8A97400967AE7 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3D6FE825E8A97400967AE7 /* ChangePasswordView.swift */; };
+		8E3D6FEB25EACA2800967AE7 /* SvTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3D6FEA25EACA2800967AE7 /* SvTextField.swift */; };
+		8E3D6FED25EAD97F00967AE7 /* SvSecureTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3D6FEC25EAD97F00967AE7 /* SvSecureTextField.swift */; };
+		8E3D6FEF25EAE66F00967AE7 /* ValidationResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3D6FEE25EAE66F00967AE7 /* ValidationResult.swift */; };
+		8E3D6FF125EAF9D600967AE7 /* SvTextFieldNoTextMsg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3D6FF025EAF9D500967AE7 /* SvTextFieldNoTextMsg.swift */; };
 		8E8E8F5225D7272A00588BC1 /* EnterTradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F5125D7272A00588BC1 /* EnterTradeView.swift */; };
 		8E8E8F5525D750E300588BC1 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F5425D750E300588BC1 /* AppState.swift */; };
 		8E8E8F5825D754D100588BC1 /* PreviewTrade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F5725D754D100588BC1 /* PreviewTrade.swift */; };
@@ -85,6 +89,10 @@
 		8E31682925DCCDA3001B5ABD /* SegmentedPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		8E3D05E125E1A4AF00305FEA /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		8E3D6FE825E8A97400967AE7 /* ChangePasswordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
+		8E3D6FEA25EACA2800967AE7 /* SvTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SvTextField.swift; sourceTree = "<group>"; };
+		8E3D6FEC25EAD97F00967AE7 /* SvSecureTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SvSecureTextField.swift; sourceTree = "<group>"; };
+		8E3D6FEE25EAE66F00967AE7 /* ValidationResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationResult.swift; sourceTree = "<group>"; };
+		8E3D6FF025EAF9D500967AE7 /* SvTextFieldNoTextMsg.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SvTextFieldNoTextMsg.swift; sourceTree = "<group>"; };
 		8E8E8F5125D7272A00588BC1 /* EnterTradeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnterTradeView.swift; sourceTree = "<group>"; };
 		8E8E8F5425D750E300588BC1 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		8E8E8F5725D754D100588BC1 /* PreviewTrade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTrade.swift; sourceTree = "<group>"; };
@@ -217,6 +225,7 @@
 				8EDA215F25CD069B00194772 /* Summary.swift */,
 				8E1629F425E4538700A206AF /* UrlImageModel.swift */,
 				8E003A4E25D21FBC00FB3A96 /* User.swift */,
+				8E3D6FEE25EAE66F00967AE7 /* ValidationResult.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -246,6 +255,9 @@
 				8EDA216A25CD1AE000194772 /* SummaryView.swift */,
 				8EDA217E25CF362B00194772 /* TopMoversView.swift */,
 				8E1629F625E45F4B00A206AF /* UrlImageView.swift */,
+				8E3D6FEC25EAD97F00967AE7 /* SvSecureTextField.swift */,
+				8E3D6FF025EAF9D500967AE7 /* SvTextFieldNoTextMsg.swift */,
+				8E3D6FEA25EACA2800967AE7 /* SvTextField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -395,10 +407,12 @@
 				8EDA218525CF483C00194772 /* ViewModifiers.swift in Sources */,
 				8E1629F525E4538700A206AF /* UrlImageModel.swift in Sources */,
 				8E003A6625D342B100FB3A96 /* AuthUtils.swift in Sources */,
+				8E3D6FED25EAD97F00967AE7 /* SvSecureTextField.swift in Sources */,
 				8E3D6FE925E8A97400967AE7 /* ChangePasswordView.swift in Sources */,
 				8E003A4925D219B400FB3A96 /* LocalDiskSaver.swift in Sources */,
 				8EDA217F25CF362B00194772 /* TopMoversView.swift in Sources */,
 				8E02D2BA25D8A13A001FE895 /* Holdings.swift in Sources */,
+				8E3D6FF125EAF9D600967AE7 /* SvTextFieldNoTextMsg.swift in Sources */,
 				8E003A4F25D21FBC00FB3A96 /* User.swift in Sources */,
 				8EBF45F925D9AAEB004269ED /* CustomTextField.swift in Sources */,
 				8EDA214725CD060500194772 /* ContentView.swift in Sources */,
@@ -410,7 +424,9 @@
 				8E0039C025D07F9500FB3A96 /* SizeClassView.swift in Sources */,
 				8EDA215A25CD064F00194772 /* Stock.swift in Sources */,
 				8E003A5825D2244600FB3A96 /* Api.swift in Sources */,
+				8E3D6FEF25EAE66F00967AE7 /* ValidationResult.swift in Sources */,
 				8E8E8F5525D750E300588BC1 /* AppState.swift in Sources */,
+				8E3D6FEB25EACA2800967AE7 /* SvTextField.swift in Sources */,
 				8EDA218B25CF50BB00194772 /* Enums.swift in Sources */,
 				8E003A6325D319D700FB3A96 /* HomeView.swift in Sources */,
 				8EDA216325CD06C200194772 /* StockGains.swift in Sources */,

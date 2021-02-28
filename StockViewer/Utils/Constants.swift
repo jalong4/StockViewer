@@ -26,5 +26,9 @@ struct Constants {
 //    static let baseUrl = "http://192.168.7.168:3000"
 
     static let expiresIn5Minutes = TimeInterval(300) // 60 sec * 5
+    
+    static let textFieldFrameHeight: CGFloat = 40
+    static let textFieldMaxWidth: CGFloat = .infinity
+    static let horizontalPadding: CGFloat = 40
 
 }
