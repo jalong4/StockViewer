@@ -15,6 +15,7 @@ struct CustomTextField: UIViewRepresentable {
     let keyboardType: UIKeyboardType // Keypad layout type
     let tag: Int // Tag to recognise each specific TextView
     let textAlignment: NSTextAlignment
+    var didBeginEditing: (()->Void)?
     var commitHandler: (()->Void)? // Called when return key is pressed
     
     let padding = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
@@ -26,14 +27,16 @@ struct CustomTextField: UIViewRepresentable {
          keyboardType: UIKeyboardType = .default,
          autocapitalization: UITextAutocapitalizationType = .none,
          textAlignment: NSTextAlignment = .left,
-         tag: Int,
-         onCommit: (()->Void)?) {
+         tag: Int = 1,
+         didBeginEditing: (()->Void)? = nil,
+         onCommit: (()->Void)? = nil) {
         
         self._text = text
         self.placeholder = placeholder
         self.isSecure = isSecure
         self.tag = tag
         self.commitHandler = onCommit
+        self.didBeginEditing = didBeginEditing
         self.keyboardType = keyboardType
         self.autocapitalization = autocapitalization
         self.textAlignment = textAlignment
@@ -102,7 +105,9 @@ struct CustomTextField: UIViewRepresentable {
             }
             return false
         }
-        
+        func textFieldDidBeginEditing(_ textField: UITextField) {
+            parent.didBeginEditing?()
+        }
         func textFieldDidEndEditing(_ textField: UITextField) {
             parent.commitHandler?()
         }

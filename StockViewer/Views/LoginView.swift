@@ -14,10 +14,6 @@ struct LoginView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     @EnvironmentObject var appState: AppState
     
-
-    @State private var profileImage: UIImage?
-    @State private var profileImageUrl: String?
-    
     @State private var email: String = SettingsManager.sharedInstance.email ?? ""
     @State private var password: String = SettingsManager.sharedInstance.password ?? ""
     
@@ -35,9 +31,7 @@ struct LoginView: View {
     @State private var msg = "Please Login"
     @State private var emailMsg = ""
     @State private var passwordMsg = ""
-    
-    let horizontalPadding: CGFloat = 40
-    let maxWidth: CGFloat = .infinity
+
     
     
     var allFieldsValidated: Bool {
@@ -50,40 +44,21 @@ struct LoginView: View {
         return result
     }
     
-    var profileImageIconView: AnyView {
-        
-        if let profileImage = profileImage {
-            return AnyView(Image(uiImage: profileImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .clipShape(Circle())
-                            .shadow(radius: 10, x: 0, y: 5))
-        } else {
-            return AnyView(UrlImageView(urlImageModel: $profileImageModel, showDefault: $showDefaultProfileImage, defaultImageSystemName: "person.circle"))
-        }
-        
-    }
-    
     
     var body: some View {
         ZStack {
             Color.themeBackground
                 .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             
-            VStack(spacing: 4,  content: {
+            VStack(spacing: 0,  content: {
                 
                 if horizontalSizeClass == .compact && verticalSizeClass == .regular {
                     // ~Equivalent to iPhone portrait
-                    profileImageIconView
-                        .padding(.top, 80)
-                        .padding(.bottom, 14)
-                        .font(.system(size: 100, weight: .thin))
-                        .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/, x: 0, y: 10)
+                    SvProfileIconView(profileImageUrl: .constant(SettingsManager.sharedInstance.profileImageUrl), sfSymbolName: "person.circle", viewOnly: true)
                 }
                 
                 Text($msg.wrappedValue)
-                    .frame(maxWidth: maxWidth, alignment: .center)
+                    .frame(maxWidth: Constants.textFieldMaxWidth, alignment: .center)
                     .padding(.bottom, 14)
                     .foregroundColor(msg == "Please Login" ? Color.themeForeground : Color.themeError)
                 
@@ -114,7 +89,6 @@ struct LoginView: View {
                     self.loggingIn = true
                     SettingsManager.sharedInstance.email = email
                     SettingsManager.sharedInstance.password = password
-                    SettingsManager.sharedInstance.profileImageUrl = profileImageUrl
                     AuthUtils().logOut()
                     self.loginError = false
                     
@@ -134,7 +108,9 @@ struct LoginView: View {
                         SettingsManager.sharedInstance.profileImageUrl = loginResponse.response.user?.profileImageUrl
                         SettingsManager.sharedInstance.accessTokenProperties = String(data: accessTokenProperties, encoding: .utf8)
                         SettingsManager.sharedInstance.isLoggedIn = true;
-                        self.appState.isLoggedIn = true
+                        if !self.appState.isLoggedIn {
+                            self.appState.isLoggedIn.toggle()
+                        }
                         self.appState.needsRefreshData = true
                     })
                 }) {
@@ -168,13 +144,6 @@ struct LoginView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear() {
             self.disableButton = !allFieldsValidated
-            if let url = SettingsManager.sharedInstance.profileImageUrl {
-                profileImageUrl = url
-                profileImageModel = UrlImageModel(urlString: $profileImageUrl)
-                profileImageModel?.loadImage()
-            } else {
-                    showDefaultProfileImage = true
-            }
         }
     }
 }

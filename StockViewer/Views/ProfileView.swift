@@ -11,20 +11,20 @@ struct ProfileView: View {
     
     @EnvironmentObject var appState: AppState
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    
-    @State private var showDefaultProfileImage = false
-    @State var profileImageModel: UrlImageModel?
-    
+//
+//    @State private var showDefaultProfileImage = false
+//    @State var profileImageModel: UrlImageModel?
+  
+    @State private var profileImageUrl: String?
     @State private var firstName = ""
     @State private var lastName = ""
     @State private var email = ""
-    
-    let horizontalPadding: CGFloat = 40
-    let maxWidth: CGFloat = .infinity
+
     
     @State private var isUpdating: Bool = false
     @State private var disableUpdateButton: Bool = false
     
+
     @State private var firstNameMsg = ""
     @State private var lastNameMsg = ""
     @State private var emailMsg = ""
@@ -33,31 +33,16 @@ struct ProfileView: View {
     @State private var firstNameIsValid = false
     @State private var lastNameIsValid = false
     @State private var emailIsValid = false
-    
-    @State private var isShowPhotoLibrary = false
-    @State private var profileImage: UIImage?
-    @State private var profileImageUrl: String?
+//
+//    @State private var isShowPhotoLibrary = false
+//    @State private var profileImage: UIImage?
+
     
     @State private var user: User?
     
     
     var allFieldsValidated: Bool {
         return firstNameIsValid && lastNameIsValid && emailIsValid
-    }
-    
-    var profileImageIconView: AnyView {
-        
-        if let profileImage = profileImage {
-            return AnyView(Image(uiImage: profileImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .clipShape(Circle())
-                            .shadow(radius: 10, x: 0, y: 5))
-        } else {
-            return AnyView(UrlImageView(urlImageModel: $profileImageModel, showDefault: $showDefaultProfileImage, defaultImageSystemName: "person.crop.circle.badge.plus"))
-        }
-        
     }
     
     func updateUser() {
@@ -73,19 +58,6 @@ struct ProfileView: View {
         }
     }
     
-    func updateProfileImage() {
-        guard
-            let image = profileImage
-        else {
-            return
-        }
-        
-        Api().updateProfile(image: image) { response in
-            print(response.message ?? "")
-        }
-    }
-    
-    
     var body: some View {
         
         ZStack {
@@ -93,30 +65,9 @@ struct ProfileView: View {
             
             VStack(alignment: .center, spacing: 0,  content: {
                 
-                Button(action: {
-                    print("Profile photo tapped")
-                    self.isShowPhotoLibrary.toggle()
-                }) {
-                    profileImageIconView
-                }
-                .frame(minWidth: 0, maxWidth: maxWidth)
-                .padding(.top, 120)
-                .padding(.bottom, 10)
-                .background(Color.themeBackground)
-                .foregroundColor(Color.themeForeground)
-                .padding(.horizontal, horizontalPadding)
-                .sheet(isPresented: $isShowPhotoLibrary) {
-                    
-                }
-                .sheet(isPresented: $isShowPhotoLibrary, onDismiss: {
-                    if let _ = profileImage {
-                        self.showDefaultProfileImage = false
-                        updateProfileImage()
-                    }
-                    
-                }, content: {
-                    ImagePicker(sourceType: .photoLibrary, allowsEditing: true, selectedImage: $profileImage)
-                })
+                SvProfileIconView(profileImageUrl: $profileImageUrl, sfSymbolName: "person.crop.circle.badge.plus")
+                    .padding(.top, 40)
+                    .padding(.bottom, 20)
                 
                 SvTextField(placeholder: "First Name", text: $firstName, isValid: $firstNameIsValid, autocapitalization: .words, textMsg: $firstNameMsg,
                             validationCallback: {
@@ -187,8 +138,8 @@ struct ProfileView: View {
                             .cancelButtonTextModifier()
                     }
                 }
-                .frame(maxWidth: maxWidth)
-                .padding([.leading, .trailing], horizontalPadding)
+                .frame(maxWidth: Constants.textFieldMaxWidth)
+                .padding([.leading, .trailing], Constants.horizontalPadding)
                 
                 Spacer()
                 
@@ -200,23 +151,18 @@ struct ProfileView: View {
         .navigationTitle("Profile")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear() {
+            self.profileImageUrl = SettingsManager.sharedInstance.profileImageUrl
             Api().getUser { user in
                 if let user = user {
+                    print(user)
                     self.firstName = user.firstName
                     self.lastName = user.lastName
                     self.email = user.email
                     self.user = user
-                    if let url = user.profileImageUrl {
-                        profileImageUrl = url
-                        profileImageModel = UrlImageModel(urlString: $profileImageUrl)
-                        profileImageModel?.loadImage()
-                    } else {
-                        showDefaultProfileImage = true
-                    }
-                    
-                } else {
-                    print("No user profile found")
-                    showDefaultProfileImage = true
+                    self.profileImageUrl = user.profileImageUrl
+                    print("profileImageUrl is " + (self.profileImageUrl ?? "nil"))
+                    SettingsManager.sharedInstance.profileImageUrl = user.profileImageUrl
+                    self.disableUpdateButton = !allFieldsValidated
                 }
             }
         }

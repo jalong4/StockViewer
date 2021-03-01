@@ -14,7 +14,10 @@ class AuthUtils: ObservableObject {
         guard let _ = SettingsManager.sharedInstance.accessToken,
               let accessTokenPropertiesData = SettingsManager.sharedInstance.accessTokenProperties?.data(using: .utf8),
               let accessTokenProperties = try? JSONDecoder().decode(AccessTokenProperties.self, from: accessTokenPropertiesData)
-        else { return }
+        else {
+            SettingsManager.sharedInstance.isLoggedIn = false
+            return
+        }
         
         if accessTokenProperties.exp > (Date().timeIntervalSince1970 + Constants.expiresIn5Minutes) {
             SettingsManager.sharedInstance.isLoggedIn = true

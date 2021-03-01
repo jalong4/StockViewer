@@ -55,6 +55,16 @@ struct LoginResponse: Codable {
     var response : Login
 }
 
+struct RegistrationResponse: Codable {
+    var response : Register
+}
+
+struct Register: Codable {
+    var error: String?
+    var user: User?
+    var auth: Auth?
+}
+
 struct ChangePasswordResponse: Codable {
     var response : ChangePassword
 }

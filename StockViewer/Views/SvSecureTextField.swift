@@ -18,6 +18,7 @@ struct SvSecureTextField: View {
     let tag: Int // Tag to recognise each specific TextView
     let textAlignment: NSTextAlignment
     @Binding private var isValid: Bool
+    @Binding var showHeader: Bool
     var validationCallback: (()->ValidationResult)
     var onChangeHandler: (()->Void)?
     
@@ -32,6 +33,7 @@ struct SvSecureTextField: View {
          autocapitalization: UITextAutocapitalizationType = .none,
          textAlignment: NSTextAlignment = .left,
          tag: Int = 1,
+         showHeader: Binding<Bool> = .constant(false),
          validationCallback: @escaping (()->ValidationResult),
          onChangeHandler: (()->Void)?) {
         
@@ -42,6 +44,7 @@ struct SvSecureTextField: View {
         self.keyboardType = keyboardType
         self.autocapitalization = autocapitalization
         self.textAlignment = textAlignment
+        self._showHeader = showHeader
         self.validationCallback = validationCallback
         self.onChangeHandler = onChangeHandler
     }
@@ -58,6 +61,7 @@ struct SvSecureTextField: View {
                             isSecure: true,
                             tag: tag,
                             textMsg: $textMsg,
+                            showHeader: $showHeader,
                             validationCallback: validationCallback,
                             onChangeHandler: onChangeHandler)
             } else {
@@ -67,6 +71,7 @@ struct SvSecureTextField: View {
                             isSecure: false,
                             tag: tag,
                             textMsg: $textMsg,
+                            showHeader: $showHeader,
                             validationCallback: validationCallback,
                             onChangeHandler: onChangeHandler)
             }

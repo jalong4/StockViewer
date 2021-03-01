@@ -20,6 +20,7 @@ struct SvTextFieldNoTextMsg: View {
     let textAlignment: NSTextAlignment
     @Binding private var isValid: Bool
     @Binding var textMsg: String
+    @Binding var showHeader: Bool
     var validationCallback: (()->ValidationResult)
     var onChangeHandler: (()->Void)?
 
@@ -33,6 +34,7 @@ struct SvTextFieldNoTextMsg: View {
          textAlignment: NSTextAlignment = .left,
          tag: Int = 1,
          textMsg: Binding<String> = .constant(""),
+         showHeader: Binding<Bool> = .constant(false),
          validationCallback: @escaping (()-> ValidationResult),
          onChangeHandler: (()->Void)?) {
         
@@ -45,6 +47,7 @@ struct SvTextFieldNoTextMsg: View {
         self.keyboardType = keyboardType
         self.autocapitalization = autocapitalization
         self.textAlignment = textAlignment
+        self._showHeader = showHeader
         self.validationCallback = validationCallback
         self.onChangeHandler = onChangeHandler
     }
@@ -52,14 +55,23 @@ struct SvTextFieldNoTextMsg: View {
     
     var body: some View {
         
+        
+        if showHeader && !text.isEmpty {
+            Text(placeholder + ":")
+                .frame(maxWidth: Constants.textFieldMaxWidth, alignment: .leading)
+                .offset(x: 20, y: -32)
+                .padding([.top, .bottom], 0)
+                .padding([.leading, .trailing], Constants.horizontalPadding)
+                .foregroundColor(Color.themeAccent)
+        }
+        
         CustomTextField(placeholder,
                         text: $text,
                         isSecure: isSecure,
                         keyboardType: keyboardType,
                         autocapitalization: autocapitalization,
                         textAlignment:  textAlignment,
-                        tag: tag,
-                        onCommit: nil)
+                        tag: tag)
             .frame(height: Constants.textFieldFrameHeight, alignment: .center)
             .background(Capsule().fill(Color.themeAccentFaded))
             .frame(maxWidth: Constants.textFieldMaxWidth)

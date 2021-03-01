@@ -43,46 +43,6 @@ struct ChangePasswordView: View {
         return oldPasswordIsValid && passwordIsValid && password2IsValid
     }
     
-    private func passwordView(_ label: String, textfield: Binding<String>, isSecure: Bool, tag: Int) -> CustomTextField {
-        return CustomTextField(label, text: textfield, isSecure: isSecure, textAlignment: .left, tag: tag, onCommit: nil)
-    }
-    
-    private func validateOldPw() {
-        self.oldPasswordMsg = ""
-        if (oldPassword.isEmpty || oldPassword.count < 6) {
-            self.oldPasswordMsg = oldPassword.isEmpty ? "Enter your current password" : "Password must be at least 6 characters"
-            self.oldPasswordIsValid = false
-            self.disableUpdateButton = !allFieldsValidated
-            return
-        }
-        self.oldPasswordIsValid = true
-        self.disableUpdateButton = !allFieldsValidated
-    }
-    
-    private func validatePw() {
-        self.passwordMsg = ""
-        if (password.isEmpty || password.count < 6) {
-            self.passwordMsg = password.isEmpty ? "Enter a password" : "Password must be at least 6 characters"
-            self.passwordIsValid = false
-            self.disableUpdateButton = !allFieldsValidated
-            return
-        }
-        self.passwordIsValid = true
-        self.disableUpdateButton = !allFieldsValidated
-    }
-    
-    private func validatePw2() {
-        self.password2Msg = ""
-        if (password2.isEmpty || (password2 != password)) {
-            self.password2Msg = password2.isEmpty ? "Re-enter your password" : "Passwords don't match"
-            self.password2IsValid = false
-            self.disableUpdateButton = !allFieldsValidated
-            return
-        }
-        self.password2IsValid = true
-        self.disableUpdateButton = !allFieldsValidated
-    }
-    
     var body: some View {
         
         ZStack {
@@ -93,6 +53,7 @@ struct ChangePasswordView: View {
                         .padding(.top, 180)
                     
                     SvSecureTextField(placeholder: "Old Password", text: $oldPassword, isValid: $oldPasswordIsValid,
+                                      showHeader: Binding<Bool>.constant(true),
                                       validationCallback: {
                                         return ValidationResult(
                                             isValid: oldPassword.isValidPassword(),
@@ -188,7 +149,8 @@ struct ChangePasswordView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear() {
             self.oldPassword = SettingsManager.sharedInstance.password ?? ""
-            validateOldPw()
+            oldPasswordIsValid = oldPassword.isValidPassword()
+            disableUpdateButton = !allFieldsValidated
         }
     }
     

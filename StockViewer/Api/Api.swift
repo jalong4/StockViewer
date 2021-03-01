@@ -43,6 +43,38 @@ class Api {
         .resume()
     }
     
+    func registerUser(user: [String: String], completion: @escaping (RegistrationResponse) -> ()) {
+        guard let url = URL(string: "\(Constants.baseUrl)/users/register")
+        else {
+            return
+        };
+        
+        let body = try! JSONSerialization.data(withJSONObject: user, options: [])
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = body
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to register user: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to get registration data")
+            }
+            
+            let response = Utils.decodeToObj(RegistrationResponse.self, from: data)
+            DispatchQueue.main.async {
+                completion(response)
+            }
+        }
+        .resume()
+    }
+    
     func changePassword(oldPassword: String, newPassword: String, completion: @escaping (ChangePasswordResponse) -> ()) {
         guard
             let url = URL(string: "\(Constants.baseUrl)/users/password"),
@@ -84,6 +116,7 @@ class Api {
               let accessToken = SettingsManager.sharedInstance.accessToken
         else {
             print(SettingsManager.sharedInstance.accessToken ?? "Nil access Token")
+            SettingsManager.sharedInstance.isLoggedIn = false
             return
         };
         
@@ -393,13 +426,13 @@ class Api {
     
     func uploadImage(image: UIImage, completion: @escaping (UploadImageResponse) -> ()) {
         guard let url = URL(string: "\(Constants.baseUrl)/images/upload/"),
-              let accessToken = SettingsManager.sharedInstance.accessToken,
+//              let accessToken = SettingsManager.sharedInstance.accessToken,
               let mediaImage = Media(withImage: image, forKey: "image")
         else { return };
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+//        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
         
         let parameters = ["enctype": "multipart/form-data"]
         let boundary = "Boundary-\(UUID().uuidString)"

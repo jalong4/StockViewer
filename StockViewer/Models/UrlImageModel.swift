@@ -11,70 +11,82 @@ import SwiftUI
 class UrlImageModel: ObservableObject {
     @Published var image: UIImage?
     
-    @Binding private var urlString: String?
+    private var urlString: String?
     var imageCache = ImageCache()
+    var showDefault = false
     
-    init(urlString: Binding<String?>) {
-        self._urlString = urlString
+
+    
+    init(urlString: String?) {
+        print("UrlImageModel.urlString: " + (urlString ?? "nil"))
+        self.urlString = urlString
+        loadImage()
     }
     
-    func loadImage() {
-        if loadImageFromCache() {
+    
+    private func loadImage() {
+        guard
+            let urlString = self.urlString
+        else {
+            showDefault = true
+            return
+        }
+        
+        if loadImageFromCache(urlString: urlString) {
             print("Cache hit")
             return
         }
         
         print("Cache miss, loading from url")
-        loadImageFromUrl()
+        loadImageFromUrl(urlString: urlString)
     }
     
-    func loadImageFromCache() -> Bool {
+    private func loadImageFromCache(urlString: String) -> Bool {
         guard
-            let urlString = self.urlString,
             let cacheImage = imageCache.get(key: urlString) else {
             return false
         }
         
-        image = cacheImage
+        DispatchQueue.main.async {
+            self.image = cacheImage
+        }
         return true
     }
     
-    func loadImageFromUrl() {
+    private func loadImageFromUrl(urlString: String) {
         guard
-            let urlString = self.urlString,
             let url = URL(string: urlString)
-        else { return }
+        else {
+            return
+        }
 
-        let task = URLSession.shared.dataTask(with: url, completionHandler: getImageFromResponse(data:response:error:))
-        task.resume()
-    }
-    
-    
-    func getImageFromResponse(data: Data?, response: URLResponse?, error: Error?) {
-        guard error == nil else {
-            print("Error: \(error!)")
-            return
-        }
-        guard let data = data else {
-            print("No data found")
-            return
-        }
-        
-        guard let urlString = self.urlString else {
-            print("Url not set")
-            return
-        }
-        
-        DispatchQueue.main.async {
-            guard
-                let loadedImage = UIImage(data: data)
-            else {
+        let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
+            guard error == nil else {
+                print("Error: \(error!)")
+                return
+            }
+            guard let data = data else {
+                print("No data found")
                 return
             }
             
-            self.imageCache.set(key: urlString, image: loadedImage)
-            self.image = loadedImage
+            guard let urlString = self.urlString else {
+                print("Url not set")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                guard
+                    let loadedImage = UIImage(data: data)
+                else {
+                    return
+                }
+                
+                self.imageCache.set(key: urlString, image: loadedImage)
+                self.image = loadedImage
+            }
         }
+        task.resume()
     }
 }
 
