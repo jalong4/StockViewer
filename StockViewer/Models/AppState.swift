@@ -15,7 +15,7 @@ class AppState: ObservableObject {
     @Published var showingEditCash: Bool = false
     @Published var showingSettings: Bool = false
     @Published var showingChangePassword: Bool = false
-    @Published var needsRefreshData: Bool = false
+    @Published var needsRefreshData: Bool = true
     @Published var isLoggedIn: Bool = true
     @Published var isDataLoading: Bool = true
     @Published var postMarketDataIsAvailable: Bool = false

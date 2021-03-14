@@ -12,11 +12,12 @@ struct StockTableView: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     @EnvironmentObject var appState: AppState
-
+    
     
     var portfolio: Portfolio
-    var name: String
-    var type: StockTableType
+    @State var name: String
+    @State var type: StockTableType
+
     
     func getTitle() -> String {
         var stockName = "";
@@ -33,11 +34,11 @@ struct StockTableView: View {
         return self.portfolio.summary.accounts.filter{ $0.name == self.name }[0]
     }
     
-    func getStocks(stockSortType: StockSortType) -> [Stock] {
+    func getStocks(name: String, stockSortType: StockSortType) -> [Stock] {
         
         switch self.type {
         case .account:
-            var stocks = self.portfolio.stocks.filter{ $0.account == self.name }
+            var stocks = self.portfolio.stocks.filter{ $0.account == name }
             let postMarketDataIsAvailable = !stocks.allSatisfy{ $0.postMarketGain == 0 }
             if self.appState.postMarketDataIsAvailable != postMarketDataIsAvailable {
                 self.appState.postMarketDataIsAvailable.toggle()
@@ -71,113 +72,126 @@ struct StockTableView: View {
                     return (a.ticker < b.ticker) || (a.name == "Cash")
                 }
             })
+            print("Stocks for Account: \(name)")
+            printStocks(stocks: stocks)
             return stocks;
         case .stock:
-            let stocks = self.portfolio.stocks.filter{ $0.ticker == self.name }
+            let ticker = name == "Cash" ? "SPAXX" : name
+            let stocks = self.portfolio.stocks.filter{ $0.ticker == ticker }
             let postMarketDataIsAvailable = !stocks.allSatisfy{ $0.postMarketGain == 0 }
             if self.appState.postMarketDataIsAvailable != postMarketDataIsAvailable {
                 self.appState.postMarketDataIsAvailable.toggle()
             }
+            
+            print("Accounts for Stock: \(name)")
+            printStocks(stocks: stocks)
             return stocks
+        }
+    }
+    
+    func printStocks(stocks: [Stock]) {
+        print("printing stocks")
+        stocks.forEach {
+            print($0.name)
         }
     }
     
     func getHeader() -> some View {
         return
-                HStack {
-                    
-                    StockTableRow(
-                        price: AnyView(Text("Price").fontWeight(.bold)),
-                        quantity: AnyView(Text("Qty").fontWeight(.bold)),
-                        percentChange: AnyView(
-                            Button(action: {
-                                print("Sorting by percentChange")
-                                appState.stockSortType = (appState.stockSortType == .percentChange) ? .ticker : .percentChange
-                            }) {
-                                Text("\u{0394}" + " (%)").underline(appState.stockSortType == .percentChange, color: .black)
-                                    .fontWeight(.bold)
-                            }),
-                        priceChange: AnyView(
-                            Button(action: {
-                                print("Sorting by priceChange")
-                                appState.stockSortType = (appState.stockSortType == .priceChange) ? .ticker : .priceChange
-                            }) {
-                                Text("\u{0394}" + " ($)").underline(appState.stockSortType == .priceChange, color: .black)
-                                    .fontWeight(.bold)
-                            }),
-                        dayGain: AnyView(
-                            Button(action: {
-                                print("Sorting by dayGain")
-                                appState.stockSortType = (appState.stockSortType == .dayGain) ? .ticker : .dayGain
-                            }) {
-                                Text("Day Gain").underline(appState.stockSortType == .dayGain, color: .black)
-                                    .fontWeight(.bold)
-                            }),
-                        unitCost: AnyView(Text("Unit Cost").fontWeight(.bold)),
-                        totalCost: AnyView(
-                            Button(action: {
-                                print("Sorting by totalCost")
-                                appState.stockSortType = (appState.stockSortType == .totalCost) ? .ticker : .totalCost
-                            }) {
-                                Text("Total Cost").underline(appState.stockSortType == .totalCost, color: .black)
-                                    .fontWeight(.bold)
-                            }),
-                        profit: AnyView(
-                            Button(action: {
-                                print("Sorting by profit")
-                                appState.stockSortType = (appState.stockSortType == .profit) ? .ticker : .profit
-                            }) {
-                                Text("Profit ($)").underline(appState.stockSortType == .profit, color: .black)
-                                    .fontWeight(.bold)
-                            }),
-                        total: AnyView(
-                            Button(action: {
-                                print("Sorting by total")
-                                appState.stockSortType = (appState.stockSortType == .total) ? .ticker : .total
-                            }) {
-                                Text("Total")
-                                    .underline(appState.stockSortType == .total, color: .black)
-                                    .fontWeight(.bold)
-                            }),
-                        percentProfit: AnyView(
-                            Button(action: {
-                                print("Sorting by percentProfit")
-                                appState.stockSortType = (appState.stockSortType == .percentProfit) ? .ticker : .percentProfit
-                            }) {
-                                Text("Profit (%)")
-                                    .underline(appState.stockSortType == .percentProfit, color: .black)
-                                    .fontWeight(.bold)
-                            }),
-                        postMarketPrice: AnyView(Text("Post Price").fontWeight(.bold)),
-                        postMarketChangePercent: AnyView(
-                            Button(action: {
-                                print("Sorting by postMarketChangePercent")
-                                appState.stockSortType = (appState.stockSortType == .postMarketChangePercent) ? .ticker : .postMarketChangePercent
-                            }) {
-                                Text("Post " + "\u{0394}" + " (%)")
-                                    .underline(appState.stockSortType == .postMarketChangePercent, color: .black)
-                                    .fontWeight(.bold)
-                            }),
-                        postMarketChange: AnyView(
-                            Button(action: {
-                                print("Sorting by postMarketChange")
-                                appState.stockSortType = (appState.stockSortType == .postMarketChange) ? .ticker : .postMarketChange
-                            }) {
-                                Text("Post " + "\u{0394}" + " ($)")
-                                    .underline(appState.stockSortType == .postMarketChange, color: .black)
-                                    .fontWeight(.bold)
-                            }),
-                        postMarketGain: AnyView(
-                            Button(action: {
-                                print("Sorting by postMarketGain")
-                                appState.stockSortType = (appState.stockSortType == .dayGain) ? .ticker : .postMarketGain
-                            }) {
-                                Text("Post Gain").underline(appState.stockSortType == .postMarketGain, color: .black)
-                                    .fontWeight(.bold)
-                            }),
-                        type: type
-                    )
-                    .environmentObject(appState)
+            HStack {
+                
+                StockTableRow(
+                    price: AnyView(Text("Price").fontWeight(.bold)),
+                    quantity: AnyView(Text("Qty").fontWeight(.bold)),
+                    percentChange: AnyView(
+                        Button(action: {
+                            print("Sorting by percentChange")
+                            appState.stockSortType = (appState.stockSortType == .percentChange) ? .ticker : .percentChange
+                        }) {
+                            Text("\u{0394}" + " (%)").underline(appState.stockSortType == .percentChange, color: .black)
+                                .fontWeight(.bold)
+                        }),
+                    priceChange: AnyView(
+                        Button(action: {
+                            print("Sorting by priceChange")
+                            appState.stockSortType = (appState.stockSortType == .priceChange) ? .ticker : .priceChange
+                        }) {
+                            Text("\u{0394}" + " ($)").underline(appState.stockSortType == .priceChange, color: .black)
+                                .fontWeight(.bold)
+                        }),
+                    dayGain: AnyView(
+                        Button(action: {
+                            print("Sorting by dayGain")
+                            appState.stockSortType = (appState.stockSortType == .dayGain) ? .ticker : .dayGain
+                        }) {
+                            Text("Day Gain").underline(appState.stockSortType == .dayGain, color: .black)
+                                .fontWeight(.bold)
+                        }),
+                    unitCost: AnyView(Text("Unit Cost").fontWeight(.bold)),
+                    totalCost: AnyView(
+                        Button(action: {
+                            print("Sorting by totalCost")
+                            appState.stockSortType = (appState.stockSortType == .totalCost) ? .ticker : .totalCost
+                        }) {
+                            Text("Total Cost").underline(appState.stockSortType == .totalCost, color: .black)
+                                .fontWeight(.bold)
+                        }),
+                    profit: AnyView(
+                        Button(action: {
+                            print("Sorting by profit")
+                            appState.stockSortType = (appState.stockSortType == .profit) ? .ticker : .profit
+                        }) {
+                            Text("Profit ($)").underline(appState.stockSortType == .profit, color: .black)
+                                .fontWeight(.bold)
+                        }),
+                    total: AnyView(
+                        Button(action: {
+                            print("Sorting by total")
+                            appState.stockSortType = (appState.stockSortType == .total) ? .ticker : .total
+                        }) {
+                            Text("Total")
+                                .underline(appState.stockSortType == .total, color: .black)
+                                .fontWeight(.bold)
+                        }),
+                    percentProfit: AnyView(
+                        Button(action: {
+                            print("Sorting by percentProfit")
+                            appState.stockSortType = (appState.stockSortType == .percentProfit) ? .ticker : .percentProfit
+                        }) {
+                            Text("Profit (%)")
+                                .underline(appState.stockSortType == .percentProfit, color: .black)
+                                .fontWeight(.bold)
+                        }),
+                    postMarketPrice: AnyView(Text("Post Price").fontWeight(.bold)),
+                    postMarketChangePercent: AnyView(
+                        Button(action: {
+                            print("Sorting by postMarketChangePercent")
+                            appState.stockSortType = (appState.stockSortType == .postMarketChangePercent) ? .ticker : .postMarketChangePercent
+                        }) {
+                            Text("Post " + "\u{0394}" + " (%)")
+                                .underline(appState.stockSortType == .postMarketChangePercent, color: .black)
+                                .fontWeight(.bold)
+                        }),
+                    postMarketChange: AnyView(
+                        Button(action: {
+                            print("Sorting by postMarketChange")
+                            appState.stockSortType = (appState.stockSortType == .postMarketChange) ? .ticker : .postMarketChange
+                        }) {
+                            Text("Post " + "\u{0394}" + " ($)")
+                                .underline(appState.stockSortType == .postMarketChange, color: .black)
+                                .fontWeight(.bold)
+                        }),
+                    postMarketGain: AnyView(
+                        Button(action: {
+                            print("Sorting by postMarketGain")
+                            appState.stockSortType = (appState.stockSortType == .dayGain) ? .ticker : .postMarketGain
+                        }) {
+                            Text("Post Gain").underline(appState.stockSortType == .postMarketGain, color: .black)
+                                .fontWeight(.bold)
+                        }),
+                    type: type
+                )
+                .environmentObject(appState)
             }
     }
     
@@ -225,42 +239,54 @@ struct StockTableView: View {
     var body: some View {
         
         let rowHeight: CGFloat = 38
+        let stocks = getStocks(name: name, stockSortType: appState.stockSortType)
         
         ScrollView(.vertical) {
-            
             if horizontalSizeClass == .compact
                 && verticalSizeClass == .regular
                 && self.type == StockTableType.account {
                 SummaryView(totals: getAccount())
             }
             
-            let stocks = getStocks(stockSortType: appState.stockSortType)
-            
             LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
-                Text("Stocks")
+                Text(type == .account ? "\(name) Stocks" : stocks.first?.name ?? name)
                     .fontWeight(.bold)
-                    .font(.system(size:20))
-                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0))
+                    .font(.system(size:16))
+                    .padding(EdgeInsets(top: 4, leading: 0, bottom: 10, trailing: 0))
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
                 
                 HStack(spacing: 0) {
                     VStack(spacing: 0) {
                         Text(type == .account ? "Name" : "Account").fontWeight(.bold)
-                            .frame(width: ((type == .account) ? 120 : 100), alignment: .topLeading)
+                            .frame(width: ((type == .account) ? 120 : 160), alignment: .topLeading)
                             .frame(height: rowHeight)
                         
                         ForEach(stocks) { stock in
+                            let name = type == .stock ? stock.account : stock.ticker
                             VStack(alignment: .leading, spacing: 0) {
-                                Text(type == .stock ? stock.account : (stock.name == "Cash") ? "Cash" : stock.ticker)
-                                Text(type == .stock || stock.name == "Cash" ? "Cash Account" : stock.name).fontWeight(.regular).font(.system(size: 12))
+                                
+                                Button(action: {
+                                    let newType: StockTableType = (type == StockTableType.stock) ? StockTableType.account : StockTableType.stock
+                                    
+                                    print("tapped: \(name), stockType: \(newType)")
+                                    self.type = newType
+                                    self.name = name
+                                }) {
+                                    VStack (alignment: .leading) {
+                                        Text(type == StockTableType.account ? (name == "SPAXX" ? "Cash" : name) : "")
+                                        Text(type == StockTableType.stock ? stock.account : (stock.name == "Cash") ? "Cash Account" : stock.name)
+                                            .fontWeight(.regular).font(.system(size: (type == .account) ? 12 : 14))
+                                        
+                                    }
+                                }
                             }
-                            .frame(width: (type == .account) ? 120 : 120, height: rowHeight, alignment: .topLeading)
-
+                            .frame(width: ((type == .account) ? 120 : 160), height: rowHeight, alignment: .topLeading)
+                            
                         }
                         
                         Text("Total").fontWeight(.bold).font(.system(size: 14))
-                            .frame(width: ((type == .account) ? 120 : 120), alignment: .topLeading)
-
+                            .frame(width: ((type == .account) ? 160 : 100), alignment: .topLeading)
+                        
                     }
                     
                     VStack(spacing: 0)  {
@@ -301,6 +327,10 @@ struct StockTableView: View {
         .padding([.leading, .trailing], 20)
         .navigationTitle("\(getTitle())")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear(){
+            print("StockTableView appearing for \(name)")
+        }
+
         
     }
 }
@@ -308,7 +338,7 @@ struct StockTableView: View {
 struct StockTableView_Previews: PreviewProvider {
     
     @State static var portfolio = Api.getMockPortfolio()
-
+    
     static var previews: some View {
         StockTableView(portfolio: portfolio, name: "Fidelity", type: .account)
     }
