@@ -17,7 +17,7 @@ struct StockTableView: View {
     var portfolio: Portfolio
     @State var name: String
     @State var type: StockTableType
-
+    
     
     func getTitle() -> String {
         var stockName = "";
@@ -242,85 +242,90 @@ struct StockTableView: View {
         let stocks = getStocks(name: name, stockSortType: appState.stockSortType)
         
         ScrollView(.vertical) {
-            if horizontalSizeClass == .compact
-                && verticalSizeClass == .regular
-                && self.type == StockTableType.account {
-                SummaryView(totals: getAccount())
-            }
-            
-            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
-                Text(type == .account ? "\(name) Stocks" : stocks.first?.name ?? name)
-                    .fontWeight(.bold)
-                    .font(.system(size:16))
-                    .padding(EdgeInsets(top: 4, leading: 0, bottom: 10, trailing: 0))
-                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
+            ScrollViewReader { value in
+                if horizontalSizeClass == .compact
+                    && verticalSizeClass == .regular
+                    && self.type == StockTableType.account {
+                    SummaryView(totals: getAccount())
+                }
                 
-                HStack(spacing: 0) {
-                    VStack(spacing: 0) {
-                        Text(type == .account ? "Name" : "Account").fontWeight(.bold)
-                            .frame(width: ((type == .account) ? 120 : 160), alignment: .topLeading)
-                            .frame(height: rowHeight)
-                        
-                        ForEach(stocks) { stock in
-                            let name = type == .stock ? stock.account : stock.ticker
-                            VStack(alignment: .leading, spacing: 0) {
-                                
-                                Button(action: {
-                                    let newType: StockTableType = (type == StockTableType.stock) ? StockTableType.account : StockTableType.stock
+                LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
+                    Text(type == .account ? "\(name) Stocks" : stocks.first?.name ?? name)
+                        .fontWeight(.bold)
+                        .font(.system(size:16))
+                        .padding(EdgeInsets(top: 4, leading: 0, bottom: 10, trailing: 0))
+                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
+                    
+                    HStack(spacing: 0) {
+                        VStack(spacing: 0) {
+                            Text(type == .account ? "Name" : "Account").fontWeight(.bold)
+                                .frame(width: ((type == .account) ? 120 : 160), alignment: .topLeading)
+                                .frame(height: rowHeight)
+                            
+                            ForEach(stocks.indices, id: \.self) { i in
+                                let stock = stocks[i]
+                                let name = type == .stock ? stock.account : stock.ticker
+                                VStack(alignment: .leading, spacing: 0) {
                                     
-                                    print("tapped: \(name), stockType: \(newType)")
-                                    self.type = newType
-                                    self.name = name
-                                }) {
-                                    VStack (alignment: .leading) {
-                                        Text(type == StockTableType.account ? (name == "SPAXX" ? "Cash" : name) : "")
-                                        Text(type == StockTableType.stock ? stock.account : (stock.name == "Cash") ? "Cash Account" : stock.name)
-                                            .fontWeight(.regular).font(.system(size: (type == .account) ? 12 : 14))
+                                    Button(action: {
+                                        let newType: StockTableType = (type == StockTableType.stock) ? StockTableType.account : StockTableType.stock
                                         
+                                        print("tapped: \(name), stockType: \(newType)")
+                                        value.scrollTo(0)
+                                        self.type = newType
+                                        self.name = name
+                                    }) {
+                                        VStack (alignment: .leading) {
+                                            Text(type == StockTableType.account ? (name == "SPAXX" ? "Cash" : name) : "")
+                                            Text(type == StockTableType.stock ? stock.account : (stock.name == "Cash") ? "Cash Account" : stock.name)
+                                                .fontWeight(.regular).font(.system(size: (type == .account) ? 12 : 14))
+                                            
+                                        }
                                     }
                                 }
+                                .id(i)
+                                .frame(width: ((type == .account) ? 120 : 160), height: rowHeight, alignment: .topLeading)
+                                
                             }
-                            .frame(width: ((type == .account) ? 120 : 160), height: rowHeight, alignment: .topLeading)
+                            
+                            Text("Total").fontWeight(.bold).font(.system(size: 14))
+                                .frame(width: ((type == .account) ? 160 : 100), alignment: .topLeading)
                             
                         }
                         
-                        Text("Total").fontWeight(.bold).font(.system(size: 14))
-                            .frame(width: ((type == .account) ? 160 : 100), alignment: .topLeading)
-                        
-                    }
-                    
-                    VStack(spacing: 0)  {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            
-                            getHeader()
-                                .frame(height: rowHeight)
-                            
-                            ForEach(stocks) { stock in
-                                StockTableRow(price: AnyView(Text(Utils.getFormattedNumber(stock.price))),
-                                              quantity: AnyView(Text(Utils.getFormattedNumber(stock.quantity))),
-                                              percentChange: AnyView(Utils.getColorCodedTextView(stock.percentChange, style: .percent)),
-                                              priceChange: AnyView(Utils.getColorCodedTextView(stock.priceChange ?? 0, style: .decimal)),
-                                              dayGain: AnyView(Utils.getColorCodedTextView(stock.dayGain, style: .decimal)),
-                                              unitCost: AnyView(Text(Utils.getFormattedNumber(stock.unitCost))),
-                                              totalCost: AnyView(Text(Utils.getFormattedNumber(stock.totalCost))),
-                                              profit: AnyView(Utils.getColorCodedTextView(stock.profit, style: .decimal)),
-                                              total: AnyView(Text(Utils.getFormattedNumber(stock.total))),
-                                              percentProfit: AnyView(Utils.getColorCodedTextView(stock.percentProfit, style: .percent)),
-                                              postMarketPrice: AnyView(Text(Utils.getFormattedNumber(stock.postMarketPrice))),
-                                              postMarketChangePercent: AnyView(Utils.getColorCodedTextView(stock.postMarketChangePercent, style: .percent)),
-                                              postMarketChange: AnyView(Utils.getColorCodedTextView(stock.postMarketChange, style: .decimal)),
-                                              postMarketGain: AnyView(Utils.getColorCodedTextView(stock.postMarketGain, style: .decimal)),
-                                              type: type
-                                )
-                                .environmentObject(appState)
-                                .frame(height: rowHeight)
+                        VStack(spacing: 0)  {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                
+                                getHeader()
+                                    .frame(height: rowHeight)
+                                
+                                ForEach(stocks) { stock in
+                                    StockTableRow(price: AnyView(Text(Utils.getFormattedNumber(stock.price))),
+                                                  quantity: AnyView(Text(Utils.getFormattedNumber(stock.quantity))),
+                                                  percentChange: AnyView(Utils.getColorCodedTextView(stock.percentChange, style: .percent)),
+                                                  priceChange: AnyView(Utils.getColorCodedTextView(stock.priceChange ?? 0, style: .decimal)),
+                                                  dayGain: AnyView(Utils.getColorCodedTextView(stock.dayGain, style: .decimal)),
+                                                  unitCost: AnyView(Text(Utils.getFormattedNumber(stock.unitCost))),
+                                                  totalCost: AnyView(Text(Utils.getFormattedNumber(stock.totalCost))),
+                                                  profit: AnyView(Utils.getColorCodedTextView(stock.profit, style: .decimal)),
+                                                  total: AnyView(Text(Utils.getFormattedNumber(stock.total))),
+                                                  percentProfit: AnyView(Utils.getColorCodedTextView(stock.percentProfit, style: .percent)),
+                                                  postMarketPrice: AnyView(Text(Utils.getFormattedNumber(stock.postMarketPrice))),
+                                                  postMarketChangePercent: AnyView(Utils.getColorCodedTextView(stock.postMarketChangePercent, style: .percent)),
+                                                  postMarketChange: AnyView(Utils.getColorCodedTextView(stock.postMarketChange, style: .decimal)),
+                                                  postMarketGain: AnyView(Utils.getColorCodedTextView(stock.postMarketGain, style: .decimal)),
+                                                  type: type
+                                    )
+                                    .environmentObject(appState)
+                                    .frame(height: rowHeight)
+                                }
+                                
+                                getFooter(stocks: stocks)
                             }
                             
-                            getFooter(stocks: stocks)
                         }
                         
                     }
-                    
                 }
             }
         }
@@ -330,7 +335,7 @@ struct StockTableView: View {
         .onAppear(){
             print("StockTableView appearing for \(name)")
         }
-
+        
         
     }
 }
