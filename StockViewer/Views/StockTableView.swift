@@ -11,10 +11,8 @@ struct StockTableView: View {
     
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     
-    
-    var portfolio: Portfolio
     @State var name: String
     @State var type: StockTableType
     
@@ -22,7 +20,7 @@ struct StockTableView: View {
     func getTitle() -> String {
         var stockName = "";
         if (type == .stock) {
-            let stocks = self.portfolio.stocks.filter{ $0.ticker == self.name }
+            let stocks = appData.portfolio.stocks.filter{ $0.ticker == self.name }
             if (stocks.count > 0) {
                 stockName = stocks[0].name
             }
@@ -31,21 +29,21 @@ struct StockTableView: View {
     }
     
     func getAccount() -> Account {
-        return self.portfolio.summary.accounts.filter{ $0.name == self.name }[0]
+        return appData.portfolio.summary.accounts.filter{ $0.name == self.name }[0]
     }
     
     func getStocks(name: String, stockSortType: StockSortType) -> [Stock] {
         
         switch self.type {
         case .account:
-            var stocks = self.portfolio.stocks.filter{ $0.account == name }
+            var stocks = appData.portfolio.stocks.filter{ $0.account == name }
             let postMarketDataIsAvailable = !stocks.allSatisfy{ $0.postMarketGain == 0 }
-            if self.appState.postMarketDataIsAvailable != postMarketDataIsAvailable {
-                self.appState.postMarketDataIsAvailable.toggle()
+            if appData.postMarketDataIsAvailable != postMarketDataIsAvailable {
+                appData.postMarketDataIsAvailable.toggle()
             }
             
             stocks.sort(by: {(a, b) -> Bool in
-                switch appState.stockSortType {
+                switch appData.stockSortType {
                 case .name:
                     return (a.name < b.name)
                 case .percentChange:
@@ -72,27 +70,15 @@ struct StockTableView: View {
                     return (a.ticker < b.ticker) || (a.name == "Cash")
                 }
             })
-            print("Stocks for Account: \(name)")
-            printStocks(stocks: stocks)
             return stocks;
         case .stock:
             let ticker = name == "Cash" ? "SPAXX" : name
-            let stocks = self.portfolio.stocks.filter{ $0.ticker == ticker }
+            let stocks = appData.portfolio.stocks.filter{ $0.ticker == ticker }
             let postMarketDataIsAvailable = !stocks.allSatisfy{ $0.postMarketGain == 0 }
-            if self.appState.postMarketDataIsAvailable != postMarketDataIsAvailable {
-                self.appState.postMarketDataIsAvailable.toggle()
+            if self.appData.postMarketDataIsAvailable != postMarketDataIsAvailable {
+                self.appData.postMarketDataIsAvailable.toggle()
             }
-            
-            print("Accounts for Stock: \(name)")
-            printStocks(stocks: stocks)
             return stocks
-        }
-    }
-    
-    func printStocks(stocks: [Stock]) {
-        print("printing stocks")
-        stocks.forEach {
-            print($0.name)
         }
     }
     
@@ -106,92 +92,92 @@ struct StockTableView: View {
                     percentChange: AnyView(
                         Button(action: {
                             print("Sorting by percentChange")
-                            appState.stockSortType = (appState.stockSortType == .percentChange) ? .ticker : .percentChange
+                            appData.stockSortType = (appData.stockSortType == .percentChange) ? .ticker : .percentChange
                         }) {
-                            Text("\u{0394}" + " (%)").underline(appState.stockSortType == .percentChange, color: .black)
+                            Text("\u{0394}" + " (%)").underline(appData.stockSortType == .percentChange, color: .black)
                                 .fontWeight(.bold)
                         }),
                     priceChange: AnyView(
                         Button(action: {
                             print("Sorting by priceChange")
-                            appState.stockSortType = (appState.stockSortType == .priceChange) ? .ticker : .priceChange
+                            appData.stockSortType = (appData.stockSortType == .priceChange) ? .ticker : .priceChange
                         }) {
-                            Text("\u{0394}" + " ($)").underline(appState.stockSortType == .priceChange, color: .black)
+                            Text("\u{0394}" + " ($)").underline(appData.stockSortType == .priceChange, color: .black)
                                 .fontWeight(.bold)
                         }),
                     dayGain: AnyView(
                         Button(action: {
                             print("Sorting by dayGain")
-                            appState.stockSortType = (appState.stockSortType == .dayGain) ? .ticker : .dayGain
+                            appData.stockSortType = (appData.stockSortType == .dayGain) ? .ticker : .dayGain
                         }) {
-                            Text("Day Gain").underline(appState.stockSortType == .dayGain, color: .black)
+                            Text("Day Gain").underline(appData.stockSortType == .dayGain, color: .black)
                                 .fontWeight(.bold)
                         }),
                     unitCost: AnyView(Text("Unit Cost").fontWeight(.bold)),
                     totalCost: AnyView(
                         Button(action: {
                             print("Sorting by totalCost")
-                            appState.stockSortType = (appState.stockSortType == .totalCost) ? .ticker : .totalCost
+                            appData.stockSortType = (appData.stockSortType == .totalCost) ? .ticker : .totalCost
                         }) {
-                            Text("Total Cost").underline(appState.stockSortType == .totalCost, color: .black)
+                            Text("Total Cost").underline(appData.stockSortType == .totalCost, color: .black)
                                 .fontWeight(.bold)
                         }),
                     profit: AnyView(
                         Button(action: {
                             print("Sorting by profit")
-                            appState.stockSortType = (appState.stockSortType == .profit) ? .ticker : .profit
+                            appData.stockSortType = (appData.stockSortType == .profit) ? .ticker : .profit
                         }) {
-                            Text("Profit ($)").underline(appState.stockSortType == .profit, color: .black)
+                            Text("Profit ($)").underline(appData.stockSortType == .profit, color: .black)
                                 .fontWeight(.bold)
                         }),
                     total: AnyView(
                         Button(action: {
                             print("Sorting by total")
-                            appState.stockSortType = (appState.stockSortType == .total) ? .ticker : .total
+                            appData.stockSortType = (appData.stockSortType == .total) ? .ticker : .total
                         }) {
                             Text("Total")
-                                .underline(appState.stockSortType == .total, color: .black)
+                                .underline(appData.stockSortType == .total, color: .black)
                                 .fontWeight(.bold)
                         }),
                     percentProfit: AnyView(
                         Button(action: {
                             print("Sorting by percentProfit")
-                            appState.stockSortType = (appState.stockSortType == .percentProfit) ? .ticker : .percentProfit
+                            appData.stockSortType = (appData.stockSortType == .percentProfit) ? .ticker : .percentProfit
                         }) {
                             Text("Profit (%)")
-                                .underline(appState.stockSortType == .percentProfit, color: .black)
+                                .underline(appData.stockSortType == .percentProfit, color: .black)
                                 .fontWeight(.bold)
                         }),
                     postMarketPrice: AnyView(Text("Post Price").fontWeight(.bold)),
                     postMarketChangePercent: AnyView(
                         Button(action: {
                             print("Sorting by postMarketChangePercent")
-                            appState.stockSortType = (appState.stockSortType == .postMarketChangePercent) ? .ticker : .postMarketChangePercent
+                            appData.stockSortType = (appData.stockSortType == .postMarketChangePercent) ? .ticker : .postMarketChangePercent
                         }) {
                             Text("Post " + "\u{0394}" + " (%)")
-                                .underline(appState.stockSortType == .postMarketChangePercent, color: .black)
+                                .underline(appData.stockSortType == .postMarketChangePercent, color: .black)
                                 .fontWeight(.bold)
                         }),
                     postMarketChange: AnyView(
                         Button(action: {
                             print("Sorting by postMarketChange")
-                            appState.stockSortType = (appState.stockSortType == .postMarketChange) ? .ticker : .postMarketChange
+                            appData.stockSortType = (appData.stockSortType == .postMarketChange) ? .ticker : .postMarketChange
                         }) {
                             Text("Post " + "\u{0394}" + " ($)")
-                                .underline(appState.stockSortType == .postMarketChange, color: .black)
+                                .underline(appData.stockSortType == .postMarketChange, color: .black)
                                 .fontWeight(.bold)
                         }),
                     postMarketGain: AnyView(
                         Button(action: {
                             print("Sorting by postMarketGain")
-                            appState.stockSortType = (appState.stockSortType == .dayGain) ? .ticker : .postMarketGain
+                            appData.stockSortType = (appData.stockSortType == .dayGain) ? .ticker : .postMarketGain
                         }) {
-                            Text("Post Gain").underline(appState.stockSortType == .postMarketGain, color: .black)
+                            Text("Post Gain").underline(appData.stockSortType == .postMarketGain, color: .black)
                                 .fontWeight(.bold)
                         }),
                     type: type
                 )
-                .environmentObject(appState)
+                .environmentObject(appData)
             }
     }
     
@@ -233,18 +219,19 @@ struct StockTableView: View {
                 postMarketGain: AnyView(Utils.getColorCodedTextView(totals.postMarketGain, style: .decimal).fontWeight(.bold)),
                 type: type
             )
-            .environmentObject(appState)
+            .environmentObject(appData)
     }
     
     var body: some View {
         
         let rowHeight: CGFloat = 38
-        let stocks = getStocks(name: name, stockSortType: appState.stockSortType)
+        let stocks = getStocks(name: name, stockSortType: appData.stockSortType)
         
         ScrollView(.vertical) {
             ScrollViewReader { value in
-                if horizontalSizeClass == .compact
-                    && verticalSizeClass == .regular
+                if ((horizontalSizeClass == .compact
+                    && verticalSizeClass == .regular) ||
+                    UIDevice.current.userInterfaceIdiom == .pad)
                     && self.type == StockTableType.account {
                     SummaryView(totals: getAccount())
                 }
@@ -316,7 +303,7 @@ struct StockTableView: View {
                                                   postMarketGain: AnyView(Utils.getColorCodedTextView(stock.postMarketGain, style: .decimal)),
                                                   type: type
                                     )
-                                    .environmentObject(appState)
+                                    .environmentObject(appData)
                                     .frame(height: rowHeight)
                                 }
                                 
@@ -345,6 +332,6 @@ struct StockTableView_Previews: PreviewProvider {
     @State static var portfolio = Api.getMockPortfolio()
     
     static var previews: some View {
-        StockTableView(portfolio: portfolio, name: "Fidelity", type: .account)
+        StockTableView(name: "Fidelity", type: .account)
     }
 }

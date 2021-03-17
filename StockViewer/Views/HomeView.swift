@@ -9,11 +9,9 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @State var portfolio: Portfolio
-    
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     
     
     @State private var selectedAccountName: String?
@@ -30,8 +28,8 @@ struct HomeView: View {
         }
         
         return NavigationLink(
-            destination: StockTableView(appState: _appState, portfolio: self.portfolio, name: selectedAccountName, type: .account),
-            isActive: $appState.showingStockTable
+            destination: StockTableView(appData: _appData, name: selectedAccountName, type: .account),
+            isActive: $appData.showingStockTable
         ) {
             EmptyView()
         }
@@ -42,7 +40,7 @@ struct HomeView: View {
         
         return NavigationLink(
             destination: ProfileView(),
-            isActive: $appState.showingProfile
+            isActive: $appData.showingProfile
         ) {
             EmptyView()
         }
@@ -53,7 +51,7 @@ struct HomeView: View {
         
         return NavigationLink(
             destination: ChangePasswordView(),
-            isActive: $appState.showingChangePassword
+            isActive: $appData.showingChangePassword
         ) {
             EmptyView()
         }
@@ -63,8 +61,8 @@ struct HomeView: View {
     var navigationLinkEnterTrade: NavigationLink<EmptyView, EnterTradeView>? {
         
         return NavigationLink(
-            destination: EnterTradeView(portfolio: portfolio),
-            isActive: $appState.showingEnterTrade
+            destination: EnterTradeView(),
+            isActive: $appData.showingEnterTrade
         ) {
             EmptyView()
         }
@@ -74,8 +72,8 @@ struct HomeView: View {
     var navigationLinkEditCash: NavigationLink<EmptyView, EditCashView>? {
         
         return NavigationLink(
-            destination: EditCashView(portfolio: portfolio),
-            isActive: $appState.showingEditCash
+            destination: EditCashView(),
+            isActive: $appData.showingEditCash
         ) {
             EmptyView()
         }
@@ -86,17 +84,17 @@ struct HomeView: View {
         
         return NavigationLink(
             destination: SettingsView(),
-            isActive: $appState.showingSettings
+            isActive: $appData.showingSettings
         ) {
             EmptyView()
         }
     }
     
     private func loadData() {
-        appState.isDataLoading = true
+        appData.isDataLoading = true
         Api().getPortfolio { (portfolio) in
-            self.portfolio = portfolio
-            self.appState.isDataLoading = false
+            appData.portfolio = portfolio
+            self.appData.isDataLoading = false
         }
     }
     
@@ -112,7 +110,7 @@ struct HomeView: View {
                 .onEnded {
                     if $0.translation.width < -100 {
                         withAnimation {
-                            appState.showMenu = false
+                            appData.showMenu = false
                         }
                     }
                 }
@@ -125,18 +123,18 @@ struct HomeView: View {
                 NavigationView {
                     
                     VStack {
-                        if !appState.isDataLoading {
+                        if !appData.isDataLoading {
                             TabView {
-                                TopMoversView(title: "Top Gainers", portfolio: portfolio, stockGains:Array(portfolio.summary.topDayGainers))
+                                TopMoversView(title: "Top Gainers", stockGains:Array(appData.portfolio.summary.topDayGainers))
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
                                 
-                                TopMoversView(title: "Top Losers", portfolio: portfolio, stockGains:Array(portfolio.summary.topDayLosers))
+                                TopMoversView(title: "Top Losers", stockGains:Array(appData.portfolio.summary.topDayLosers))
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
                                 
-                                TopMoversView(title: "Most Profitable", portfolio: portfolio, stockGains:Array(portfolio.summary.mostProfitable))
+                                TopMoversView(title: "Most Profitable", stockGains:Array(appData.portfolio.summary.mostProfitable))
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
                                 
-                                TopMoversView(title: "Least Profitable", portfolio: portfolio, stockGains:Array(portfolio.summary.leastProfitable))
+                                TopMoversView(title: "Least Profitable", stockGains:Array(appData.portfolio.summary.leastProfitable))
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
                                 
                             }
@@ -145,11 +143,11 @@ struct HomeView: View {
                             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                             
-                            if horizontalSizeClass == .compact && verticalSizeClass == .regular {
-                                // ~Equivalent to iPhone portrait
-                                if let totals = self.portfolio.summary.totals {
+                            if (horizontalSizeClass == .compact && verticalSizeClass == .regular)
+                                ||  UIDevice.current.userInterfaceIdiom == .pad {
+                                if let totals = appData.portfolio.summary.totals {
                                     if totals.total > 0 {
-                                        SummaryView(totals: self.portfolio.summary.totals, title: "Portfolio")
+                                        SummaryView(totals: appData.portfolio.summary.totals, title: "Portfolio")
                                             .padding([.leading, .trailing], 20)
                                     }
                                 }
@@ -164,10 +162,10 @@ struct HomeView: View {
                             
                             ScrollView(showsIndicators: false) {
                                 LazyVStack {
-                                    ForEach(self.portfolio.summary.accounts) { account in
+                                    ForEach(appData.portfolio.summary.accounts) { account in
                                         Button(action: {
                                             self.selectedAccountName = account.name
-                                            appState.showingStockTable = true
+                                            appData.showingStockTable = true
                                         }) {
                                             AccountView(account: account)
                                                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 4, trailing: 0))
@@ -180,15 +178,15 @@ struct HomeView: View {
                             }
                             .padding([.leading, .trailing], 20)
                             .padding(.top, 8)
-                            .navigationTitle(Text(appState.isDataLoading ? "" : "Portfolio"))
+                            .navigationTitle(Text(appData.isDataLoading ? "" : "Portfolio"))
                             .navigationBarItems(leading:
                                                     Button(action: {
                                                         withAnimation {
-                                                            appState.showMenu.toggle()
+                                                            appData.showMenu.toggle()
                                                         }
                                                         
                                                     }) {
-                                                        if !appState.isDataLoading {
+                                                        if !appData.isDataLoading {
                                                             Image(systemName: "line.horizontal.3")
                                                                 .imageScale(.large)
                                                                 .padding()
@@ -200,7 +198,7 @@ struct HomeView: View {
                                                             self.loadData()
                                                             
                                                         }) {
-                                                            if !appState.isDataLoading {
+                                                            if !appData.isDataLoading {
                                                                 Image(systemName: "arrow.clockwise"
                                                                 )
                                                                 .imageScale(.large)
@@ -215,12 +213,12 @@ struct HomeView: View {
                 .navigationViewStyle(StackNavigationViewStyle())
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
-            .offset(x: appState.showMenu ? geometry.size.width/2 : 0)
-            .disabled(appState.showMenu ? true : false)
+            .offset(x: appData.showMenu ? geometry.size.width/2 : 0)
+            .disabled(appData.showMenu ? true : false)
             .transition(.move(edge: .leading))
             .gesture(drag)
             
-            if appState.showMenu {
+            if appData.showMenu {
                 MenuView()
                     .frame(width: geometry.size.width/2)
             }
@@ -230,20 +228,20 @@ struct HomeView: View {
             
             let size = UIScreen.main.bounds.size
             let isLandscape = size.width > size.height
-            appState.showingStockTable = false
+            appData.showingStockTable = false
             
-            if appState.needsRefreshData {
-                appState.needsRefreshData.toggle()
+            if appData.needsRefreshData {
+                appData.needsRefreshData.toggle()
                 print("Refreshing data")
                 self.loadData()
             }
             
             print("isLandscape: \(isLandscape)")
-            if (UIDevice.current.userInterfaceIdiom == .pad) { // && isLandscape {
-                appState.stockSortType = .ticker
-                appState.showingStockTable = true
-                self.selectedAccountName = self.portfolio.summary.accounts.first?.name
-            }
+//            if (UIDevice.current.userInterfaceIdiom == .pad) { // && isLandscape {
+//                appData.stockSortType = .ticker
+//                appData.showingStockTable = true
+//                self.selectedAccountName = self.portfolio.summary.accounts.first?.name
+//            }
             
         }
     }
@@ -252,8 +250,7 @@ struct HomeView: View {
 
 
 struct HomeView_Previews: PreviewProvider {
-    @State static var portfolio = Api.getMockPortfolio();
     static var previews: some View {
-        HomeView(portfolio: portfolio)
+        HomeView()
     }
 }

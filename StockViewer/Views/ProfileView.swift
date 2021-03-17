@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 //
 //    @State private var showDefaultProfileImage = false
@@ -123,15 +123,15 @@ struct ProfileView: View {
                         return Alert(title: Text("Profile Updated"),
                                      message: nil,
                                      dismissButton: .default(Text("Ok"), action: {
-                                        appState.showingProfile = false
-                                        appState.showingStockTable = true
+                                        appData.showingProfile = false
+                                        appData.showingStockTable = true
                                      }))
                     })
                     
                     Button(action: {
                         print("Canceling")
-                        appState.showingProfile = false
-                        appState.showingStockTable = true
+                        appData.showingProfile = false
+                        appData.showingStockTable = true
                     }) {
                         Text("Cancel")
                             .frame(minWidth: 100)

@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     
     var body: some View {
         VStack() {
             Text("Coming soon...")
             
             Button(action: {
-                appState.showingSettings = false
-                appState.showingStockTable = true
+                appData.showingSettings = false
+                appData.showingStockTable = true
             }) {
                 Text("OK")
                     .padding(EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 40))

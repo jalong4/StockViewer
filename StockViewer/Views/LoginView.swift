@@ -12,7 +12,7 @@ struct LoginView: View {
 
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     
     @State private var email: String = SettingsManager.sharedInstance.email ?? ""
     @State private var password: String = SettingsManager.sharedInstance.password ?? ""
@@ -108,10 +108,10 @@ struct LoginView: View {
                         SettingsManager.sharedInstance.profileImageUrl = loginResponse.response.user?.profileImageUrl
                         SettingsManager.sharedInstance.accessTokenProperties = String(data: accessTokenProperties, encoding: .utf8)
                         SettingsManager.sharedInstance.isLoggedIn = true;
-                        if !self.appState.isLoggedIn {
-                            self.appState.isLoggedIn.toggle()
+                        if !self.appData.isLoggedIn {
+                            self.appData.isLoggedIn.toggle()
                         }
-                        self.appState.needsRefreshData = true
+                        self.appData.needsRefreshData = true
                     })
                 }) {
                     Text(self.loggingIn ? "Logging in..." : "Login")

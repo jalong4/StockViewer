@@ -9,23 +9,22 @@ import SwiftUI
 
 struct ContentView: View {
 
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     @State private var createAccount = false
-    @State var portfolio = Portfolio()
     
     
     private func isLoggedIn() -> Bool {
         AuthUtils().checkAuthToken()
-        appState.isLoggedIn = SettingsManager.sharedInstance.isLoggedIn ?? false
-        return appState.isLoggedIn
+        appData.isLoggedIn = SettingsManager.sharedInstance.isLoggedIn ?? false
+        return appData.isLoggedIn
     }
     
     private func loadData() {
         if isLoggedIn() {
-            appState.isDataLoading = true
+            appData.isDataLoading = true
             Api().getPortfolio { (portfolio) in
-                self.portfolio = portfolio
-                self.appState.isDataLoading = false
+                appData.portfolio = portfolio
+                self.appData.isDataLoading = false
             }
         }
     }
@@ -33,8 +32,8 @@ struct ContentView: View {
     
     var body: some View {
         Group {
-            if appState.isLoggedIn {
-                if appState.isDataLoading {
+            if appData.isLoggedIn {
+                if appData.isDataLoading {
                     GeometryReader { geometry in
                         VStack(alignment: .center) {
                             ProgressView("Loading...")
@@ -43,12 +42,12 @@ struct ContentView: View {
                         }
                         .frame(width: geometry.size.width / 2, height: geometry.size.width / 2)
                         .foregroundColor(Color.themeAccent)
-                        .opacity(appState.isDataLoading ? 1 : 0)
+                        .opacity(appData.isDataLoading ? 1 : 0)
                         .insetView()
                     }
                 } else {
-                    HomeView(portfolio: portfolio)
-                        .environmentObject(appState)
+                    HomeView()
+                        .environmentObject(appData)
                 }
             } else {
                 if createAccount {

@@ -14,10 +14,9 @@ struct EditCashView: View {
     }
     
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper()
     
-    @State var portfolio: Portfolio
     @State private var isSaving: Bool = false
     @State private var disableSaveButton: Bool = true
     @State private var transactionType = 0
@@ -33,7 +32,7 @@ struct EditCashView: View {
     let maxWidth: CGFloat = .infinity
     
     private func getAccountList() -> [String] {
-        return portfolio.summary.accounts.map { $0.name }
+        return appData.portfolio.summary.accounts.map { $0.name }
     }
     
     var amountValue: Double {
@@ -164,16 +163,16 @@ struct EditCashView: View {
                         return Alert(title: Text("Balance Updated"),
                                      message: Text("All Done?"),
                                      primaryButton: .default(Text("Yes"), action: {
-                                        appState.showingEditCash = false
-                                        appState.showingStockTable = true
+                                        appData.showingEditCash = false
+                                        appData.showingStockTable = true
                                         
                                      }),
                                      secondaryButton: .destructive(Text("No")))
                     })
                     Button(action: {
                         print("Canceling")
-                        appState.showingEditCash = false
-                        appState.showingStockTable = true
+                        appData.showingEditCash = false
+                        appData.showingStockTable = true
                     }) {
                         Text("Cancel")
                             .frame(minWidth: 100)
@@ -198,6 +197,6 @@ struct EditCashView: View {
 struct EditCashView_Previews: PreviewProvider {
     @State static var portfolio = Api.getMockPortfolio()
     static var previews: some View {
-        EditCashView(portfolio: portfolio)
+        EditCashView()
     }
 }

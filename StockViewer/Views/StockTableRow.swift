@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StockTableRow: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     
     var price: AnyView
     var quantity: AnyView
@@ -62,7 +62,7 @@ struct StockTableRow: View {
                     .frame(width: 90, alignment: .topTrailing)
             }
             
-            if appState.postMarketDataIsAvailable {
+            if appData.postMarketDataIsAvailable {
                 Group {
 
                     postMarketPrice

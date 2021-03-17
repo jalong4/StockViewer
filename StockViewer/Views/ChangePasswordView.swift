@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChangePasswordView: View {
     
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 
     @State private var oldPassword = ""
@@ -120,15 +120,15 @@ struct ChangePasswordView: View {
                         return Alert(title: Text("Password Updated"),
                                      message: nil,
                                      dismissButton: .default(Text("Ok"), action: {
-                                        appState.showingChangePassword = false
-                                        appState.showingStockTable = true
+                                        appData.showingChangePassword = false
+                                        appData.showingStockTable = true
                                      }))
                     })
                     
                     Button(action: {
                         print("Canceling")
-                        appState.showingChangePassword = false
-                        appState.showingStockTable = true
+                        appData.showingChangePassword = false
+                        appData.showingStockTable = true
                     }) {
                         Text("Cancel")
                             .frame(minWidth: 100)

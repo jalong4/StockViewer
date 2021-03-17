@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RegisterView: View {
     
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
@@ -163,10 +163,10 @@ struct RegisterView: View {
                                 SettingsManager.sharedInstance.profileImageUrl = response.response.user?.profileImageUrl
                                 SettingsManager.sharedInstance.accessTokenProperties = String(data: accessTokenProperties, encoding: .utf8)
                                 SettingsManager.sharedInstance.isLoggedIn = true;
-                                if !self.appState.isLoggedIn {
-                                    self.appState.isLoggedIn.toggle()
+                                if !self.appData.isLoggedIn {
+                                    self.appData.isLoggedIn.toggle()
                                 }
-                                self.appState.needsRefreshData = true
+                                self.appData.needsRefreshData = true
                                 self.createAccount.toggle()
                                 
                                 
@@ -184,8 +184,8 @@ struct RegisterView: View {
                         return Alert(title: Text("Registration Completed Successfully"),
                                      message: nil,
                                      dismissButton: .default(Text("Ok"), action: {
-                                        appState.showingProfile = false
-                                        appState.showingStockTable = true
+                                        appData.showingProfile = false
+                                        appData.showingStockTable = true
                                      }))
                     })
                 }

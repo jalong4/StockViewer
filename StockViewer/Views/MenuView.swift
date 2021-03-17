@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct MenuView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     
     var body: some View {            
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Button(action: {
-                    appState.showMenu = false
-                    appState.showingProfile = true
-                    appState.showingEnterTrade = false
-                    appState.showingStockTable = false
-                    appState.showingEditCash = false
-                    appState.showingSettings = false
+                    appData.showMenu = false
+                    appData.showingProfile = true
+                    appData.showingEnterTrade = false
+                    appData.showingStockTable = false
+                    appData.showingEditCash = false
+                    appData.showingSettings = false
                     print("Profile")
                 }) {
                     Image(systemName: "person")
@@ -34,13 +34,13 @@ struct MenuView: View {
             
             HStack {
                 Button(action: {
-                    appState.showMenu = false
-                    appState.showingProfile = false
-                    appState.showingEnterTrade = false
-                    appState.showingStockTable = false
-                    appState.showingEditCash = false
-                    appState.showingSettings = false
-                    appState.showingChangePassword = true
+                    appData.showMenu = false
+                    appData.showingProfile = false
+                    appData.showingEnterTrade = false
+                    appData.showingStockTable = false
+                    appData.showingEditCash = false
+                    appData.showingSettings = false
+                    appData.showingChangePassword = true
                     print("Change Password")
                     
                 }) {
@@ -55,12 +55,12 @@ struct MenuView: View {
             
             HStack {
                 Button(action: {
-                    appState.showMenu = false
-                    appState.showingProfile = false
-                    appState.showingEnterTrade = true
-                    appState.showingStockTable = false
-                    appState.showingEditCash = false
-                    appState.showingSettings = false
+                    appData.showMenu = false
+                    appData.showingProfile = false
+                    appData.showingEnterTrade = true
+                    appData.showingStockTable = false
+                    appData.showingEditCash = false
+                    appData.showingSettings = false
                     print("Enter Trade")
                     
                 }) {
@@ -75,12 +75,12 @@ struct MenuView: View {
             
             HStack {
                 Button(action: {
-                    appState.showMenu = false
-                    appState.showingProfile = false
-                    appState.showingEnterTrade = false
-                    appState.showingStockTable = false
-                    appState.showingEditCash = true
-                    appState.showingSettings = false
+                    appData.showMenu = false
+                    appData.showingProfile = false
+                    appData.showingEnterTrade = false
+                    appData.showingStockTable = false
+                    appData.showingEditCash = true
+                    appData.showingSettings = false
                     print("Edit Cash Balance")
                     
                 }) {
@@ -95,12 +95,12 @@ struct MenuView: View {
             
             HStack {
                 Button(action: {
-                    appState.showMenu = false
-                    appState.showingProfile = false
-                    appState.showingEnterTrade = false
-                    appState.showingStockTable = false
-                    appState.showingEditCash = false
-                    appState.showingSettings = true
+                    appData.showMenu = false
+                    appData.showingProfile = false
+                    appData.showingEnterTrade = false
+                    appData.showingStockTable = false
+                    appData.showingEditCash = false
+                    appData.showingSettings = true
                     print("Settings")
                 }) {
                     Image(systemName: "gear")
@@ -115,8 +115,8 @@ struct MenuView: View {
             HStack {
                 Button(action: {
                     print("Logging out")
-                    appState.showMenu.toggle()
-                    appState.isLoggedIn.toggle()
+                    appData.showMenu.toggle()
+                    appData.isLoggedIn.toggle()
                     AuthUtils().logOut()
                 }) {
                     Image(systemName: "power")

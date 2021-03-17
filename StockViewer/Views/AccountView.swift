@@ -35,7 +35,7 @@ struct AccountView: View {
 }
 
 struct AccountView_Previews: PreviewProvider {
-    @State static var account = Account(name: "Fidelity", total: 1588776.78, dayGain: 13117.14, percentChange: 0.0083, profit: 1074939.12, percentProfit: 0.29585, postMarketGain: 2670.01, postMarketChangePercent: 0.0017)
+    @State static var account = Api.getMockPortfolio().summary.accounts.first!
     
     static var previews: some View {
         AccountView(account: account)

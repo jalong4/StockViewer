@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct TopMoversView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     var title: String
-    var portfolio: Portfolio
     var stockGains: [StockGains]
     
     var body: some View {
@@ -23,7 +22,7 @@ struct TopMoversView: View {
                 ForEach (0 ..< 4) { index in
                     if index < stockGains.count {
                     let topMover = stockGains[index]
-                        NavigationLink(destination: StockTableView(appState: _appState, portfolio: portfolio, name: topMover.ticker, type: .stock)) {
+                        NavigationLink(destination: StockTableView(appData: _appData, name: topMover.ticker, type: .stock)) {
                             VStack (alignment: .center) {
                                 Text("\(topMover.ticker)").fontWeight(.bold)
                                 Text(Utils.getFormattedCurrency(topMover.gain, fractionDigits: 0)).fontWeight(.bold)
@@ -48,6 +47,6 @@ struct TopMoversView: View {
 struct TopMoversView_Previews: PreviewProvider {
     @State static var portfolio = Api.getMockPortfolio()
     static var previews: some View {
-        TopMoversView(title: "Top Gainers", portfolio: portfolio, stockGains: portfolio.summary.topDayGainers)
+        TopMoversView(title: "Top Gainers", stockGains: portfolio.summary.topDayGainers)
     }
 }

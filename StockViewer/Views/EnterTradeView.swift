@@ -14,9 +14,8 @@ struct EnterTradeView: View {
     }
     
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appData: AppData
     
-    @State var portfolio: Portfolio
     @State private var isSaving: Bool = false
     @State private var disableSaveButton: Bool = true
     @State private var transactionType = StockTransactionType.buy.rawValue
@@ -39,7 +38,7 @@ struct EnterTradeView: View {
     let maxWidth: CGFloat = .infinity
     
     private func getAccountList() -> [String] {
-        return portfolio.summary.accounts.map { $0.name }
+        return appData.portfolio.summary.accounts.map { $0.name }
     }
     
     var quantityValue: Double {
@@ -344,16 +343,16 @@ struct EnterTradeView: View {
                         return Alert(title: Text("Trade Entered and Balance Updated"),
                                      message: Text("All Done?"),
                                      primaryButton: .default(Text("Yes"), action: {
-                                        appState.showingEnterTrade = false
-                                        appState.showingStockTable = true
+                                        appData.showingEnterTrade = false
+                                        appData.showingStockTable = true
                                         
                                      }),
                                      secondaryButton: .destructive(Text("No")))
                     })
                     Button(action: {
                         print("Canceling")
-                        appState.showingEnterTrade = false
-                        appState.showingStockTable = true
+                        appData.showingEnterTrade = false
+                        appData.showingStockTable = true
                     }) {
                         Text("Cancel")
                             .frame(minWidth: 100)
@@ -379,6 +378,6 @@ struct EnterTradeView: View {
 struct EnterTradeView_Previews: PreviewProvider {
     @State static var portfolio = Api.getMockPortfolio();
     static var previews: some View {
-        EnterTradeView(portfolio: portfolio)
+        EnterTradeView()
     }
 }

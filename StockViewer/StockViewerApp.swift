@@ -10,11 +10,11 @@ import SwiftUI
 @main
 struct StockViewerApp: App {
     
-    private var appState = AppState()
+    private var appData = AppData()
     
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(appState)
+            ContentView().environmentObject(appData)
         }
     }
 }

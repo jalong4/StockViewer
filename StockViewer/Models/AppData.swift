@@ -1,5 +1,5 @@
 //
-//  AppState.swift
+//  appData.swift
 //  StockViewer
 //
 //  Created by Jim Long on 2/12/21.
@@ -7,7 +7,7 @@
 
 import Combine
 
-class AppState: ObservableObject {
+class AppData: ObservableObject {
 
     @Published var showingStockTable: Bool = false
     @Published var showingProfile: Bool = false
@@ -21,4 +21,5 @@ class AppState: ObservableObject {
     @Published var postMarketDataIsAvailable: Bool = false
     @Published var showMenu: Bool = false
     @Published var stockSortType: StockSortType = .ticker
+    @Published var portfolio: Portfolio = Portfolio()
 }
