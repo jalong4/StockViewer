@@ -13,8 +13,9 @@ class QuoteResponse : Codable {
 
 class Quote: Codable {
     var symbol = ""
-    var shortName = ""
+    var shortName: String?
     var displayName: String?
+    var longName: String?
     var regularMarketPrice: Double = 0
     var regularMarketChange: Double = 0
 }

@@ -147,8 +147,19 @@ struct HomeView: View {
                                 ||  UIDevice.current.userInterfaceIdiom == .pad {
                                 if let totals = appData.portfolio.summary.totals {
                                     if totals.total > 0 {
-                                        SummaryView(totals: appData.portfolio.summary.totals, title: "Portfolio")
-                                            .padding([.leading, .trailing], 20)
+                                        Button(action: {
+                                            print("Portfolio tapped")
+                                            self.selectedAccountName = "Portfolio"
+                                            appData.stockSortType = .dayGain
+                                            appData.stockSortDirection = .up
+                                            appData.showStocksForPortfolio = true
+                                            appData.showingStockTable = true
+                                        }) {
+                                            SummaryView(totals: appData.portfolio.summary.totals, title: "Portfolio")
+                                                .padding([.leading, .trailing], 20)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                        
                                     }
                                 }
                             }
@@ -165,6 +176,8 @@ struct HomeView: View {
                                     ForEach(appData.portfolio.summary.accounts) { account in
                                         Button(action: {
                                             self.selectedAccountName = account.name
+                                            appData.stockSortType = .ticker
+                                            appData.showStocksForPortfolio = false
                                             appData.showingStockTable = true
                                         }) {
                                             AccountView(account: account)

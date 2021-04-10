@@ -11,6 +11,7 @@ import Combine
 struct Portfolio : Codable {
     var summary = Summary();
     var stocks = [Stock]();
+    var portfolioStocks = [Stock]();
 }
 
 class PortfolioStore : ObservableObject {

@@ -27,7 +27,7 @@ struct StockTableRow: View {
     var type = StockTableType.account
     
     var body: some View {
-        HStack {
+        HStack (spacing: 0) {
             Group{
                 price
                     .frame(width: 90, alignment: .topTrailing)
@@ -50,13 +50,13 @@ struct StockTableRow: View {
                     .frame(width: 90, alignment: .topTrailing)
                 
                 totalCost
-                    .frame(width: 90, alignment: .topTrailing)
+                    .frame(width: 104, alignment: .topTrailing)
 
                 profit
-                    .frame(width: 100, alignment: .topTrailing)
+                    .frame(width: 104, alignment: .topTrailing)
                 
                 total
-                    .frame(width: 100, alignment: .topTrailing)
+                    .frame(width: 104, alignment: .topTrailing)
                 
                 percentProfit
                     .frame(width: 90, alignment: .topTrailing)

@@ -137,6 +137,9 @@ class Api {
                 fatalError("Failed to get portfolio data")
             }
             
+//            let msg = data.prettyPrintedJSONString!
+//            print(msg)
+            
             let portfolio = Utils.decodeToObj(Portfolio.self, from: data)
             
             DispatchQueue.main.async {

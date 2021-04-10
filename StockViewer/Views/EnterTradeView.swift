@@ -231,7 +231,7 @@ struct EnterTradeView: View {
                             }
                             self.tickerIsValid = true
                             self.disableSaveButton = !allFieldsValidated
-                            self.tickerMsg = quote.displayName ?? quote.shortName
+                            self.tickerMsg = quote.displayName ?? quote.shortName ?? quote.longName ?? ""
                             print("Ticker found for " + self.tickerMsg)
                         }
                     }
@@ -256,7 +256,7 @@ struct EnterTradeView: View {
                             }
                             self.tickerIsValid = true
                             self.disableSaveButton = !allFieldsValidated
-                            self.tickerMsg = quote.displayName ?? quote.shortName
+                            self.tickerMsg = quote.displayName ?? quote.shortName ?? quote.longName ?? ""
                             print("Ticker found for " + self.tickerMsg)
                         }
                     }

@@ -32,53 +32,70 @@ struct StockTableView: View {
         return appData.portfolio.summary.accounts.filter{ $0.name == self.name }[0]
     }
     
+    func checkForPostMarketData(_ stocks: [Stock]) {
+        let postMarketDataIsAvailable = !stocks.allSatisfy{ $0.postMarketGain == 0 }
+        if appData.postMarketDataIsAvailable != postMarketDataIsAvailable {
+            appData.postMarketDataIsAvailable.toggle()
+        }
+    }
+    
     func getStocks(name: String, stockSortType: StockSortType) -> [Stock] {
-        
         switch self.type {
         case .account:
-            var stocks = appData.portfolio.stocks.filter{ $0.account == name }
-            let postMarketDataIsAvailable = !stocks.allSatisfy{ $0.postMarketGain == 0 }
-            if appData.postMarketDataIsAvailable != postMarketDataIsAvailable {
-                appData.postMarketDataIsAvailable.toggle()
-            }
+            var stocks = appData.showStocksForPortfolio
+                ? appData.portfolio.portfolioStocks
+                : appData.portfolio.stocks.filter{ $0.account == name }
+            checkForPostMarketData(stocks)
             
             stocks.sort(by: {(a, b) -> Bool in
                 switch appData.stockSortType {
                 case .name:
-                    return (a.name < b.name)
+                    return appData.stockSortDirection == .up ? (a.name > b.name) : (a.name <= b.name)
                 case .percentChange:
-                    return (a.percentChange > b.percentChange)
+                    return appData.stockSortDirection == .up ? (a.percentChange > b.percentChange) : (a.percentChange <= b.percentChange)
                 case .priceChange:
-                    return (a.priceChange ?? 0 > b.priceChange ?? 0)
+                    return appData.stockSortDirection == .up ? (a.priceChange ?? 0 > b.priceChange ?? 0) : (a.priceChange ?? 0 <= b.priceChange ?? 0)
                 case .dayGain:
-                    return (a.dayGain > b.dayGain)
+                    return appData.stockSortDirection == .up ? (a.dayGain > b.dayGain) : (a.dayGain <= b.dayGain)
                 case .totalCost:
-                    return (a.totalCost > b.totalCost)
+                    return appData.stockSortDirection == .up ? (a.totalCost > b.totalCost) : (a.totalCost <= b.totalCost)
                 case .profit:
-                    return (a.profit > b.profit)
+                    return appData.stockSortDirection == .up ? (a.profit > b.profit) :  (a.profit <= b.profit)
                 case .total:
-                    return (a.total > b.total)
+                    return appData.stockSortDirection == .up ? (a.total > b.total) : (a.total < b.total)
                 case .percentProfit:
-                    return (a.percentProfit > b.percentProfit)
+                    return appData.stockSortDirection == .up ? (a.percentProfit > b.percentProfit) : (a.percentProfit <= b.percentProfit)
                 case .postMarketChangePercent:
-                    return (a.postMarketChangePercent > b.postMarketChangePercent)
+                    return appData.stockSortDirection == .up ? (a.postMarketChangePercent > b.postMarketChangePercent) : (a.postMarketChangePercent <= b.postMarketChangePercent)
                 case .postMarketChange:
-                    return (a.postMarketChange > b.postMarketChange)
+                    return appData.stockSortDirection == .up ? (a.postMarketChange > b.postMarketChange): (a.postMarketChange <= b.postMarketChange)
                 case .postMarketGain:
-                    return (a.postMarketGain > b.postMarketGain)
+                    return appData.stockSortDirection == .up ? (a.postMarketGain > b.postMarketGain) : (a.postMarketGain <= b.postMarketGain)
                 case .ticker:
-                    return (a.ticker < b.ticker) || (a.name == "Cash")
+                    return appData.stockSortDirection == .up ? (a.ticker > b.ticker) || (a.name != "Cash") : (a.ticker <= b.ticker) || (a.name == "Cash")
                 }
             })
+            print("returning stocks for account")
             return stocks;
         case .stock:
             let ticker = name == "Cash" ? "SPAXX" : name
             let stocks = appData.portfolio.stocks.filter{ $0.ticker == ticker }
-            let postMarketDataIsAvailable = !stocks.allSatisfy{ $0.postMarketGain == 0 }
-            if self.appData.postMarketDataIsAvailable != postMarketDataIsAvailable {
-                self.appData.postMarketDataIsAvailable.toggle()
-            }
+            checkForPostMarketData(stocks)
+            print("returning all accounts for stocks")
             return stocks
+        }
+    }
+    func updateSortProperties(_ thisType: StockSortType) {
+        if appData.stockSortType == thisType {
+            if appData.stockSortDirection == .up {
+                appData.stockSortDirection = .down
+            } else {
+                appData.stockSortType = .ticker
+                appData.stockSortDirection = .down
+            }
+        } else {
+            appData.stockSortType = thisType
+            appData.stockSortDirection = .up
         }
     }
     
@@ -92,88 +109,84 @@ struct StockTableView: View {
                     percentChange: AnyView(
                         Button(action: {
                             print("Sorting by percentChange")
-                            appData.stockSortType = (appData.stockSortType == .percentChange) ? .ticker : .percentChange
+                            updateSortProperties(.percentChange)
                         }) {
-                            Text("\u{0394}" + " (%)").underline(appData.stockSortType == .percentChange, color: .black)
-                                .fontWeight(.bold)
+                            let label = ("\u{0394}" + " (%)").sortPrefix(appData.stockSortType == .percentChange, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
                         }),
                     priceChange: AnyView(
                         Button(action: {
                             print("Sorting by priceChange")
-                            appData.stockSortType = (appData.stockSortType == .priceChange) ? .ticker : .priceChange
+                            updateSortProperties(.priceChange)
                         }) {
-                            Text("\u{0394}" + " ($)").underline(appData.stockSortType == .priceChange, color: .black)
-                                .fontWeight(.bold)
+                            let label = ("\u{0394}" + " ($)").sortPrefix(appData.stockSortType == .priceChange, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
                         }),
                     dayGain: AnyView(
                         Button(action: {
                             print("Sorting by dayGain")
-                            appData.stockSortType = (appData.stockSortType == .dayGain) ? .ticker : .dayGain
+                            updateSortProperties(.dayGain)
                         }) {
-                            Text("Day Gain").underline(appData.stockSortType == .dayGain, color: .black)
-                                .fontWeight(.bold)
+                            let label = "Day Gain".sortPrefix(appData.stockSortType == .dayGain, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
                         }),
                     unitCost: AnyView(Text("Unit Cost").fontWeight(.bold)),
                     totalCost: AnyView(
                         Button(action: {
                             print("Sorting by totalCost")
-                            appData.stockSortType = (appData.stockSortType == .totalCost) ? .ticker : .totalCost
+                            updateSortProperties(.totalCost)
                         }) {
-                            Text("Total Cost").underline(appData.stockSortType == .totalCost, color: .black)
-                                .fontWeight(.bold)
+                            let label = "Total Cost".sortPrefix(appData.stockSortType == .totalCost, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
                         }),
                     profit: AnyView(
                         Button(action: {
                             print("Sorting by profit")
-                            appData.stockSortType = (appData.stockSortType == .profit) ? .ticker : .profit
+                            updateSortProperties(.profit)
                         }) {
-                            Text("Profit ($)").underline(appData.stockSortType == .profit, color: .black)
-                                .fontWeight(.bold)
+                            let label = "Profit ($)".sortPrefix(appData.stockSortType == .profit, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
                         }),
                     total: AnyView(
                         Button(action: {
                             print("Sorting by total")
-                            appData.stockSortType = (appData.stockSortType == .total) ? .ticker : .total
+                            updateSortProperties(.total)
                         }) {
-                            Text("Total")
-                                .underline(appData.stockSortType == .total, color: .black)
-                                .fontWeight(.bold)
+                            let label = "Total".sortPrefix(appData.stockSortType == .total, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
                         }),
                     percentProfit: AnyView(
                         Button(action: {
                             print("Sorting by percentProfit")
-                            appData.stockSortType = (appData.stockSortType == .percentProfit) ? .ticker : .percentProfit
+                            updateSortProperties(.percentProfit)
                         }) {
-                            Text("Profit (%)")
-                                .underline(appData.stockSortType == .percentProfit, color: .black)
-                                .fontWeight(.bold)
+                            let label = "Profit (%)".sortPrefix(appData.stockSortType == .percentProfit, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
                         }),
                     postMarketPrice: AnyView(Text("Post Price").fontWeight(.bold)),
                     postMarketChangePercent: AnyView(
                         Button(action: {
                             print("Sorting by postMarketChangePercent")
-                            appData.stockSortType = (appData.stockSortType == .postMarketChangePercent) ? .ticker : .postMarketChangePercent
+                            updateSortProperties(.postMarketChangePercent)
                         }) {
-                            Text("Post " + "\u{0394}" + " (%)")
-                                .underline(appData.stockSortType == .postMarketChangePercent, color: .black)
-                                .fontWeight(.bold)
+                            let label = ("Post " + "\u{0394}" + " (%)").sortPrefix(appData.stockSortType == .postMarketChangePercent, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
                         }),
                     postMarketChange: AnyView(
                         Button(action: {
                             print("Sorting by postMarketChange")
-                            appData.stockSortType = (appData.stockSortType == .postMarketChange) ? .ticker : .postMarketChange
+                            updateSortProperties(.postMarketChange)
                         }) {
-                            Text("Post " + "\u{0394}" + " ($)")
-                                .underline(appData.stockSortType == .postMarketChange, color: .black)
-                                .fontWeight(.bold)
+                            let label = ("Post " + "\u{0394}" + " ($)").sortPrefix(appData.stockSortType == .postMarketChange, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
                         }),
                     postMarketGain: AnyView(
                         Button(action: {
                             print("Sorting by postMarketGain")
-                            appData.stockSortType = (appData.stockSortType == .dayGain) ? .ticker : .postMarketGain
+                            updateSortProperties(.postMarketGain)
                         }) {
-                            Text("Post Gain").underline(appData.stockSortType == .postMarketGain, color: .black)
-                                .fontWeight(.bold)
+                            let label = "Post Gain".sortPrefix(appData.stockSortType == .postMarketGain, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
                         }),
                     type: type
                 )
@@ -200,7 +213,7 @@ struct StockTableView: View {
     }
     
     func getFooter(stocks: [Stock]) -> some View {
-        let totals = ((self.type == .account) ? getAccount() : getFooterForStock(stocks: stocks))
+        let totals = ((self.type == .account && !appData.showStocksForPortfolio) ? getAccount() : getFooterForStock(stocks: stocks))
         return
             StockTableRow(
                 price: AnyView(Text("")),
@@ -225,23 +238,29 @@ struct StockTableView: View {
     var body: some View {
         
         let rowHeight: CGFloat = 38
+        
+        
         let stocks = getStocks(name: name, stockSortType: appData.stockSortType)
+        
         
         ScrollView(.vertical) {
             ScrollViewReader { value in
                 if ((horizontalSizeClass == .compact
                     && verticalSizeClass == .regular) ||
                     UIDevice.current.userInterfaceIdiom == .pad)
+                    && !appData.showStocksForPortfolio
                     && self.type == StockTableType.account {
                     SummaryView(totals: getAccount())
+                        .padding(.leading, 20)
+                        .padding(.trailing, 0)
                 }
                 
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
                     Text(type == .account ? "\(name) Stocks" : stocks.first?.name ?? name)
                         .fontWeight(.bold)
                         .font(.system(size:16))
-                        .padding(EdgeInsets(top: 4, leading: 0, bottom: 10, trailing: 0))
-                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
+                        .padding(EdgeInsets(top: 4, leading: ((type == .account) ? 30 : 20), bottom: 10, trailing: 0))
+                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     
                     HStack(spacing: 0) {
                         VStack(spacing: 0) {
@@ -261,6 +280,8 @@ struct StockTableView: View {
                                         value.scrollTo(0)
                                         self.type = newType
                                         self.name = name
+                                        appData.stockSortType = .ticker
+                                        appData.stockSortDirection = .down
                                     }) {
                                         VStack (alignment: .leading) {
                                             Text(type == StockTableType.account ? (name == "SPAXX" ? "Cash" : name) : "")
@@ -272,13 +293,14 @@ struct StockTableView: View {
                                 }
                                 .id(i)
                                 .frame(width: ((type == .account) ? 120 : 160), height: rowHeight, alignment: .topLeading)
-                                
                             }
                             
                             Text("Total").fontWeight(.bold).font(.system(size: 14))
-                                .frame(width: ((type == .account) ? 160 : 100), alignment: .topLeading)
+                                .frame(width: ((type == .account) ? 160 : 100), alignment: .leading)
+                                .padding(.leading, (type == .account) ? 40 : -60)
                             
                         }
+                        .padding(.leading, (type == .account) ? -10 : 20)
                         
                         VStack(spacing: 0)  {
                             ScrollView(.horizontal, showsIndicators: false) {
@@ -311,12 +333,12 @@ struct StockTableView: View {
                             }
                             
                         }
-                        
                     }
                 }
             }
         }
-        .padding([.leading, .trailing], 20)
+        .padding(.leading, 0)
+        .padding(.trailing, 20)
         .navigationTitle("\(getTitle())")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(){

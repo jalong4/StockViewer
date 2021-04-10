@@ -29,6 +29,14 @@ extension Data {
             append(data)
         }
     }
+
+    var prettyPrintedJSONString: NSString? { /// NSString gives us a nice sanitized debugDescription
+        guard let object = try? JSONSerialization.jsonObject(with: self, options: []),
+              let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
+              let prettyPrintedString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else { return nil }
+        
+        return prettyPrintedString
+    }
 }
 
 extension View {
@@ -118,6 +126,26 @@ extension String {
     
     func invalidPasswordMessage(fieldName: String = "password") -> String {
         return self.isEmpty ? "Please enter a " + fieldName : fieldName.capitalized + " must be at least 6 characters"
+    }
+    
+    func upArrow() -> String {
+        return "\u{2191}" + self
+    }
+    
+    func downArrow() -> String {
+        return "\u{2193}" + self
+    }
+    
+    func sortPrefix(_ apply: Bool, _ direction: StockSortDirection) -> String {
+        if !apply {
+            return self
+        }
+        switch direction {
+        case .up:
+            return upArrow()
+        case .down:
+            return downArrow()
+        }
     }
 }
 
