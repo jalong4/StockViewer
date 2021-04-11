@@ -17,8 +17,10 @@ struct StockTableRow: View {
     var dayGain: AnyView
     var unitCost: AnyView
     var totalCost: AnyView
+    var percentOfTotalCost: AnyView
     var profit: AnyView
     var total: AnyView
+    var percentOfTotal: AnyView
     var percentProfit: AnyView
     var postMarketPrice: AnyView
     var postMarketChangePercent: AnyView
@@ -51,12 +53,18 @@ struct StockTableRow: View {
                 
                 totalCost
                     .frame(width: 104, alignment: .topTrailing)
+                
+                percentOfTotalCost
+                    .frame(width: 90, alignment: .topTrailing)
 
                 profit
-                    .frame(width: 104, alignment: .topTrailing)
+                    .frame(width: 106, alignment: .topTrailing)
                 
                 total
-                    .frame(width: 104, alignment: .topTrailing)
+                    .frame(width: 106, alignment: .topTrailing)
+                
+                percentOfTotal
+                    .frame(width: 90, alignment: .topTrailing)
                 
                 percentProfit
                     .frame(width: 90, alignment: .topTrailing)
@@ -93,8 +101,10 @@ struct StockTableRow_Previews: PreviewProvider {
                       dayGain: AnyView(Text("Day Gain").fontWeight(.bold)),
                       unitCost: AnyView(Text("Unit Cost").fontWeight(.bold)),
                       totalCost: AnyView(Text("Unit Cost").fontWeight(.bold)),
+                      percentOfTotalCost: AnyView(Text("% of Cost").fontWeight(.bold)),
                       profit: AnyView(Text("Profit ($)").fontWeight(.bold)),
                       total: AnyView(Text("Total").fontWeight(.bold)),
+                      percentOfTotal: AnyView(Text("% of Total").fontWeight(.bold)),
                       percentProfit: AnyView(Text("Profit (%)").fontWeight(.bold)),
                       postMarketPrice: AnyView(Text("Post Price").fontWeight(.bold)),
                       postMarketChangePercent: AnyView(Text("Post " + "\u{0394}" + " (%)").fontWeight(.bold)),

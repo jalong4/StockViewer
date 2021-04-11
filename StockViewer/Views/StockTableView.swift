@@ -29,7 +29,11 @@ struct StockTableView: View {
     }
     
     func getAccount() -> Account {
-        return appData.portfolio.summary.accounts.filter{ $0.name == self.name }[0]
+        var result = appData.portfolio.summary.accounts.filter{ $0.name == self.name }[0]
+        let accountStocks = appData.portfolio.stocks.filter{ $0.account == self.name }
+        result.percentOfTotalCost = accountStocks.reduce(0) { (sum, a) -> Double in sum + a.percentOfTotalCost }
+        result.percentOfTotal = accountStocks.reduce(0) { (sum, a) -> Double in sum + a.percentOfTotal }
+        return result;
     }
     
     func checkForPostMarketData(_ stocks: [Stock]) {
@@ -59,10 +63,14 @@ struct StockTableView: View {
                     return appData.stockSortDirection == .up ? (a.dayGain > b.dayGain) : (a.dayGain <= b.dayGain)
                 case .totalCost:
                     return appData.stockSortDirection == .up ? (a.totalCost > b.totalCost) : (a.totalCost <= b.totalCost)
+                case .percentOfTotalCost:
+                    return appData.stockSortDirection == .up ? (a.percentOfTotalCost > b.percentOfTotalCost) : (a.percentOfTotalCost <= b.percentOfTotalCost)
                 case .profit:
                     return appData.stockSortDirection == .up ? (a.profit > b.profit) :  (a.profit <= b.profit)
                 case .total:
                     return appData.stockSortDirection == .up ? (a.total > b.total) : (a.total < b.total)
+                case .percentOfTotal:
+                    return appData.stockSortDirection == .up ? (a.percentOfTotal > b.percentOfTotal) : (a.percentOfTotal <= b.percentOfTotal)
                 case .percentProfit:
                     return appData.stockSortDirection == .up ? (a.percentProfit > b.percentProfit) : (a.percentProfit <= b.percentProfit)
                 case .postMarketChangePercent:
@@ -79,7 +87,12 @@ struct StockTableView: View {
             return stocks;
         case .stock:
             let ticker = name == "Cash" ? "SPAXX" : name
-            let stocks = appData.portfolio.stocks.filter{ $0.ticker == ticker }
+            var stocks = appData.portfolio.stocks.filter{ $0.ticker == ticker }
+            let totals = getFooterForStock(stocks: stocks)
+            for (i, _) in stocks.enumerated() {
+                stocks[i].percentOfTotalCost = (totals.totalCost == 0) ? 0 : stocks[i].totalCost / totals.totalCost;
+                stocks[i].percentOfTotal = (totals.total == 0) ? 0 : stocks[i].total / totals.total;
+            }
             checkForPostMarketData(stocks)
             print("returning all accounts for stocks")
             return stocks
@@ -139,6 +152,14 @@ struct StockTableView: View {
                             let label = "Total Cost".sortPrefix(appData.stockSortType == .totalCost, appData.stockSortDirection)
                             Text(label).fontWeight(.bold)
                         }),
+                    percentOfTotalCost: AnyView(
+                        Button(action: {
+                            print("Sorting by percentOfTotalCost")
+                            updateSortProperties(.percentOfTotalCost)
+                        }) {
+                            let label = "% of Cost".sortPrefix(appData.stockSortType == .percentOfTotalCost, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
+                        }),
                     profit: AnyView(
                         Button(action: {
                             print("Sorting by profit")
@@ -153,6 +174,14 @@ struct StockTableView: View {
                             updateSortProperties(.total)
                         }) {
                             let label = "Total".sortPrefix(appData.stockSortType == .total, appData.stockSortDirection)
+                            Text(label).fontWeight(.bold)
+                        }),
+                    percentOfTotal: AnyView(
+                        Button(action: {
+                            print("Sorting by percentOfTotal")
+                            updateSortProperties(.percentOfTotal)
+                        }) {
+                            let label = "% of Total".sortPrefix(appData.stockSortType == .percentOfTotal, appData.stockSortDirection)
                             Text(label).fontWeight(.bold)
                         }),
                     percentProfit: AnyView(
@@ -204,6 +233,8 @@ struct StockTableView: View {
         result.postMarketGain = stocks.reduce(0) { (sum, a) -> Double in sum + a.postMarketGain }
         
         result.dayGain = stocks.reduce(0) { (sum, a) -> Double in sum + a.dayGain }
+        result.percentOfTotalCost = stocks.reduce(0) { (sum, a) -> Double in sum + a.percentOfTotalCost }
+        result.percentOfTotal = stocks.reduce(0) { (sum, a) -> Double in sum + a.percentOfTotal }
         result.profit = stocks.reduce(0) { (sum, a) -> Double in sum + a.profit }
         result.percentChange = ((result.total - result.dayGain) == 0) ? 0 : (result.dayGain / (result.total - result.dayGain));
         result.percentProfit = (result.totalCost == 0) ? ((result.profit == 0) ? 0 : 1) : (result.profit / result.totalCost);
@@ -223,8 +254,10 @@ struct StockTableView: View {
                 dayGain: AnyView(Utils.getColorCodedTextView(totals.dayGain, style: .decimal).fontWeight(.bold)),
                 unitCost: AnyView(Text("")),
                 totalCost: AnyView(Text(Utils.getFormattedNumber(totals.totalCost)).fontWeight(.bold)),
+                percentOfTotalCost: AnyView(Utils.getColorCodedTextView(totals.percentOfTotalCost, style: .percent).fontWeight(.bold)),
                 profit: AnyView(Utils.getColorCodedTextView(totals.profit, style: .decimal).fontWeight(.bold)),
                 total: AnyView(Text(Utils.getFormattedNumber(totals.total)).fontWeight(.bold)),
+                percentOfTotal: AnyView(Utils.getColorCodedTextView(totals.percentOfTotal, style: .percent).fontWeight(.bold)),
                 percentProfit: AnyView(Utils.getColorCodedTextView(totals.percentProfit, style: .percent).fontWeight(.bold)),
                 postMarketPrice: AnyView(Text("")),
                 postMarketChangePercent: AnyView(Utils.getColorCodedTextView(totals.postMarketChangePercent, style: .percent).fontWeight(.bold)),
@@ -316,8 +349,10 @@ struct StockTableView: View {
                                                   dayGain: AnyView(Utils.getColorCodedTextView(stock.dayGain, style: .decimal)),
                                                   unitCost: AnyView(Text(Utils.getFormattedNumber(stock.unitCost))),
                                                   totalCost: AnyView(Text(Utils.getFormattedNumber(stock.totalCost))),
+                                                  percentOfTotalCost: AnyView(Utils.getColorCodedTextView(stock.percentOfTotalCost, style: .percent)),
                                                   profit: AnyView(Utils.getColorCodedTextView(stock.profit, style: .decimal)),
                                                   total: AnyView(Text(Utils.getFormattedNumber(stock.total))),
+                                                  percentOfTotal: AnyView(Utils.getColorCodedTextView(stock.percentOfTotal, style: .percent)),
                                                   percentProfit: AnyView(Utils.getColorCodedTextView(stock.percentProfit, style: .percent)),
                                                   postMarketPrice: AnyView(Text(Utils.getFormattedNumber(stock.postMarketPrice))),
                                                   postMarketChangePercent: AnyView(Utils.getColorCodedTextView(stock.postMarketChangePercent, style: .percent)),

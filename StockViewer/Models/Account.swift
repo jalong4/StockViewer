@@ -15,7 +15,9 @@ struct Account: Codable, Identifiable {
     var quantity: Double?
     var numStocks: Double = 0;
     var totalCost: Double = 0;
+    var percentOfTotalCost: Double = 0;
     var total: Double = 0;
+    var percentOfTotal: Double = 0;
     var dayGain: Double = 0;
     var percentChange: Double = 0;
     var profit: Double = 0;
