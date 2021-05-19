@@ -596,5 +596,145 @@ class Api {
         }
         .resume()
     }
+    
+    func getFutures(completion: @escaping ([Future]?) -> ()) {
+        
+        guard
+            let url = URL(string: "\(Constants.baseUrl)/futures"),
+            let accessToken = SettingsManager.sharedInstance.accessToken
+        else { return };
+        
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to get futures data: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to get futures data")
+            }
+            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .deferredToDate
+            decoder.keyDecodingStrategy = .useDefaultKeys
+            
+            var quoteResponse: FutureResponse? = nil
+            do {
+                quoteResponse = try decoder.decode(FutureResponse.self, from: data)
+            } catch {
+                print("Unable to decode json into FutureResponse")
+                print(data.prettyPrintedJSONString!)
+            }
+            
+            DispatchQueue.main.async {
+                completion(quoteResponse?.futures)
+            }
+        }
+        .resume()
+    }
+    
+    func updateFuture(future: Future, completion: @escaping (Future) -> ()) {
+        guard let url = URL(string: "\(Constants.baseUrl)/futures/id/\(future._id)"),
+              let accessToken = SettingsManager.sharedInstance.accessToken,
+              let body = try? JSONEncoder().encode(FutureBody(future: future))
+        else { return };
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = body
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to update future data: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to update future data")
+            }
+            
+            let future = Utils.decodeToObj(Future.self, from: data)
+            
+            DispatchQueue.main.async {
+                completion(future)
+            }
+        }
+        .resume()
+    }
+    
+    func deleteFuture(id: String, completion: @escaping (String) -> ()) {
+        guard let url = URL(string: "\(Constants.baseUrl)/futures/id/\(id)"),
+              let accessToken = SettingsManager.sharedInstance.accessToken
+        else { return };
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to delete future Id: \(id): Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to get future data")
+            }
+            
+            let msg = Utils.decodeToObj([String: String].self, from: data)
+            
+            DispatchQueue.main.async {
+                completion(msg["message"] ?? "")
+            }
+        }
+        .resume()
+    }
+    
+    func addFuture(futureBody: FutureBody, completion: @escaping (Future) -> ()) {
+        guard let url = URL(string: "\(Constants.baseUrl)/futures"),
+              let accessToken = SettingsManager.sharedInstance.accessToken,
+              let body = try? JSONEncoder().encode(futureBody)
+        else {
+            return
+        };
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = body
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to add futures data: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to get futures data")
+            }
+            
+            let future = Utils.decodeToObj(Future.self, from: data)
+            
+            DispatchQueue.main.async {
+                completion(future)
+            }
+        }
+        .resume()
+    }
+    
 }
 

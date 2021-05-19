@@ -19,6 +19,7 @@ struct MenuView: View {
                     appData.showingEnterTrade = false
                     appData.showingStockTable = false
                     appData.showingEditCash = false
+                    appData.showingFutures = false
                     appData.showingSettings = false
                     print("Profile")
                 }) {
@@ -39,6 +40,7 @@ struct MenuView: View {
                     appData.showingEnterTrade = false
                     appData.showingStockTable = false
                     appData.showingEditCash = false
+                    appData.showingFutures = false
                     appData.showingSettings = false
                     appData.showingChangePassword = true
                     print("Change Password")
@@ -60,6 +62,7 @@ struct MenuView: View {
                     appData.showingEnterTrade = true
                     appData.showingStockTable = false
                     appData.showingEditCash = false
+                    appData.showingFutures = false
                     appData.showingSettings = false
                     print("Enter Trade")
                     
@@ -80,6 +83,7 @@ struct MenuView: View {
                     appData.showingEnterTrade = false
                     appData.showingStockTable = false
                     appData.showingEditCash = true
+                    appData.showingFutures = false
                     appData.showingSettings = false
                     print("Edit Cash Balance")
                     
@@ -100,6 +104,28 @@ struct MenuView: View {
                     appData.showingEnterTrade = false
                     appData.showingStockTable = false
                     appData.showingEditCash = false
+                    appData.showingFutures = true
+                    appData.showingSettings = false
+                    print("Futures")
+                    
+                }) {
+                    Image(systemName: "hourglass.tophalf.fill")
+                        .foregroundColor(Color.themeBackground)
+                        .imageScale(.large)
+                    Text("Futures")
+                        .padding()
+                        .foregroundColor(Color.themeBackground)
+                }
+            }
+            
+            HStack {
+                Button(action: {
+                    appData.showMenu = false
+                    appData.showingProfile = false
+                    appData.showingEnterTrade = false
+                    appData.showingStockTable = false
+                    appData.showingEditCash = false
+                    appData.showingFutures = false
                     appData.showingSettings = true
                     print("Settings")
                 }) {

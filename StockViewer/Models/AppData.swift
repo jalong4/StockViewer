@@ -13,6 +13,7 @@ class AppData: ObservableObject {
     @Published var showingProfile: Bool = false
     @Published var showingEnterTrade: Bool = false
     @Published var showingEditCash: Bool = false
+    @Published var showingFutures: Bool = false
     @Published var showingSettings: Bool = false
     @Published var showingChangePassword: Bool = false
     @Published var showStocksForPortfolio: Bool = false

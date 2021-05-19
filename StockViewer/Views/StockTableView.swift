@@ -230,6 +230,10 @@ struct StockTableView: View {
         result.quantity = stocks.reduce(0) { (sum, a) -> Double in sum + a.quantity }
         result.total = stocks.reduce(0) { (sum, a) -> Double in sum + a.total }
         result.totalCost = stocks.reduce(0) { (sum, a) -> Double in sum + a.totalCost }
+        
+        if let quantity = result.quantity, quantity != 0 {
+            result.unitCost = result.totalCost / quantity
+        }
         result.postMarketGain = stocks.reduce(0) { (sum, a) -> Double in sum + a.postMarketGain }
         
         result.dayGain = stocks.reduce(0) { (sum, a) -> Double in sum + a.dayGain }
@@ -252,7 +256,7 @@ struct StockTableView: View {
                 percentChange: AnyView(Utils.getColorCodedTextView(totals.percentChange, style: .percent).fontWeight(.bold)),
                 priceChange: AnyView(Text("")),
                 dayGain: AnyView(Utils.getColorCodedTextView(totals.dayGain, style: .decimal).fontWeight(.bold)),
-                unitCost: AnyView(Text("")),
+                unitCost: AnyView(Text(type == .stock ? Utils.getFormattedNumber(totals.unitCost) : "").fontWeight(.bold)),
                 totalCost: AnyView(Text(Utils.getFormattedNumber(totals.totalCost)).fontWeight(.bold)),
                 percentOfTotalCost: AnyView(Utils.getColorCodedTextView(totals.percentOfTotalCost, style: .percent).fontWeight(.bold)),
                 profit: AnyView(Utils.getColorCodedTextView(totals.profit, style: .decimal).fontWeight(.bold)),

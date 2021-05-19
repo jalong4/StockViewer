@@ -39,6 +39,8 @@
 		8E8E8F5825D754D100588BC1 /* PreviewTrade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F5725D754D100588BC1 /* PreviewTrade.swift */; };
 		8E8E8F6525D85D6C00588BC1 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F6425D85D6C00588BC1 /* ProfileView.swift */; };
 		8E8E8F6825D8682800588BC1 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8E8F6725D8682800588BC1 /* SettingsView.swift */; };
+		8E9E7EC22623979A0046F7F8 /* FuturesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9E7EC12623979A0046F7F8 /* FuturesView.swift */; };
+		8E9E7EC426239A230046F7F8 /* Future.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9E7EC326239A230046F7F8 /* Future.swift */; };
 		8EBF45F925D9AAEB004269ED /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF45F825D9AAEB004269ED /* CustomTextField.swift */; };
 		8EBF45FC25D9C661004269ED /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF45FB25D9C661004269ED /* Quote.swift */; };
 		8EBF45FF25DA388F004269ED /* KeyboardHeightHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBF45FE25DA388F004269ED /* KeyboardHeightHelper.swift */; };
@@ -100,6 +102,8 @@
 		8E8E8F5725D754D100588BC1 /* PreviewTrade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTrade.swift; sourceTree = "<group>"; };
 		8E8E8F6425D85D6C00588BC1 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		8E8E8F6725D8682800588BC1 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8E9E7EC12623979A0046F7F8 /* FuturesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuturesView.swift; sourceTree = "<group>"; };
+		8E9E7EC326239A230046F7F8 /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
 		8EBF45F825D9AAEB004269ED /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		8EBF45FB25D9C661004269ED /* Quote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quote.swift; sourceTree = "<group>"; };
 		8EBF45FE25DA388F004269ED /* KeyboardHeightHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHeightHelper.swift; sourceTree = "<group>"; };
@@ -218,6 +222,7 @@
 				8E8E8F5425D750E300588BC1 /* AppData.swift */,
 				8E003A5325D2205A00FB3A96 /* Auth.swift */,
 				8E02D2B925D8A13A001FE895 /* Holdings.swift */,
+				8E9E7EC326239A230046F7F8 /* Future.swift */,
 				8E1629EE25E2F11000A206AF /* Media.swift */,
 				8EDA215C25CD067800194772 /* Portfolio.swift */,
 				8EBF45FB25D9C661004269ED /* Quote.swift */,
@@ -241,6 +246,7 @@
 				8EBF45F825D9AAEB004269ED /* CustomTextField.swift */,
 				8EBF461925DB4418004269ED /* EditCashView.swift */,
 				8E8E8F5125D7272A00588BC1 /* EnterTradeView.swift */,
+				8E9E7EC12623979A0046F7F8 /* FuturesView.swift */,
 				8E003A6225D319D700FB3A96 /* HomeView.swift */,
 				8E3D05E125E1A4AF00305FEA /* ImagePicker.swift */,
 				8E003A3625D1E0AC00FB3A96 /* LoginView.swift */,
@@ -255,12 +261,12 @@
 				8EDA218D25CF65D300194772 /* StockTableRow.swift */,
 				8EDA218725CF501A00194772 /* StockTableView.swift */,
 				8EDA216A25CD1AE000194772 /* SummaryView.swift */,
-				8EDA217E25CF362B00194772 /* TopMoversView.swift */,
-				8E1629F625E45F4B00A206AF /* UrlImageView.swift */,
 				8E3D6FF225EC17E000967AE7 /* SvProfileIconView.swift */,
 				8E3D6FEC25EAD97F00967AE7 /* SvSecureTextField.swift */,
-				8E3D6FF025EAF9D500967AE7 /* SvTextFieldNoTextMsg.swift */,
 				8E3D6FEA25EACA2800967AE7 /* SvTextField.swift */,
+				8E3D6FF025EAF9D500967AE7 /* SvTextFieldNoTextMsg.swift */,
+				8EDA217E25CF362B00194772 /* TopMoversView.swift */,
+				8E1629F625E45F4B00A206AF /* UrlImageView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -411,6 +417,7 @@
 				8E1629F525E4538700A206AF /* UrlImageModel.swift in Sources */,
 				8E003A6625D342B100FB3A96 /* AuthUtils.swift in Sources */,
 				8E3D6FED25EAD97F00967AE7 /* SvSecureTextField.swift in Sources */,
+				8E9E7EC426239A230046F7F8 /* Future.swift in Sources */,
 				8E3D6FE925E8A97400967AE7 /* ChangePasswordView.swift in Sources */,
 				8E003A4925D219B400FB3A96 /* LocalDiskSaver.swift in Sources */,
 				8EDA217F25CF362B00194772 /* TopMoversView.swift in Sources */,
@@ -430,6 +437,7 @@
 				8E3D6FEF25EAE66F00967AE7 /* ValidationResult.swift in Sources */,
 				8E8E8F5525D750E300588BC1 /* AppData.swift in Sources */,
 				8E3D6FEB25EACA2800967AE7 /* SvTextField.swift in Sources */,
+				8E9E7EC22623979A0046F7F8 /* FuturesView.swift in Sources */,
 				8EDA218B25CF50BB00194772 /* Enums.swift in Sources */,
 				8E003A6325D319D700FB3A96 /* HomeView.swift in Sources */,
 				8EDA216325CD06C200194772 /* StockGains.swift in Sources */,

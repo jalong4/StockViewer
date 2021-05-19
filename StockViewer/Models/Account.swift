@@ -19,6 +19,7 @@ struct Account: Codable, Identifiable {
     var total: Double = 0;
     var percentOfTotal: Double = 0;
     var dayGain: Double = 0;
+    var unitCost: Double = 0;
     var percentChange: Double = 0;
     var profit: Double = 0;
     var percentProfit: Double = 0;

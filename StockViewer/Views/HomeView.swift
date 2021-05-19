@@ -21,7 +21,6 @@ struct HomeView: View {
         return result
     }
     
-    // navigation link for programmatic navigation
     var navigationLinkStockTable: NavigationLink<EmptyView, StockTableView>? {
         guard let selectedAccountName = selectedAccountName else {
             return nil
@@ -35,7 +34,6 @@ struct HomeView: View {
         }
     }
     
-    // navigation link for programmatic navigation
     var navigationLinkProfile: NavigationLink<EmptyView, ProfileView>? {
         
         return NavigationLink(
@@ -46,7 +44,6 @@ struct HomeView: View {
         }
     }
     
-    // navigation link for programmatic navigation
     var navigationLinkChangePassword: NavigationLink<EmptyView, ChangePasswordView>? {
         
         return NavigationLink(
@@ -57,7 +54,6 @@ struct HomeView: View {
         }
     }
     
-    // navigation link for programmatic navigation
     var navigationLinkEnterTrade: NavigationLink<EmptyView, EnterTradeView>? {
         
         return NavigationLink(
@@ -68,7 +64,6 @@ struct HomeView: View {
         }
     }
     
-    // navigation link for programmatic navigation
     var navigationLinkEditCash: NavigationLink<EmptyView, EditCashView>? {
         
         return NavigationLink(
@@ -79,7 +74,16 @@ struct HomeView: View {
         }
     }
     
-    // navigation link for programmatic navigation
+    var navigationLinkFuture: NavigationLink<EmptyView, FuturesView>? {
+        
+        return NavigationLink(
+            destination: FuturesView(),
+            isActive: $appData.showingFutures
+        ) {
+            EmptyView()
+        }
+    }
+    
     var navigationLinkSettings: NavigationLink<EmptyView, SettingsView>? {
         
         return NavigationLink(
@@ -169,6 +173,7 @@ struct HomeView: View {
                             navigationLinkStockTable
                             navigationLinkEnterTrade
                             navigationLinkEditCash
+                            navigationLinkFuture
                             navigationLinkSettings
                             
                             ScrollView(showsIndicators: false) {
