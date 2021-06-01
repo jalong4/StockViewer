@@ -673,6 +673,11 @@ class Api {
     }
     
     func deleteFuture(id: String, completion: @escaping (String) -> ()) {
+        
+        if id.isEmpty {
+            return
+        }
+        
         guard let url = URL(string: "\(Constants.baseUrl)/futures/id/\(id)"),
               let accessToken = SettingsManager.sharedInstance.accessToken
         else { return };

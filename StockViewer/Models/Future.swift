@@ -25,8 +25,8 @@ class Future:  ObservableObject, Codable, Identifiable {
     }
     
     var _id = String()
-    var ticker = String()
-    var price: Double = 0
+    @Published var ticker = String()
+    @Published var price: Double = 0
     @Published var active: Bool = true
     
     init() { }
