@@ -24,6 +24,7 @@ struct Constants {
     
     static let baseUrl = "https://api.jimlong.ca"
 //    static let baseUrl = "http://192.168.7.168:3000"
+    static let cashTicker = "SPAXX"
 
     static let expiresIn5Minutes = TimeInterval(300) // 60 sec * 5
     

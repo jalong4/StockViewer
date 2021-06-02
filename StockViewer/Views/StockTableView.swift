@@ -5,6 +5,7 @@
 //  Created by Jim Long on 2/6/21.
 //
 
+import SwiftUICharts
 import SwiftUI
 
 struct StockTableView: View {
@@ -15,6 +16,33 @@ struct StockTableView: View {
     
     @State var name: String
     @State var type: StockTableType
+    @State var chart = Chart()
+    
+    
+    func getStockChartData() {
+        if type == .stock && self.chart.quotes.isEmpty && name != Constants.cashTicker {
+            Api().getStockChart(ticker: self.name) { (chartResponse) in
+                print("\(self.name)")
+                if let chartResponse = chartResponse {
+                    if let chart = chartResponse.chart {
+                        self.chart = chart
+                        print("Avg Stock Price: \(chart.avgPrice)")
+//                        for quote in chart.quotes {
+//                            print("\(quote.description)")
+//                        }
+                        print("Stock Chart call successful")
+                    } else {
+                        if let errors = chartResponse.errors {
+                            print("Stock Chart call had errors")
+                            for error in errors {
+                                print("\(error.msg)")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     
     func getTitle() -> String {
@@ -49,6 +77,7 @@ struct StockTableView: View {
             var stocks = appData.showStocksForPortfolio
                 ? appData.portfolio.portfolioStocks
                 : appData.portfolio.stocks.filter{ $0.account == name }
+
             checkForPostMarketData(stocks)
             
             stocks.sort(by: {(a, b) -> Bool in
@@ -94,6 +123,7 @@ struct StockTableView: View {
                 stocks[i].percentOfTotal = (totals.total == 0) ? 0 : stocks[i].total / totals.total;
             }
             checkForPostMarketData(stocks)
+            getStockChartData()
             print("returning all accounts for stocks")
             return stocks
         }
@@ -272,6 +302,19 @@ struct StockTableView: View {
             .environmentObject(appData)
     }
     
+    func StockPriceGraph() -> some View {
+        if type == .stock && chart.quotes.count > 0 {
+            return AnyView (
+                VStack {
+                    Spacer()
+                    LineView(data: chart.quotes.map { $0.close }, title: self.name, legend: "Year to Date").padding(10)
+                }
+            )
+        } else {
+            return AnyView(EmptyView())
+        }
+    }
+    
     var body: some View {
         
         let rowHeight: CGFloat = 38
@@ -295,7 +338,7 @@ struct StockTableView: View {
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
                     Text(type == .account ? "\(name) Stocks" : stocks.first?.name ?? name)
                         .fontWeight(.bold)
-                        .font(.system(size:16))
+                        .font(type == .account ? .system(size:16) : .title)
                         .padding(EdgeInsets(top: 4, leading: ((type == .account) ? 30 : 20), bottom: 10, trailing: 0))
                         .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     
@@ -314,6 +357,7 @@ struct StockTableView: View {
                                         let newType: StockTableType = (type == StockTableType.stock) ? StockTableType.account : StockTableType.stock
                                         
                                         print("tapped: \(name), stockType: \(newType)")
+                                        self.chart = Chart()
                                         value.scrollTo(0)
                                         self.type = newType
                                         self.name = name
@@ -370,10 +414,10 @@ struct StockTableView: View {
                                 
                                 getFooter(stocks: stocks)
                             }
-                            
                         }
                     }
                 }
+                StockPriceGraph().padding(EdgeInsets(top: 40, leading: 10, bottom: 0, trailing: 10))
             }
         }
         .padding(.leading, 0)
@@ -382,6 +426,7 @@ struct StockTableView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(){
             print("StockTableView appearing for \(name)")
+            getStockChartData()
         }
         
         

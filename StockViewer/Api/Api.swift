@@ -222,6 +222,46 @@ class Api {
         .resume()
     }
     
+    func getStockChart(ticker: String, completion: @escaping (ChartResponse?) -> ()) {
+        guard let url = URL(string: "\(Constants.baseUrl)/stocks/chart/\(ticker)"),
+              let accessToken = SettingsManager.sharedInstance.accessToken
+        else { return };
+        
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to get stock history data: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to get stock history data")
+            }
+            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .deferredToDate
+            decoder.keyDecodingStrategy = .useDefaultKeys
+            
+            var chartResponse: ChartResponse? = nil
+            do {
+                chartResponse = try decoder.decode(ChartResponse.self, from: data)
+            } catch {
+                print("No stock chart found for ticker: \(ticker)")
+            }
+            
+            DispatchQueue.main.async {
+                completion(chartResponse)
+            }
+        }
+        .resume()
+    }
+    
     func updateHolding(holding: Holding, completion: @escaping (Holding) -> ()) {
         guard let url = URL(string: "\(Constants.baseUrl)/holdings/\(holding._id)"),
               let accessToken = SettingsManager.sharedInstance.accessToken,

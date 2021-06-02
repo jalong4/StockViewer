@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -66,6 +66,8 @@
 		8EDA218825CF501A00194772 /* StockTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDA218725CF501A00194772 /* StockTableView.swift */; };
 		8EDA218B25CF50BB00194772 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDA218A25CF50BB00194772 /* Enums.swift */; };
 		8EDA218E25CF65D300194772 /* StockTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDA218D25CF65D300194772 /* StockTableRow.swift */; };
+		8EE285302666D19600097AC8 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 8EE2852F2666D19600097AC8 /* SwiftUICharts */; };
+		8EE285322666D50A00097AC8 /* Chart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE285312666D50A00097AC8 /* Chart.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -131,6 +133,7 @@
 		8EDA218725CF501A00194772 /* StockTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockTableView.swift; sourceTree = "<group>"; };
 		8EDA218A25CF50BB00194772 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		8EDA218D25CF65D300194772 /* StockTableRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockTableRow.swift; sourceTree = "<group>"; };
+		8EE285312666D50A00097AC8 /* Chart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chart.swift; sourceTree = "<group>"; };
 		DACE2673DFD3405F86CF0F16 /* Pods-StockViewer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StockViewer.debug.xcconfig"; path = "Target Support Files/Pods-StockViewer/Pods-StockViewer.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -140,6 +143,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5E6F4A9F69355CA18B58C4A1 /* Pods_StockViewer.framework in Frameworks */,
+				8EE285302666D19600097AC8 /* SwiftUICharts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +225,7 @@
 				8EDA215525CD062E00194772 /* Account.swift */,
 				8E8E8F5425D750E300588BC1 /* AppData.swift */,
 				8E003A5325D2205A00FB3A96 /* Auth.swift */,
+				8EE285312666D50A00097AC8 /* Chart.swift */,
 				8E02D2B925D8A13A001FE895 /* Holdings.swift */,
 				8E9E7EC326239A230046F7F8 /* Future.swift */,
 				8E1629EE25E2F11000A206AF /* Media.swift */,
@@ -313,6 +318,9 @@
 			dependencies = (
 			);
 			name = StockViewer;
+			packageProductDependencies = (
+				8EE2852F2666D19600097AC8 /* SwiftUICharts */,
+			);
 			productName = StockViewer;
 			productReference = 8EDA214125CD060500194772 /* StockViewer.app */;
 			productType = "com.apple.product-type.application";
@@ -340,6 +348,9 @@
 				Base,
 			);
 			mainGroup = 8EDA213825CD060500194772;
+			packageReferences = (
+				8EE2852E2666D19600097AC8 /* XCRemoteSwiftPackageReference "ChartView" */,
+			);
 			productRefGroup = 8EDA214225CD060500194772 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -417,6 +428,7 @@
 				8E1629F525E4538700A206AF /* UrlImageModel.swift in Sources */,
 				8E003A6625D342B100FB3A96 /* AuthUtils.swift in Sources */,
 				8E3D6FED25EAD97F00967AE7 /* SvSecureTextField.swift in Sources */,
+				8EE285322666D50A00097AC8 /* Chart.swift in Sources */,
 				8E9E7EC426239A230046F7F8 /* Future.swift in Sources */,
 				8E3D6FE925E8A97400967AE7 /* ChangePasswordView.swift in Sources */,
 				8E003A4925D219B400FB3A96 /* LocalDiskSaver.swift in Sources */,
@@ -654,6 +666,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8EE2852E2666D19600097AC8 /* XCRemoteSwiftPackageReference "ChartView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppPear/ChartView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8EE2852F2666D19600097AC8 /* SwiftUICharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8EE2852E2666D19600097AC8 /* XCRemoteSwiftPackageReference "ChartView" */;
+			productName = SwiftUICharts;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8EDA213925CD060500194772 /* Project object */;
 }
