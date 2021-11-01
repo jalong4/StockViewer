@@ -6,6 +6,7 @@
 //
 
 import Combine
+import UIKit
 
 class AppData: ObservableObject {
 
@@ -14,6 +15,7 @@ class AppData: ObservableObject {
     @Published var showingEnterTrade: Bool = false
     @Published var showingEditCash: Bool = false
     @Published var showingFutures: Bool = false
+    @Published var showingBalanceHistory: Bool = false
     @Published var showingSettings: Bool = false
     @Published var showingChangePassword: Bool = false
     @Published var showStocksForPortfolio: Bool = false
@@ -25,4 +27,6 @@ class AppData: ObservableObject {
     @Published var stockSortType: StockSortType = .ticker
     @Published var stockSortDirection: StockSortDirection = .down
     @Published var portfolio = Portfolio()
+    @Published var history = [History]()
+    @Published var dates = [Date]()
 }

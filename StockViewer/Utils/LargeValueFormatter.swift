@@ -1,15 +1,3 @@
-//
-
-//  ChartsDemo-OSX
-//
-//  Copyright 2015 Daniel Cohen Gindi & Philipp Jahoda
-//  Copyright © 2017 thierry Hentic.
-//  A port of MPAndroidChart for iOS
-//  Licensed under Apache License 2.0
-//
-//  https://github.com/danielgindi/ios-charts
-//  https://en.wikipedia.org/wiki/Metric_prefix
-
 import Foundation
 import Charts
 
@@ -18,13 +6,17 @@ open class LargeValueFormatter: NSObject, IValueFormatter, IAxisValueFormatter
     fileprivate static let MAX_LENGTH = 5
     fileprivate static let MIN_LENGTH = -5
     
+    
     /// Suffix to be appended after the values.
     ///
     /// **default**: suffix: ["", "k", "m", "b", "t"]
     open var suffix = ["p","n","µ", "m", "" ,"k", "M", "G", "T"]
+    open var stringMask = ["%2.f", "%2.f", "%2.f", "%2.3f", "%2.f", "%2.1f", "%2.3f", "%2.3f", "%2.3f"]
     
     /// An appendix text to be added at the end of the formatted value.
     open var appendix: String?
+    
+    open var disableFirst: Bool = false
     
     public override init()
     {
@@ -33,6 +25,10 @@ open class LargeValueFormatter: NSObject, IValueFormatter, IAxisValueFormatter
     public init(appendix: String?)
     {
         self.appendix = appendix
+    }
+    
+    public init(disableFirst: Bool) {
+        self.disableFirst = disableFirst
     }
     
     fileprivate func format(value: Double) -> String
@@ -71,7 +67,7 @@ open class LargeValueFormatter: NSObject, IValueFormatter, IAxisValueFormatter
         {
             length = 0
         }
-        var r = String(format: "%2.f", sig * sign) + suffix[length + 4]
+        var r = String(format: stringMask[length + 4], sig * sign) + suffix[length + 4]
         
         if appendix != nil
         {
@@ -81,8 +77,7 @@ open class LargeValueFormatter: NSObject, IValueFormatter, IAxisValueFormatter
         return r
     }
     
-    open func stringForValue( _ value: Double, axis: AxisBase?) -> String
-    {
+    open func stringForValue( _ value: Double, axis: AxisBase?) -> String {
         return format(value: value)
     }
     
@@ -90,8 +85,11 @@ open class LargeValueFormatter: NSObject, IValueFormatter, IAxisValueFormatter
         _ value: Double,
         entry: ChartDataEntry,
         dataSetIndex: Int,
-        viewPortHandler: ViewPortHandler?) -> String
-    {
+        viewPortHandler: ViewPortHandler?) -> String {
+
+        if (disableFirst) && ((entry.data as? Int) == 0) {
+            return ""
+        }
         return format(value: value)
     }
 }

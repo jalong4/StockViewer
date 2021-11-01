@@ -43,7 +43,7 @@ struct BalanceHistoryView: View {
     
     var body: some View {
         
-        let history = appData.history.filter { $0.date > "2021-10/01" }
+        let history = appData.history
         
         ZStack {
             Color.themeBackground

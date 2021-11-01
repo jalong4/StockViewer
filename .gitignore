@@ -1,5 +1,6 @@
 ## my config and tests data files
 *.json
+*.swp
 ## Build generated
 build/
 DerivedData/
@@ -14,6 +15,9 @@ DerivedData/
 *.perspectivev3
 !default.perspectivev3
 xcuserdata/
+
+## Pod files
+Pods/
 
 ## Other
 *.moved-aside

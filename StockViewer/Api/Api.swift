@@ -362,6 +362,11 @@ class Api {
         return Bundle.main.decode(Portfolio.self, from: "data.json")
     }
     
+    class func getMockHistory() -> [History] {
+        let stockBackup = Bundle.main.decode(StocksBackup.self, from: "historyData.json")
+        return stockBackup.history
+    }
+    
     func getUser(completion: @escaping (User?) -> ()) {
         
         guard
@@ -702,8 +707,19 @@ class Api {
             guard let data = data else {
                 fatalError("Failed to update future data")
             }
+ 
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .deferredToDate
+            decoder.keyDecodingStrategy = .useDefaultKeys
             
-            let future = Utils.decodeToObj(Future.self, from: data)
+            var future = Future()
+            do {
+                future = try decoder.decode(Future.self, from: data)
+            } catch {
+                print("Unable to decode json into FutureResponse")
+                print(data.prettyPrintedJSONString!)
+            }
+
             
             DispatchQueue.main.async {
                 completion(future)
@@ -747,7 +763,7 @@ class Api {
         .resume()
     }
     
-    func addFuture(futureBody: FutureBody, completion: @escaping (Future) -> ()) {
+    func addFuture(futureBody: FutureBody, completion: @escaping (Future?) -> ()) {
         guard let url = URL(string: "\(Constants.baseUrl)/futures"),
               let accessToken = SettingsManager.sharedInstance.accessToken,
               let body = try? JSONEncoder().encode(futureBody)
@@ -772,13 +788,70 @@ class Api {
                 fatalError("Failed to get futures data")
             }
             
-            let future = Utils.decodeToObj(Future.self, from: data)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .deferredToDate
+            decoder.keyDecodingStrategy = .useDefaultKeys
+            var future: Future? = nil
+            
+            do {
+                future = try decoder.decode(Future.self, from: data)
+            } catch {
+                print("Unable to decode json into Future")
+                print(data.prettyPrintedJSONString!)
+            }
             
             DispatchQueue.main.async {
                 completion(future)
             }
         }
         .resume()
+    }
+    
+    func getStocksBackupWithDateRange(startDate: String?, endDate: String?, completion: @escaping ([History]?) -> ()) {
+        
+        guard
+            let url = URL(string: "\(Constants.baseUrl)/stocks/backup"),
+            let accessToken = SettingsManager.sharedInstance.accessToken
+        else { return };
+        
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to get stocks backup data: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to get stocks backup data")
+            }
+            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .deferredToDate
+            decoder.keyDecodingStrategy = .useDefaultKeys
+            
+            var quoteResponse: StocksBackup? = nil
+            do {
+                quoteResponse = try decoder.decode(StocksBackup.self, from: data)
+            } catch {
+                print("Unable to decode json into FutureResponse")
+                print(data.prettyPrintedJSONString!)
+            }
+            
+            DispatchQueue.main.async {
+                completion(quoteResponse?.history)
+            }
+        }
+        .resume()
+    }
+    
+    func getStocksBackup(completion: @escaping ([History]?) -> ()) {
+        return getStocksBackupWithDateRange(startDate: nil, endDate: nil, completion: completion);
     }
     
 }

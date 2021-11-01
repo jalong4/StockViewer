@@ -104,8 +104,9 @@ struct FuturesView: View {
             }
         }
         .onAppear() {
-            self.loading = true
-            getFutures()
+            if self.loading {
+                getFutures()
+            }
         }
         .dismissKeyboardOnTap()
     }
@@ -215,9 +216,13 @@ struct FutureItemView: View {
                         self.isSaving = true
                         let future = FutureBody(ticker: future.ticker, price: future.price)
                         Api().addFuture(futureBody: future) { (response) in
-                            self.future._id = response._id
-                            performAdd.toggle()
-                            self.presentationMode.wrappedValue.dismiss()
+                            if let response = response {
+                                self.future._id = response._id
+                                performAdd.toggle()
+                                self.presentationMode.wrappedValue.dismiss()
+                            } else {
+                                print("Error adding Future")
+                            }
                         }
                     }
                     
