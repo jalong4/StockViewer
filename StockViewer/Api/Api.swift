@@ -809,8 +809,18 @@ class Api {
     
     func getStocksBackupWithDateRange(startDate: String?, endDate: String?, completion: @escaping ([History]?) -> ()) {
         
+        var queryParams: String? = nil
+        if let startDate = startDate {
+            queryParams = "?startDate=\(startDate)"
+        }
+        
+        if let endDate = endDate {
+            queryParams = (queryParams ?? "") + ((queryParams != nil) ? "&" : "?")
+            queryParams = (queryParams ?? "") + "endDate=\(endDate)"
+        }
+        
         guard
-            let url = URL(string: "\(Constants.baseUrl)/stocks/backup"),
+            let url = URL(string: "\(Constants.baseUrl)/stocks/backup" + (queryParams ?? "")),
             let accessToken = SettingsManager.sharedInstance.accessToken
         else { return };
         
@@ -851,7 +861,9 @@ class Api {
     }
     
     func getStocksBackup(completion: @escaping ([History]?) -> ()) {
-        return getStocksBackupWithDateRange(startDate: nil, endDate: nil, completion: completion);
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YYYY-MM-dd"
+        return getStocksBackupWithDateRange(startDate: dateFormatter.string(from: Date().lastMonth), endDate: nil, completion: completion);
     }
     
 }

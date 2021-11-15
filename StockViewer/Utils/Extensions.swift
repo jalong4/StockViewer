@@ -39,6 +39,45 @@ extension Data {
     }
 }
 
+extension Date {
+    
+    var startOfYear: Date {
+        
+        let calendar = Calendar(identifier: .gregorian)
+        let components = calendar.dateComponents([.year], from: self)
+        
+        return  calendar.date(from: components)!
+    }
+    
+    var startOfMonth: Date {
+        
+        let calendar = Calendar(identifier: .gregorian)
+        let components = calendar.dateComponents([.year, .month], from: self)
+        
+        return  calendar.date(from: components)!
+    }
+    
+    var last3Months: Date {
+        return Calendar.current.date(byAdding: .month, value: -3, to: self)!
+    }
+    
+    var lastMonth: Date {
+        return Calendar.current.date(byAdding: .month, value: -1, to: self)!
+    }
+    
+    var last2Weeks: Date {
+        return Calendar.current.date(byAdding: .day, value: -14, to: self)!
+    }
+    
+    var lastWeek: Date {
+        return Calendar.current.date(byAdding: .day, value: -7, to: self)!
+    }
+    
+    var last3Days: Date {
+        return Calendar.current.date(byAdding: .day, value: -3, to: self)!
+    }
+}
+
 extension View {
     func phoneOnlyStackNavigationView() -> some View {
         if UIDevice.current.userInterfaceIdiom == .phone {
