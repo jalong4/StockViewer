@@ -1,3 +1,8 @@
+.DS_Store
+StockViewer/.DS_Store
+StockViewer/Assets.xcassets/.DS_Store
+StockViewer/Assets.xcassets/AppIcon.appiconset/.DS_Store
+
 ## my config and tests data files
 *.json
 *.swp

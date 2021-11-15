@@ -10,7 +10,7 @@ import SwiftUI
 struct Stock: Codable, Identifiable {
     var id = UUID()
     var ticker = String()
-    var name = String()
+    var name: String?
     var account = String()
     var quantity: Double = 0
     var price: Double = 0

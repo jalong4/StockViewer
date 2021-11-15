@@ -21,10 +21,13 @@ struct ContentView: View {
     
     private func loadData() {
         if isLoggedIn() {
-            appData.isDataLoading = true
-            Api().getPortfolio { (portfolio) in
-                appData.portfolio = portfolio
-                self.appData.isDataLoading = false
+            appData.isNetworkReachable = NetworkReachability().reachable
+            if appData.isNetworkReachable {
+                appData.isDataLoading = true
+                Api().getPortfolio { (portfolio) in
+                    appData.portfolio = portfolio
+                    self.appData.isDataLoading = false
+                }
             }
         }
     }
@@ -33,7 +36,19 @@ struct ContentView: View {
     var body: some View {
         Group {
             if appData.isLoggedIn {
-                if appData.isDataLoading {
+                if !appData.isNetworkReachable {
+                    GeometryReader { geometry in
+                        VStack(alignment: .center) {
+                            Text("No Network Connection")
+                                .font(.system(size: 16))
+                                .fontWeight(.bold)
+                        }
+                        .frame(width: geometry.size.width / 2, height: geometry.size.width / 2)
+                        .foregroundColor(Color.themeAccent)
+                        .insetView()
+                    }
+                }
+                else if appData.isDataLoading {
                     GeometryReader { geometry in
                         VStack(alignment: .center) {
                             ProgressView("Loading...")

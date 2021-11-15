@@ -110,9 +110,14 @@ struct HomeView: View {
     private func loadData() {
         appData.isDataLoading = true
         self.date = Date()
-        Api().getPortfolio { (portfolio) in
-            appData.portfolio = portfolio
-            self.appData.isDataLoading = false
+        
+        appData.isNetworkReachable = NetworkReachability().reachable
+        if appData.isNetworkReachable {
+            appData.isDataLoading = true
+            Api().getPortfolio { (portfolio) in
+                appData.portfolio = portfolio
+                self.appData.isDataLoading = false
+            }
         }
         
         getBalanceHistory()

@@ -76,8 +76,7 @@ struct BalanceHistoryView: View {
     
     private func getAccounts(_ history: [History]) -> [AccountName] {
         
-        
-        let names = history.flatMap { $0.data.summary.accounts }.map { $0.name }.uniqued()
+        let names = history.flatMap { $0.data.summary.accounts }.map { $0.name }
         
         var result = [AccountName]()
         names.forEach { name in
@@ -108,7 +107,19 @@ struct BalanceHistoryView: View {
     
     var body: some View {
         Group {
-            if self.loading {
+            if !appData.isNetworkReachable {
+                GeometryReader { geometry in
+                    VStack(alignment: .center) {
+                        Text("No Network Connection")
+                            .font(.system(size: 16))
+                            .fontWeight(.bold)
+                    }
+                    .frame(width: geometry.size.width / 2, height: geometry.size.width / 2)
+                    .foregroundColor(Color.themeAccent)
+                    .insetView()
+                }
+            }
+            else if self.loading {
                 GeometryReader { geometry in
                     VStack(alignment: .center) {
                         ProgressView("Loading...")

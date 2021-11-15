@@ -2,11 +2,11 @@ PODS:
   - Charts (3.6.0):
     - Charts/Core (= 3.6.0)
   - Charts/Core (3.6.0)
-  - JWTDecode (2.6.1)
-  - KeychainSwift (19.0.0)
+  - JWTDecode (3.0.0)
+  - KeychainSwift (20.0.0)
 
 DEPENDENCIES:
-  - Charts
+  - Charts (~> 3.6.0)
   - JWTDecode
   - KeychainSwift
 
@@ -18,9 +18,9 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
-  JWTDecode: 5e6d4b49c2b098f994cf7617401c195c8c06300b
-  KeychainSwift: a06190cf933ad46b1e0abc3d77d29c06331715c7
+  JWTDecode: 82480a7173f8a811954e7e14a2b59f688ca4222a
+  KeychainSwift: 0ce6a4d13f7228054d1a71bb1b500448fb2ab837
 
-PODFILE CHECKSUM: 2086f60a32989962aacd76a547a10803a596098a
+PODFILE CHECKSUM: b6f1cb2fc26402526ec72619d9695b05f2088923
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.3

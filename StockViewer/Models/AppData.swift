@@ -22,6 +22,7 @@ class AppData: ObservableObject {
     @Published var needsRefreshData: Bool = true
     @Published var isLoggedIn: Bool = true
     @Published var isDataLoading: Bool = true
+    @Published var isNetworkReachable: Bool = false
     @Published var postMarketDataIsAvailable: Bool = false
     @Published var showMenu: Bool = false
     @Published var stockSortType: StockSortType = .ticker

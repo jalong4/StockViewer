@@ -8,5 +8,5 @@ target 'StockViewer' do
   # Pods for StockViewer
   pod 'KeychainSwift'
   pod 'JWTDecode'
-  pod 'Charts'
+  pod 'Charts', '~> 3.6.0'
 end

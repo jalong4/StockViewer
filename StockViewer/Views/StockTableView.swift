@@ -50,7 +50,7 @@ struct StockTableView: View {
         if (type == .stock) {
             let stocks = appData.portfolio.stocks.filter{ $0.ticker == self.name }
             if (stocks.count > 0) {
-                stockName = stocks[0].name
+                stockName = stocks[0].name ?? stocks[0].ticker
             }
         }
         return (type == StockTableType.account) ? "\(self.name) Account" : "\(stockName)"
@@ -83,7 +83,7 @@ struct StockTableView: View {
             stocks.sort(by: {(a, b) -> Bool in
                 switch appData.stockSortType {
                 case .name:
-                    return appData.stockSortDirection == .up ? (a.name > b.name) : (a.name <= b.name)
+                    return appData.stockSortDirection == .up ? (a.name! > b.name!) : (a.name! <= b.name!)
                 case .percentChange:
                     return appData.stockSortDirection == .up ? (a.percentChange > b.percentChange) : (a.percentChange <= b.percentChange)
                 case .priceChange:
@@ -121,6 +121,9 @@ struct StockTableView: View {
             for (i, _) in stocks.enumerated() {
                 stocks[i].percentOfTotalCost = (totals.totalCost == 0) ? 0 : stocks[i].totalCost / totals.totalCost;
                 stocks[i].percentOfTotal = (totals.total == 0) ? 0 : stocks[i].total / totals.total;
+                if stocks[i].name == "" {
+                    stocks[i].name = stocks[i].ticker
+                }
             }
             checkForPostMarketData(stocks)
             getStockChartData()
@@ -317,7 +320,7 @@ struct StockTableView: View {
     
     var body: some View {
         
-        let rowHeight: CGFloat = 38
+        let rowHeight: CGFloat = 36
         
         
         let stocks = getStocks(name: name, stockSortType: appData.stockSortType)
@@ -336,10 +339,10 @@ struct StockTableView: View {
                 }
                 
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
-                    Text(type == .account ? "\(name) Stocks" : stocks.first?.name ?? name)
+                    Text(type == .account ? "Stocks" : stocks.first?.name ?? name)
                         .fontWeight(.bold)
                         .font(type == .account ? .system(size:16) : .title)
-                        .padding(EdgeInsets(top: 4, leading: ((type == .account) ? 30 : 20), bottom: 10, trailing: 0))
+                        .padding(EdgeInsets(top: 4, leading: ((type == .account) ? 30 : 20), bottom: 0, trailing: 0))
                         .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     
                     HStack(spacing: 0) {
@@ -366,14 +369,18 @@ struct StockTableView: View {
                                     }) {
                                         VStack (alignment: .leading) {
                                             Text(type == StockTableType.account ? (name == "SPAXX" ? "Cash" : name) : "")
-                                            Text(type == StockTableType.stock ? stock.account : (stock.name == "Cash") ? "Cash Account" : stock.name)
+                                                .lineLimit(1)
+                                            Text(type == StockTableType.stock ? stock.account : (stock.name == "Cash") ? "Cash Account" : (stock.name ?? stock.ticker))
                                                 .fontWeight(.regular).font(.system(size: (type == .account) ? 12 : 14))
+                                                .lineLimit(1)
                                             
                                         }
                                     }
                                 }
                                 .id(i)
                                 .frame(width: ((type == .account) ? 120 : 160), height: rowHeight, alignment: .topLeading)
+                                .padding(.bottom, 8.275)
+
                             }
                             
                             Text("Total").fontWeight(.bold).font(.system(size: 14))
@@ -410,10 +417,9 @@ struct StockTableView: View {
                                     )
                                     .environmentObject(appData)
                                     .frame(height: rowHeight)
-                                }
-                                
-                                getFooter(stocks: stocks)
                             }
+                            getFooter(stocks: stocks)
+                        }
                         }
                     }
                 }

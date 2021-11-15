@@ -43,7 +43,7 @@ struct StockTableRow: View {
                     .frame(width: 70, alignment: .topTrailing)
                 
                 dayGain
-                    .frame(width: 90, alignment: .topTrailing)
+                    .frame(width: 95, alignment: .topTrailing)
             }
             
             Group {
@@ -52,16 +52,16 @@ struct StockTableRow: View {
                     .frame(width: 90, alignment: .topTrailing)
                 
                 totalCost
-                    .frame(width: 104, alignment: .topTrailing)
+                    .frame(width: 109, alignment: .topTrailing)
                 
                 percentOfTotalCost
                     .frame(width: 90, alignment: .topTrailing)
 
                 profit
-                    .frame(width: 106, alignment: .topTrailing)
+                    .frame(width: 111, alignment: .topTrailing)
                 
                 total
-                    .frame(width: 106, alignment: .topTrailing)
+                    .frame(width: 117, alignment: .topTrailing)
                 
                 percentOfTotal
                     .frame(width: 90, alignment: .topTrailing)
