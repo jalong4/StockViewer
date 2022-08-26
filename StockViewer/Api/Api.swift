@@ -863,7 +863,7 @@ class Api {
     func getStocksBackup(completion: @escaping ([History]?) -> ()) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YYYY-MM-dd"
-        return getStocksBackupWithDateRange(startDate: dateFormatter.string(from: Date().lastMonth), endDate: nil, completion: completion);
+        return getStocksBackupWithDateRange(startDate: dateFormatter.string(from: Date().lastWeek), endDate: nil, completion: completion);
     }
     
 }

@@ -11,8 +11,7 @@ import Charts
 struct BalanceHistoryView: View {
     
     enum DateRangeType: Int {
-//        case all, ytd, threeMonths, lastMonth, last7Days
-        case all, lastMonth, last2weeks, last7Days, last3Days
+        case last2Years, lastYear, ytd, last3Months, lastMonth, lastWeek
     }
     
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -23,7 +22,7 @@ struct BalanceHistoryView: View {
     @State private var lineChartData: [ChartDataEntry] = []
     @State private var accounts: [AccountName] = []
     @State private var loading: Bool = false
-    @State private var dateRangeType = DateRangeType.lastMonth.rawValue
+    @State private var dateRangeType = DateRangeType.lastWeek.rawValue
     @State private var gain = AnyView(EmptyView())
     @State private var gainPercent = AnyView(EmptyView())
     @State private var startDate: String?
@@ -46,20 +45,22 @@ struct BalanceHistoryView: View {
         dateFormatter.dateFormat = "YYYY-MM-dd"
         
         switch dateRangeType {
-        case .all:
-            return nil
-//        case .ytd:
-//            return dateFormatter.string(from: Calendar.current.date(byAdding: .day, value: -7, to: today.startOfYear)!)
-//        case .threeMonths:
-//            return dateFormatter.string(from:today.last3Months)
+        case .last2Years:
+            return dateFormatter.string(from:today.last2Years)
+        case .lastYear:
+            return dateFormatter.string(from:today.lastYear)
+        case .ytd:
+            return dateFormatter.string(from: today.ytd)
+        case .last3Months:
+            return dateFormatter.string(from:today.last3Months)
         case .lastMonth:
             return dateFormatter.string(from:today.lastMonth)
-        case .last2weeks:
-            return dateFormatter.string(from:today.last2Weeks)
-        case .last7Days:
+//        case .last2weeks:
+//            return dateFormatter.string(from:today.last2Weeks)
+        case .lastWeek:
             return dateFormatter.string(from:today.lastWeek)
-        case .last3Days:
-            return dateFormatter.string(from:today.last3Days)
+//        case .last3Days:
+//            return dateFormatter.string(from:today.last3Days)
         default:
             break
         }
@@ -139,10 +140,11 @@ struct BalanceHistoryView: View {
                         ScrollView (showsIndicators: false) {
                             VStack(alignment: .center, spacing: 0,  content: {
                                 
-                                SegmentedPicker(items: ["All", "1m", "2w", "1w", "3d"], selection: $dateRangeType)
+                                SegmentedPicker(items: ["2y", "1y", "ytd", "3m", "1m", "1w"], selection: $dateRangeType)
                                     .frame(maxWidth: maxWidth)
                                     .padding([.bottom, .top], 10)
-                                    .padding([.leading, .trailing], horizontalPadding)
+                                    .padding(.leading, 4)
+                                    .padding(.trailing, 12)
                                     .onChange(of: dateRangeType) { newValue in
                                         self.loading.toggle()
                                         self.startDate = getStartDateFor(dateRangeType)

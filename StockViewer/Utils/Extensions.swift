@@ -57,6 +57,21 @@ extension Date {
         return  calendar.date(from: components)!
     }
     
+    var ytd: Date {
+        let calendar = Calendar(identifier: .gregorian)
+        let components = calendar.dateComponents([.year], from: self)
+        
+        return  calendar.date(from: components)!
+    }
+    
+    var last2Years: Date {
+        return Calendar.current.date(byAdding: .year, value: -2, to: self)!
+    }
+    
+    var lastYear: Date {
+        return Calendar.current.date(byAdding: .year, value: -1, to: self)!
+    }
+    
     var last3Months: Date {
         return Calendar.current.date(byAdding: .month, value: -3, to: self)!
     }
