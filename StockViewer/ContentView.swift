@@ -21,13 +21,15 @@ struct ContentView: View {
     
     private func loadData() {
         if isLoggedIn() {
-            appData.isNetworkReachable = NetworkReachability().reachable
             if appData.isNetworkReachable {
                 appData.isDataLoading = true
                 Api().getPortfolio { (portfolio) in
                     appData.portfolio = portfolio
                     self.appData.isDataLoading = false
                 }
+            }
+            else {
+                appData.isDataLoading = false
             }
         }
     }
@@ -73,7 +75,11 @@ struct ContentView: View {
             }
         }
         .onAppear() {
-            loadData()
+            if appData.needsRefreshData {
+                appData.needsRefreshData.toggle()
+                print("Refreshing data")
+                self.loadData()
+            }
         }
     }
 }

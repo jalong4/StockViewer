@@ -11,25 +11,32 @@ import SystemConfiguration
 class NetworkReachability: ObservableObject {
 
     @Published private(set) var reachable: Bool = false
-    private let reachability = SCNetworkReachabilityCreateWithName(nil, "www.google.com")
-    
-    private func isNetworkReachable(with flags: SCNetworkReachabilityFlags) -> Bool {
+
+    class func isNetworkReachable() -> Bool {
+
+        var zeroAddress = sockaddr_in()
+        zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
+        zeroAddress.sin_family = sa_family_t(AF_INET)
+
+        let defaultRouteReachability = withUnsafePointer(to: &zeroAddress) {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {zeroSockAddress in
+                SCNetworkReachabilityCreateWithAddress(nil, zeroSockAddress)
+            }
+        }
+
+        var flags : SCNetworkReachabilityFlags = []
+        if !SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) {
+            return false
+        }
+
         let isReachable = flags.contains(.reachable)
-        let connectionRequired = flags.contains(.connectionRequired)
-        let canConnectAutomatically = flags.contains(.connectionOnDemand) || flags.contains(.connectionOnTraffic)
-        let canConnectWithoutIntervention = canConnectAutomatically && !flags.contains(.interventionRequired)
-
-        return isReachable && (!connectionRequired || canConnectWithoutIntervention)
+        let needsConnection = flags.contains(.connectionRequired)
+        return (isReachable && !needsConnection)
     }
-    
-    func checkConnection() -> Bool {
-        var flags = SCNetworkReachabilityFlags()
-        SCNetworkReachabilityGetFlags(reachability!, &flags)
 
-            return isNetworkReachable(with: flags)
-    }
     
     init() {
-            self.reachable = checkConnection()
+        self.reachable = NetworkReachability.isNetworkReachable()
     }
+
 }
