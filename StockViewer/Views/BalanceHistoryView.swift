@@ -105,6 +105,19 @@ struct BalanceHistoryView: View {
         return AnyView(Utils.getColorCodedTextView(change, style: .currency))
     }
     
+    private func getData() {
+        self.loading.toggle()
+        self.startDate = getStartDateFor(dateRangeType)
+        self.endDate = getEndDateFor(dateRangeType)
+        print("Start Date: \(self.startDate ?? ""), End Date: \(self.endDate ?? "")")
+        Api().getStocksBackupWithDateRange(startDate: startDate, endDate: endDate) { historyWithDateRange in
+            appData.history = historyWithDateRange ?? []
+            self.gain = getGain()
+            self.gainPercent = getGainPercent()
+            self.loading.toggle()
+        }
+    }
+    
     
     var body: some View {
         Group {
@@ -146,19 +159,8 @@ struct BalanceHistoryView: View {
                                     .padding(.leading, 4)
                                     .padding(.trailing, 12)
                                     .onChange(of: dateRangeType) { newValue in
-                                        self.loading.toggle()
-                                        self.startDate = getStartDateFor(dateRangeType)
-                                        self.endDate = getEndDateFor(dateRangeType)
-                                        print("Start Date: \(self.startDate ?? ""), End Date: \(self.endDate ?? "")")
-                                        Api().getStocksBackupWithDateRange(startDate: startDate, endDate: endDate) { historyWithDateRange in
-                                            appData.history = historyWithDateRange ?? []
-                                            self.gain = getGain()
-                                            self.gainPercent = getGainPercent()
-                                            self.loading.toggle()
-                                        }
+                                        getData()
                                     }
-                                
-                                
                                 Text("Portfolio").font(.title).padding(.top, 10)
                                 Text("Gain").font(.headline).padding(.top, 10)
                                 self.gain.padding(.top, 5)
@@ -191,6 +193,9 @@ struct BalanceHistoryView: View {
             self.gainPercent = getGainPercent()
         }
         .dismissKeyboardOnTap()
+        .onAppear {
+            getData()
+        }
     }
 }
 
