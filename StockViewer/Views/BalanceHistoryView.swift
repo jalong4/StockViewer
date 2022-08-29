@@ -11,7 +11,7 @@ import Charts
 struct BalanceHistoryView: View {
     
     enum DateRangeType: Int {
-        case last2Years, lastYear, ytd, last3Months, lastMonth, lastWeek
+        case all, lastYear, ytd, last3Months, lastMonth, lastWeek
     }
     
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -22,7 +22,7 @@ struct BalanceHistoryView: View {
     @State private var lineChartData: [ChartDataEntry] = []
     @State private var accounts: [AccountName] = []
     @State private var loading: Bool = false
-    @State private var dateRangeType = DateRangeType.lastWeek.rawValue
+    @State private var dateRangeType = DateRangeType.ytd.rawValue
     @State private var gain = AnyView(EmptyView())
     @State private var gainPercent = AnyView(EmptyView())
     @State private var startDate: String?
@@ -45,8 +45,10 @@ struct BalanceHistoryView: View {
         dateFormatter.dateFormat = "YYYY-MM-dd"
         
         switch dateRangeType {
-        case .last2Years:
-            return dateFormatter.string(from:today.last2Years)
+        case .all:
+            return nil
+//        case .last2Years:
+//            return dateFormatter.string(from:today.last2Years)
         case .lastYear:
             return dateFormatter.string(from:today.lastYear)
         case .ytd:
@@ -75,9 +77,9 @@ struct BalanceHistoryView: View {
         return dateFormatter.string(from: today)
     }
     
-    private func getAccounts(_ history: [History]) -> [AccountName] {
+    private func getAccounts(_ summaryHistory: [SummaryHistory]) -> [AccountName] {
         
-        let names = history.flatMap { $0.data.summary.accounts }.map { $0.name }
+        let names = summaryHistory.flatMap { $0.summary.accounts }.map { $0.name }.uniqued()
         
         var result = [AccountName]()
         names.forEach { name in
@@ -87,20 +89,20 @@ struct BalanceHistoryView: View {
     }
     
     private func getGainPercent() -> AnyView {
-        let first = appData.history.first;
-        let last = appData.history.last;
-        let firstTotal = first?.data.summary.totals.total ?? 0;
-        let lastTotal = last?.data.summary.totals.total ?? 0;
+        let first = appData.summaryHistory.first;
+        let last = appData.summaryHistory.last;
+        let firstTotal = first?.summary.totals.total ?? 0;
+        let lastTotal = last?.summary.totals.total ?? 0;
         let change = lastTotal - firstTotal
         let gain: Double = (lastTotal == 0) ? 0 : change/firstTotal
         return AnyView(Utils.getColorCodedTextView(gain, style: .percent))
     }
     
     private func getGain() -> AnyView {
-        let first = appData.history.first;
-        let last = appData.history.last;
-        let firstTotal = first?.data.summary.totals.total ?? 0;
-        let lastTotal = last?.data.summary.totals.total ?? 0;
+        let first = appData.summaryHistory.first;
+        let last = appData.summaryHistory.last;
+        let firstTotal = first?.summary.totals.total ?? 0;
+        let lastTotal = last?.summary.totals.total ?? 0;
         let change = lastTotal - firstTotal
         return AnyView(Utils.getColorCodedTextView(change, style: .currency))
     }
@@ -110,8 +112,9 @@ struct BalanceHistoryView: View {
         self.startDate = getStartDateFor(dateRangeType)
         self.endDate = getEndDateFor(dateRangeType)
         print("Start Date: \(self.startDate ?? ""), End Date: \(self.endDate ?? "")")
-        Api().getStocksBackupWithDateRange(startDate: startDate, endDate: endDate) { historyWithDateRange in
-            appData.history = historyWithDateRange ?? []
+        Api().getSummaryWithDateRange(startDate: startDate, endDate: endDate) { summaryHistory in
+            appData.summaryHistory = summaryHistory ?? []
+            self.accounts = getAccounts(appData.summaryHistory)
             self.gain = getGain()
             self.gainPercent = getGainPercent()
             self.loading.toggle()
@@ -134,6 +137,7 @@ struct BalanceHistoryView: View {
                 }
             }
             else if self.loading {
+
                 GeometryReader { geometry in
                     VStack(alignment: .center) {
                         ProgressView("Loading...")
@@ -153,7 +157,7 @@ struct BalanceHistoryView: View {
                         ScrollView (showsIndicators: false) {
                             VStack(alignment: .center, spacing: 0,  content: {
                                 
-                                SegmentedPicker(items: ["2y", "1y", "ytd", "3m", "1m", "1w"], selection: $dateRangeType)
+                                SegmentedPicker(items: ["all", "1y", "ytd", "3m", "1m", "1w"], selection: $dateRangeType)
                                     .frame(maxWidth: maxWidth)
                                     .padding([.bottom, .top], 10)
                                     .padding(.leading, 4)
@@ -165,15 +169,15 @@ struct BalanceHistoryView: View {
                                 Text("Gain").font(.headline).padding(.top, 10)
                                 self.gain.padding(.top, 5)
                                 self.gainPercent.padding(.top, 5)
-                                CustomLineChartView(entries: CustomLineChartView.getLineChartData(history: appData.history),
-                                                    xAxisValues: appData.history.map { $0.date } , selected: $selectedDataPoint).frame(width: geometry.size.width, height: 240, alignment: .center)
+                                CustomLineChartView(entries: CustomLineChartView.getLineChartData(history: appData.summaryHistory),
+                                                    xAxisValues: appData.summaryHistory.map { $0.date } , selected: $selectedDataPoint).frame(width: geometry.size.width, height: 240, alignment: .center)
                                 
                                 
                                 
                                 ForEach (self.accounts, id: \.id) { account in
                                     Text(account.name).font(.title).padding(.top, 10)
-                                    CustomLineChartView(entries: CustomLineChartView.getLineChartDataForAccount(history: appData.history, name: account.name),
-                                                        xAxisValues: appData.history.map { $0.date } , selected: $selectedDataPoint).frame(width: geometry.size.width, height: 240, alignment: .center)
+                                    CustomLineChartView(entries: CustomLineChartView.getLineChartDataForAccount(history: appData.summaryHistory, name: account.name),
+                                                        xAxisValues: appData.summaryHistory.map { $0.date } , selected: $selectedDataPoint).frame(width: geometry.size.width, height: 240, alignment: .center)
                                 }
                             })
                         }
@@ -182,18 +186,12 @@ struct BalanceHistoryView: View {
             }
         }
         .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
+        .padding(.leading, 16)
         .navigationTitle("Balance History")
         .navigationBarTitleDisplayMode(.inline)
+        .dismissKeyboardOnTap()
         .onAppear() {
             print("BalanceHistoryView appearing")
-            self.selectedDataPoint = appData.history.count - 1;
-            self.lineChartData = CustomLineChartView.getLineChartData(history: appData.history)
-            self.accounts = getAccounts(appData.history)
-            self.gain = getGain()
-            self.gainPercent = getGainPercent()
-        }
-        .dismissKeyboardOnTap()
-        .onAppear {
             getData()
         }
     }

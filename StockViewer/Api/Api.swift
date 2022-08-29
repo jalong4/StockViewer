@@ -807,7 +807,7 @@ class Api {
         .resume()
     }
     
-    func getStocksBackupWithDateRange(startDate: String?, endDate: String?, completion: @escaping ([History]?) -> ()) {
+    func getStocksBackupWithDateRange(startDate: String?, endDate: String?, filter: String?, completion: @escaping ([History]?) -> ()) {
         
         var queryParams: String? = nil
         if let startDate = startDate {
@@ -817,6 +817,11 @@ class Api {
         if let endDate = endDate {
             queryParams = (queryParams ?? "") + ((queryParams != nil) ? "&" : "?")
             queryParams = (queryParams ?? "") + "endDate=\(endDate)"
+        }
+        
+        if let filter = filter {
+            queryParams = (queryParams ?? "") + ((queryParams != nil) ? "&" : "?")
+            queryParams = (queryParams ?? "") + "filter=\(filter)"
         }
         
         guard
@@ -860,10 +865,64 @@ class Api {
         .resume()
     }
     
+    
+    func getSummaryWithDateRange(startDate: String?, endDate: String?, completion: @escaping ([SummaryHistory]?) -> ()) {
+        
+        var queryParams: String? = nil
+        if let startDate = startDate {
+            queryParams = "?startDate=\(startDate)"
+        }
+        
+        if let endDate = endDate {
+            queryParams = (queryParams ?? "") + ((queryParams != nil) ? "&" : "?")
+            queryParams = (queryParams ?? "") + "endDate=\(endDate)"
+        }
+        
+        guard
+            let url = URL(string: "\(Constants.baseUrl)/summary" + (queryParams ?? "")),
+            let accessToken = SettingsManager.sharedInstance.accessToken
+        else { return };
+        
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) {(data, response, error) in
+            
+            if let error = error {
+                fatalError("Failed to get totals data: Error: \(error)")
+            }
+            
+            guard let data = data else {
+                fatalError("Failed to get totals data")
+            }
+            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .deferredToDate
+            decoder.keyDecodingStrategy = .useDefaultKeys
+            
+            var quoteResponse: SummaryResponse? = nil
+            do {
+                quoteResponse = try decoder.decode(SummaryResponse.self, from: data)
+            } catch {
+                print("Unable to decode json into SummaryResponse")
+                print(data.prettyPrintedJSONString!)
+            }
+            
+            DispatchQueue.main.async {
+                completion(quoteResponse?.summaryHistory)
+            }
+        }
+        .resume()
+    }
+    
     func getStocksBackup(completion: @escaping ([History]?) -> ()) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YYYY-MM-dd"
-        return getStocksBackupWithDateRange(startDate: dateFormatter.string(from: Date().lastWeek), endDate: nil, completion: completion);
+        return getStocksBackupWithDateRange(startDate: dateFormatter.string(from: Date().lastWeek), endDate: nil, filter: nil, completion: completion);
     }
     
 }

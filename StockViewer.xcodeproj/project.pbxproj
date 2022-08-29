@@ -21,10 +21,12 @@
 		8E003A6625D342B100FB3A96 /* AuthUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A6525D342B100FB3A96 /* AuthUtils.swift */; };
 		8E003A6E25D38A2D00FB3A96 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E003A6D25D38A2D00FB3A96 /* MenuView.swift */; };
 		8E02D2BA25D8A13A001FE895 /* Holdings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E02D2B925D8A13A001FE895 /* Holdings.swift */; };
+		8E075CDB28BC343400B51FA3 /* SummaryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E075CDA28BC343400B51FA3 /* SummaryResponse.swift */; };
 		8E1629EF25E2F11000A206AF /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1629EE25E2F11000A206AF /* Media.swift */; };
 		8E1629F125E41A3D00A206AF /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1629F025E41A3D00A206AF /* ImageCache.swift */; };
 		8E1629F525E4538700A206AF /* UrlImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1629F425E4538700A206AF /* UrlImageModel.swift */; };
 		8E1629F725E45F4B00A206AF /* UrlImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1629F625E45F4B00A206AF /* UrlImageView.swift */; };
+		8E29B2ED28BC442400D4B3E9 /* SummaryHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E29B2EC28BC442400D4B3E9 /* SummaryHistory.swift */; };
 		8E31682625DBA077001B5ABD /* CustomPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E31682525DBA077001B5ABD /* CustomPickerView.swift */; };
 		8E31682A25DCCDA3001B5ABD /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E31682925DCCDA3001B5ABD /* SegmentedPicker.swift */; };
 		8E38AD322672D2B100CB0FF7 /* BaloonMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E38AD312672D2B100CB0FF7 /* BaloonMarker.swift */; };
@@ -95,10 +97,12 @@
 		8E003A6525D342B100FB3A96 /* AuthUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUtils.swift; sourceTree = "<group>"; };
 		8E003A6D25D38A2D00FB3A96 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		8E02D2B925D8A13A001FE895 /* Holdings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Holdings.swift; sourceTree = "<group>"; };
+		8E075CDA28BC343400B51FA3 /* SummaryResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryResponse.swift; sourceTree = "<group>"; };
 		8E1629EE25E2F11000A206AF /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		8E1629F025E41A3D00A206AF /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		8E1629F425E4538700A206AF /* UrlImageModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlImageModel.swift; sourceTree = "<group>"; };
 		8E1629F625E45F4B00A206AF /* UrlImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UrlImageView.swift; sourceTree = "<group>"; };
+		8E29B2EC28BC442400D4B3E9 /* SummaryHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryHistory.swift; sourceTree = "<group>"; };
 		8E31682525DBA077001B5ABD /* CustomPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPickerView.swift; sourceTree = "<group>"; };
 		8E31682925DCCDA3001B5ABD /* SegmentedPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		8E38AD312672D2B100CB0FF7 /* BaloonMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaloonMarker.swift; sourceTree = "<group>"; };
@@ -257,6 +261,8 @@
 				8EDA216225CD06C200194772 /* StockGains.swift */,
 				8EB96C4F2669C30200AAF2CD /* StocksBackup.swift */,
 				8EDA215F25CD069B00194772 /* Summary.swift */,
+				8E075CDA28BC343400B51FA3 /* SummaryResponse.swift */,
+				8E29B2EC28BC442400D4B3E9 /* SummaryHistory.swift */,
 				8E1629F425E4538700A206AF /* UrlImageModel.swift */,
 				8E003A4E25D21FBC00FB3A96 /* User.swift */,
 				8E3D6FEE25EAE66F00967AE7 /* ValidationResult.swift */,
@@ -473,6 +479,7 @@
 				8EBF460825DA4BC2004269ED /* ScrollToModel.swift in Sources */,
 				8E1629EF25E2F11000A206AF /* Media.swift in Sources */,
 				8EDA214525CD060500194772 /* StockViewerApp.swift in Sources */,
+				8E29B2ED28BC442400D4B3E9 /* SummaryHistory.swift in Sources */,
 				8E0039C025D07F9500FB3A96 /* SizeClassView.swift in Sources */,
 				8E38AD322672D2B100CB0FF7 /* BaloonMarker.swift in Sources */,
 				8EDA215A25CD064F00194772 /* Stock.swift in Sources */,
@@ -484,6 +491,7 @@
 				8E7D1F6C266EFDCA006FD8A9 /* LargeValueFormatter.swift in Sources */,
 				8EB96C502669C30200AAF2CD /* StocksBackup.swift in Sources */,
 				8EDA218B25CF50BB00194772 /* Enums.swift in Sources */,
+				8E075CDB28BC343400B51FA3 /* SummaryResponse.swift in Sources */,
 				8E003A6325D319D700FB3A96 /* HomeView.swift in Sources */,
 				8EDA216325CD06C200194772 /* StockGains.swift in Sources */,
 				8EDA218825CF501A00194772 /* StockTableView.swift in Sources */,

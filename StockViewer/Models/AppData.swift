@@ -29,5 +29,6 @@ class AppData: ObservableObject {
     @Published var stockSortDirection: StockSortDirection = .down
     @Published var portfolio = Portfolio()
     @Published var history = [History]()
+    @Published var summaryHistory = [SummaryHistory]()
     @Published var dates = [Date]()
 }

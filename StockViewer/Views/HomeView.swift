@@ -237,16 +237,16 @@ struct HomeView: View {
                                 Spacer()
                             }
                             TabView {
-                                TopMoversView(title: "Top Gainers", stockGains:Array(appData.portfolio.summary.topDayGainers))
+                                TopMoversView(title: "Top Gainers", stockGains:Array(appData.portfolio.summary.topDayGainers ?? []))
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
                                 
-                                TopMoversView(title: "Top Losers", stockGains:Array(appData.portfolio.summary.topDayLosers))
+                                TopMoversView(title: "Top Losers", stockGains:Array(appData.portfolio.summary.topDayLosers ?? []))
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
                                 
-                                TopMoversView(title: "Most Profitable", stockGains:Array(appData.portfolio.summary.mostProfitable))
+                                TopMoversView(title: "Most Profitable", stockGains:Array(appData.portfolio.summary.mostProfitable ?? []))
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
                                 
-                                TopMoversView(title: "Least Profitable", stockGains:Array(appData.portfolio.summary.leastProfitable))
+                                TopMoversView(title: "Least Profitable", stockGains:Array(appData.portfolio.summary.leastProfitable ?? []))
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
                                 
                             }

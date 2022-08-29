@@ -47,6 +47,6 @@ struct TopMoversView: View {
 struct TopMoversView_Previews: PreviewProvider {
     @State static var portfolio = Api.getMockPortfolio()
     static var previews: some View {
-        TopMoversView(title: "Top Gainers", stockGains: portfolio.summary.topDayGainers)
+        TopMoversView(title: "Top Gainers", stockGains: portfolio.summary.topDayGainers ?? [])
     }
 }

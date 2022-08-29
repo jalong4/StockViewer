@@ -54,7 +54,7 @@ struct SegmentedPicker: View {
     
     private static let SegmentCornerRadius: CGFloat = 12
     private static let ShadowRadius: CGFloat = 4
-    private static let SegmentXPadding: CGFloat = 16
+    private static let SegmentXPadding: CGFloat = 8
     private static let SegmentYPadding: CGFloat = 8
     private static let PickerPadding: CGFloat = 4
     
@@ -104,7 +104,7 @@ struct SegmentedPicker: View {
     
     // Helper method to compute the offset based on the selected index
     private func computeActiveSegmentHorizontalOffset() -> CGFloat {
-        CGFloat(self.selection) * (self.segmentSize.width + SegmentedPicker.SegmentXPadding / 2)
+        CGFloat(self.selection) * (self.segmentSize.width + SegmentedPicker.SegmentXPadding)
     }
     
     // Gets text view for the segment

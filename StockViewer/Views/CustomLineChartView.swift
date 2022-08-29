@@ -104,70 +104,21 @@ struct CustomLineChartView: UIViewRepresentable {
         Coordinator(parent: self)
     }
     
-    static func getLineChartData(history: [History]) -> [ChartDataEntry] {
+    static func getLineChartData(history: [SummaryHistory]) -> [ChartDataEntry] {
         let values = history
-            .map { $0.data.summary.totals.total }
+            .map { $0.summary.totals.total }
         let result = values.enumerated().map { ChartDataEntry(x: Double($0),  y: $1, data: Int($0)) }
         return result
     }
     
-    static func getLineChartDataForAccount(history: [History], name: String) -> [ChartDataEntry] {
-        let accounts = history.flatMap { $0.data.summary.accounts }
+    static func getLineChartDataForAccount(history: [SummaryHistory], name: String) -> [ChartDataEntry] {
+        let accounts = history.flatMap { $0.summary.accounts }
         let account = accounts.filter { $0.name == name }
         let values = account.map { $0.total }
         let result = values.enumerated().map { ChartDataEntry(x: Double($0),  y: $1, data: Int($0)) }
         return result
     }
     
-}
-
-struct CustomLineChartView_Previews: PreviewProvider {
-
-    static var history = Api.getMockHistory()
-    static var previews: some View {
-        GeometryReader { geometry in
-            ZStack {
-                Color.themeBackground
-                
-                ScrollView (showsIndicators: false) {
-                    VStack(alignment: .center, spacing: 0,  content: {
-                        Group {
-                            Text("Portfolio").font(.title).padding(.top, 10)
-                            CustomLineChartView(entries: CustomLineChartView.getLineChartData(history: history),
-                                                xAxisValues: history.map { $0.date } , selected: .constant(1)).frame(width: geometry.size.width, height: 240, alignment: .center)
-                            
-                            Text("Fidelity").font(.title).padding(.top, 10)
-                            CustomLineChartView(entries: CustomLineChartView.getLineChartDataForAccount(history: history, name: "Fidelity"),
-                                                xAxisValues: history.map { $0.date } , selected: .constant(1)).frame(width: geometry.size.width, height: 240, alignment: .center)
-                            
-                            Text("TD Ameritrade 401K").font(.title).padding(.top, 10)
-                            CustomLineChartView(entries: CustomLineChartView.getLineChartDataForAccount(history: history, name: "TD Ameritrade 401K"),
-                                                xAxisValues: history.map { $0.date } , selected: .constant(1)).frame(width: geometry.size.width, height: 240, alignment: .center)
-                            
-                            Text("TD Ameritrade Roth 401K").font(.title).padding(.top, 10)
-                            CustomLineChartView(entries: CustomLineChartView.getLineChartDataForAccount(history: history, name: "TD Ameritrade Roth 401K"),
-                                                xAxisValues: history.map { $0.date } , selected: .constant(1)).frame(width: geometry.size.width, height: 240, alignment: .center)
-                        }
-                        
-                        Text("Jo's IRA").font(.title).padding(.top, 10)
-                        CustomLineChartView(entries: CustomLineChartView.getLineChartDataForAccount(history: history, name: "Jo's IRA"),
-                                            xAxisValues: history.map { $0.date } , selected: .constant(1)).frame(width: geometry.size.width, height: 240, alignment: .center)
-                        
-                        Text("Jim's IRA").font(.title).padding(.top, 10)
-                        CustomLineChartView(entries: CustomLineChartView.getLineChartDataForAccount(history: history, name: "Jim's IRA"),
-                                            xAxisValues: history.map { $0.date } , selected: .constant(1)).frame(width: geometry.size.width, height: 240, alignment: .center)
-                        Text("Employee Stock Plan").font(.title).padding(.top, 10)
-                        CustomLineChartView(entries: CustomLineChartView.getLineChartDataForAccount(history: history, name: "Employee Stock Plan"),
-                                            xAxisValues: history.map { $0.date } , selected: .constant(1)).frame(width: geometry.size.width, height: 240, alignment: .center)
-                        Text("Employee Stock Plan - Vested").font(.title).padding(.top, 10)
-                        CustomLineChartView(entries: CustomLineChartView.getLineChartDataForAccount(history: history, name: "Employee Stock Plan - Vested"),
-                                            xAxisValues: history.map { $0.date } , selected: .constant(1)).frame(width: geometry.size.width, height: 240, alignment: .center)
-                        
-                    })
-                }
-            }
-        }
-    }
 }
 
 final public class XYMarkerView: BalloonMarker {
